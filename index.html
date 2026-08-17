@@ -3,186 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viral Hunt Pro - Clean Version</title>
+    <title>Viral Hunt Pro</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f0f13; color: #fff; padding: 15px; }
-        .container { max-width: 800px; margin: auto; }
-        input, button, textarea { width: 100%; padding: 12px; margin: 5px 0; background: #1c1c24; border: 1px solid #333; color: white; border-radius: 6px; box-sizing: border-box; }
-        button { background: #00e676; color: #000; font-weight: bold; cursor: pointer; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f0f13; color: #ffffff; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: auto; }
+        h1 { color: #00e676; margin-bottom: 5px; }
+        .card { background: #1c1c24; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #2d2d3b; }
+        input, button { padding: 12px; margin: 5px 0; border-radius: 6px; border: 1px solid #333; background: #0f0f13; color: white; box-sizing: border-box; }
+        button { background: #00e676; color: #000; font-weight: bold; cursor: pointer; border: none; }
         button:hover { background: #00c853; }
-        .flex-row { display: flex; gap: 10px; }
-        .modal { display: none; position: fixed; top: 5%; left: 5%; width: 90%; height: 90%; background: #1c1c24; padding: 20px; border-radius: 10px; overflow-y: auto; border: 2px solid #00e676; z-index: 100; box-sizing: border-box; }
-        .video-card { background: #1c1c24; padding: 15px; border-radius: 8px; border: 1px solid #2d2d3b; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .video-info p { margin: 5px 0; }
-        #status { margin-top: 10px; font-weight: bold; }
+        
+        .table-responsive { overflow-x: auto; background: #1c1c24; border-radius: 10px; border: 1px solid #2d2d3b; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #2d2d3b; }
+        th { background: #2d2d3b; color: #a0a0a0; }
+        img { border-radius: 8px; width: 120px; }
+        
+        .modal { display: none; position: fixed; top: 10%; left: 10%; width: 80%; height: 80%; background: #1c1c24; padding: 20px; border-radius: 10px; border: 2px solid #00e676; z-index: 100; }
+        #status { margin: 15px 0; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 style="color: #00e676; margin-bottom: 5px;">🚀 Viral Hunt Pro</h1>
-        <p style="color: #a0a0a0; margin-top: 0;">Find Viral Videos & Extract Transcripts</p>
+        <h1>🚀 Viral Hunt Pro</h1>
+        <p style="color: #a0a0a0;">Find Viral Videos, Check Stats & Extract Scripts</p>
 
-        <!-- Sirf YouTube API Key -->
-        <input type="password" id="ytKey" placeholder="🔑 YouTube API Key">
+        <input type="password" id="ytKey" placeholder="🔑 Paste your YouTube API Key here..." style="width: 100%;">
         
-        <!-- Search & Filter -->
-        <div class="flex-row">
-            <input type="text" id="query" placeholder="🔍 Topic (e.g. anime recap)" style="flex: 2;">
-            <input type="number" id="maxSubs" placeholder="Max Subs" value="5000" style="flex: 1;">
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="query" placeholder="🔍 Enter topic (e.g., anime recap)" style="flex: 2;">
+            <input type="number" id="maxSubs" value="5000" placeholder="Max Subs" style="flex: 1;">
+            <button onclick="startHunting()" id="huntBtn" style="flex: 1;">Start Hunting ⚡</button>
         </div>
-        
-        <button onclick="startHunting()" id="huntBtn">Start Hunting ⚡</button>
+
         <div id="status"></div>
         
-        <!-- Results Area -->
-        <div id="results" style="margin-top: 20px;"></div>
+        <div class="table-responsive" id="tableContainer" style="display: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Thumbnail</th>
+                        <th>Video Title</th>
+                        <th>Subscribers</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- 📝 Editor Modal (No Gemini) -->
+    <!-- Script Editor Modal -->
     <div id="scriptModal" class="modal">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 id="modalTitle" style="color: #00e676; margin: 0;">Video Transcript</h3>
-            <button onclick="closePanel()" style="width: auto; background: #ff4444; color: white;">❌ Close</button>
-        </div>
-        
-        <p style="color: #a0a0a0; font-size: 0.9rem;">Auto-fetch transcript ya manually paste karo:</p>
-        
-        <button onclick="fetchAutoTranscript()">⬇️ Fetch Auto-Transcript</button>
-        <textarea id="transcriptInput" rows="15" placeholder="Transcript yahan aayegi..."></textarea>
+        <button onclick="closePanel()" style="background:#ff4444; color:white; width: auto;">❌ Close</button>
+        <h3 id="modalTitle" style="color: #00e676;">Transcript Extractor</h3>
+        <button onclick="fetchAutoTranscript()">⬇️ Fetch Transcript Automatically</button>
+        <textarea id="transcriptInput" rows="15" style="width: 100%; margin-top: 10px; background: #000; color: #fff;"></textarea>
     </div>
 
     <script>
-        // 💾 1. Sirf YouTube Key save rakhna
-        window.onload = () => {
-            document.getElementById('ytKey').value = localStorage.getItem('ytKey') || '';
-        };
-
-        function saveKeys() {
-            localStorage.setItem('ytKey', document.getElementById('ytKey').value.trim());
-        }
-
+        window.onload = () => { document.getElementById('ytKey').value = localStorage.getItem('ytKey') || ''; };
+        
         let currentVidId = "";
 
-        // 🔍 2. Viral Search Engine (With 0 Sub Fix)
         async function startHunting() {
-            saveKeys();
             const ytKey = document.getElementById('ytKey').value.trim();
+            localStorage.setItem('ytKey', ytKey);
             const query = document.getElementById('query').value.trim();
             
+            // 0 Sub Bug Fix
             const maxSubsInput = document.getElementById('maxSubs').value;
             const maxSubs = maxSubsInput === "" ? 5000 : parseInt(maxSubsInput);
 
-            const status = document.getElementById('status');
-            const resultsDiv = document.getElementById('results');
-            const huntBtn = document.getElementById('huntBtn');
+            const statusBox = document.getElementById('status');
+            const tableBody = document.getElementById('tableBody');
+            const tableContainer = document.getElementById('tableContainer');
 
-            if (!ytKey || !query) {
-                status.innerHTML = "<span style='color:#ff4444;'>⚠️ YouTube API Key aur Topic daalna zaroori hai!</span>";
-                return;
-            }
+            if (!ytKey || !query) { statusBox.innerHTML = "⚠️ API Key aur Topic daalo!"; return; }
 
-            huntBtn.innerText = "Hunting... ⏳";
-            status.innerHTML = "<span style='color:#fff;'>🔍 1/2: Latest videos fetch kar raha hu...</span>";
-            resultsDiv.innerHTML = "";
+            statusBox.innerHTML = "🔍 Hunting...";
+            tableBody.innerHTML = "";
+            tableContainer.style.display = "none";
 
             try {
                 let yesterday = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
-                let publishedAfter = yesterday.toISOString();
+                const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=50&order=viewCount&publishedAfter=${yesterday.toISOString()}&q=${encodeURIComponent(query)}&key=${ytKey}`);
+                const data = await res.json();
 
-                const searchRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=50&order=viewCount&publishedAfter=${publishedAfter}&q=${encodeURIComponent(query)}&key=${ytKey}`);
-                const searchData = await searchRes.json();
+                let channelIds = data.items.map(v => v.snippet.channelId).join(',');
+                const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelIds}&key=${ytKey}`);
+                const chData = await chRes.json();
+                let stats = {};
+                chData.items.forEach(c => stats[c.id] = parseInt(c.statistics.subscriberCount) || 0);
 
-                if (searchData.error) throw new Error(searchData.error.message);
-                if (!searchData.items || searchData.items.length === 0) {
-                    status.innerHTML = "<span style='color:#ffbb33;'>⚠️ Nayi videos nahi mili.</span>";
-                    huntBtn.innerText = "Start Hunting ⚡";
-                    return;
-                }
-
-                status.innerHTML = `<span style='color:#fff;'>⚙️ 2/2: ${searchData.items.length} channels ke subs check kar raha hu...</span>`;
-
-                let channelIds = searchData.items.map(v => v.snippet.channelId).join(',');
-                const channelRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelIds}&key=${ytKey}`);
-                const channelData = await channelRes.json();
-
-                let channelStats = {};
-                channelData.items.forEach(c => {
-                    channelStats[c.id] = parseInt(c.statistics.subscriberCount) || 0;
-                });
-
-                let found = false;
-                for (let v of searchData.items) {
-                    let subs = channelStats[v.snippet.channelId];
+                for (let v of data.items) {
+                    let subs = stats[v.snippet.channelId];
                     if (subs <= maxSubs) {
-                        found = true;
-                        let vidId = v.id.videoId;
-                        let cleanTitle = v.snippet.title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                        
-                        // YAHAN HAI SUB COUNT (Highlight kiya hua)
-                        resultsDiv.innerHTML += `
-                            <div class="video-card">
-                                <div class="video-info" style="width: 70%;">
-                                    <p style="color: #fff; font-weight: bold; font-size: 1rem;">${v.snippet.title}</p>
-                                    <p style="color: #a0a0a0; font-size: 0.85rem;">👤 ${v.snippet.channelTitle}</p>
-                                    <p style="color: #00e676; font-size: 1.1rem; font-weight: bold; margin-top: 5px;">📉 ${subs.toLocaleString()} Subscribers</p>
-                                </div>
-                                <div style="width: 25%; text-align: right;">
-                                    <button onclick="openPanel('${vidId}', '${cleanTitle}')" style="width: 100%; font-size: 0.9rem;">📝 Get Transcript</button>
-                                </div>
-                            </div>
-                        `;
+                        tableContainer.style.display = "table";
+                        tableBody.innerHTML += `<tr>
+                            <td><img src="${v.snippet.thumbnails.medium.url}"></td>
+                            <td>${v.snippet.title}<br><small style="color:#a0a0a0">${v.snippet.channelTitle}</small></td>
+                            <td style="color:#00e676; font-weight:bold;">${subs.toLocaleString()}</td>
+                            <td><button onclick="openPanel('${v.id.videoId}', '${v.snippet.title.replace(/'/g, "\\'")}')">📝 Transcript</button></td>
+                        </tr>`;
                     }
                 }
-
-                if (found) {
-                    status.innerHTML = "<span style='color:#00C851;'>✅ Hunt Complete! Outliers found.</span>";
-                } else {
-                    status.innerHTML = `<span style='color:#ffbb33;'>⚠️ Videos toh mili par sabke subs ${maxSubs} se zyada hain.</span>`;
-                }
-
-            } catch (error) {
-                status.innerHTML = `<span style='color:#ff4444;'>❌ Error: ${error.message}</span>`;
-            }
-
-            huntBtn.innerText = "Start Hunting ⚡";
+                statusBox.innerHTML = "✅ Hunt Complete!";
+            } catch(e) { statusBox.innerHTML = "❌ Error: " + e.message; }
         }
 
-        // 🪟 3. Modal Panel Controls
-        function openPanel(vidId, title) {
-            currentVidId = vidId;
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('transcriptInput').value = "";
-            document.getElementById('scriptModal').style.display = 'block';
-        }
+        function openPanel(id, title) { currentVidId = id; document.getElementById('modalTitle').innerText = title; document.getElementById('scriptModal').style.display = 'block'; }
+        function closePanel() { document.getElementById('scriptModal').style.display = 'none'; }
 
-        function closePanel() {
-            document.getElementById('scriptModal').style.display = 'none';
-        }
-
-        // 📝 4. Fetch Transcript (Piped API Bypass)
         async function fetchAutoTranscript() {
             const input = document.getElementById('transcriptInput');
-            input.value = "⏳ Fetching transcript... (Please wait)";
-            
+            input.value = "⏳ Fetching...";
             try {
                 const res = await fetch(`https://pipedapi.kavin.rocks/streams/${currentVidId}`);
                 const data = await res.json();
-                
-                if (!data.subtitles || data.subtitles.length === 0) {
-                    input.value = "⚠️ Is video par subtitles available nahi hain. Aap manual transcript copy karke yahan paste kar sakte hain.";
-                    return;
-                }
-                
                 let sub = data.subtitles.find(s => s.code.startsWith('en')) || data.subtitles[0];
                 const subRes = await fetch(sub.url);
                 const subText = await subRes.text();
-                
-                let cleanText = subText.replace(/<[^>]+>/g, ' ').replace(/\d{2}:\d{2}:\d{2}\.\d{3} --> \d{2}:\d{2}:\d{2}\.\d{3}/g, '').replace(/WEBVTT/g, '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-                
-                input.value = cleanText;
-            } catch (error) {
-                input.value = "❌ Error fetching transcript. Please try copying manually from YouTube.";
-            }
+                input.value = subText.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+            } catch(e) { input.value = "⚠️ Transcript nahi mili."; }
         }
     </script>
 </body>
