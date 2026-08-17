@@ -8,8 +8,8 @@
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #0f0f13; color: #fff; padding: 20px; }
         .box { background: #1c1c24; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; border: 1px solid #2d2d3b; }
         input, button { padding: 12px; margin: 10px 0; width: 100%; box-sizing: border-box; border-radius: 6px; }
-        input { background: #0f0f13; border: 1px solid #333; color: white; }
-        button { background: #00e676; border: none; color: black; font-weight: bold; cursor: pointer; }
+        input { background: #0f0f13; border: 1px solid #333; color: white; font-size: 1rem; }
+        button { background: #00e676; border: none; color: black; font-weight: bold; font-size: 1rem; cursor: pointer; }
         button:hover { background: #00c853; }
         #output { margin-top: 20px; background: #0f0f13; padding: 15px; border-radius: 6px; max-height: 400px; overflow-y: auto; border: 1px solid #333; font-size: 0.95em; line-height: 1.5; }
     </style>
@@ -18,10 +18,10 @@
 
     <div class="box">
         <h2 style="color: #00e676; text-align: center;">⚡ Auto-Script Hack</h2>
-        <p style="color: #a0a0a0; text-align: center; font-size: 0.9em;">(Using CORS Proxy - 100% Free & Unlimited)</p>
+        <p style="color: #a0a0a0; text-align: center; font-size: 0.9em;">(Paste Full Link or Video ID)</p>
         
-        <!-- Yahan sirf Video ID dalni hai, koi API Key nahi chahiye! -->
-        <input type="text" id="vidId" placeholder="Paste Video ID (e.g. jNQXAC9IVRw)">
+        <!-- Ab yahan poora link paste kar sakte ho -->
+        <input type="text" id="vidInput" placeholder="Paste Full YouTube Link Here...">
         
         <button onclick="extractScript()" id="extractBtn">Hack Transcript 😈</button>
 
@@ -30,12 +30,26 @@
 
     <script>
         async function extractScript() {
-            const videoId = document.getElementById('vidId').value.trim();
+            const inputVal = document.getElementById('vidInput').value.trim();
             const output = document.getElementById('output');
             const extractBtn = document.getElementById('extractBtn');
 
-            if(!videoId) {
-                output.innerHTML = "<span style='color:red;'>⚠️ Pehle Video ID daalo bhai!</span>";
+            if(!inputVal) {
+                output.innerHTML = "<span style='color:red;'>⚠️ Pehle Link daalo bhai!</span>";
+                return;
+            }
+
+            // 🧠 SMART EXTRACTOR: Poore link se ID alag nikalne ka logic
+            let videoId = null;
+            let match = inputVal.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})/);
+            if (match && match[1]) {
+                videoId = match[1]; // Agar link hai toh ID extract karega
+            } else if (inputVal.length === 11) {
+                videoId = inputVal; // Agar direct 11 character ki ID daali hai
+            }
+
+            if (!videoId) {
+                output.innerHTML = "<span style='color:red;'>⚠️ Sahi YouTube Link daalo!</span>";
                 return;
             }
 
@@ -44,7 +58,7 @@
             output.innerHTML = "<p style='color: #a0a0a0;'>1/3: Proxy connect kar raha hu...</p>";
 
             try {
-                // STEP 1: YouTube page ka pura data CORS proxy ke through nikalna
+                // STEP 1: Proxy ke through request
                 const proxyUrl = 'https://corsproxy.io/?';
                 const targetUrl = encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`);
                 
@@ -53,26 +67,24 @@
 
                 output.innerHTML += "<p style='color: #a0a0a0;'>2/3: Hidden subtitle file dhundh raha hu...</p>";
 
-                // STEP 2: HTML ke andar se caption ka direct link (regex se) churana
+                // STEP 2: Hidden file extract karna
                 if (!htmlText.includes('"captionTracks"')) {
                     throw new Error("Is video mein subtitles/captions on nahi hain.");
                 }
 
-                let match = htmlText.match(/"captionTracks":\[\{"baseUrl":"(.*?)"/);
-                if (!match || match.length < 2) {
+                let captionMatch = htmlText.match(/"captionTracks":\[\{"baseUrl":"(.*?)"/);
+                if (!captionMatch || captionMatch.length < 2) {
                     throw new Error("Captions ka link extract nahi ho paya.");
                 }
 
-                // Link ko clean karna (Unicode hata kar)
-                let captionsUrl = match[1].replace(/\\u0026/g, '&');
+                let captionsUrl = captionMatch[1].replace(/\\u0026/g, '&');
 
                 output.innerHTML += "<p style='color: #a0a0a0;'>3/3: Script download aur decode ho rahi hai...</p>";
 
-                // STEP 3: Us direct link se Text (XML format) download karna
+                // STEP 3: Text file decode karna
                 let captionResponse = await fetch(captionsUrl);
                 let captionXml = await captionResponse.text();
 
-                // XML ko normal text mein convert karna
                 let parser = new DOMParser();
                 let xmlDoc = parser.parseFromString(captionXml, "text/xml");
                 let textNodes = xmlDoc.getElementsByTagName('text');
@@ -82,12 +94,10 @@
                     fullScript += textNodes[i].textContent + " ";
                 }
 
-                // HTML codes (jaise &#39; ko ') ko saaf karna
                 let tempDiv = document.createElement("div");
                 tempDiv.innerHTML = fullScript;
                 let cleanScript = tempDiv.textContent || tempDiv.innerText || "";
 
-                // Final text screen par dikhana
                 output.innerHTML = `<h3 style="color:#00e676;">✅ Script Hunt Successful!</h3>
                                     <p style="color:white;">${cleanScript}</p>`;
 
