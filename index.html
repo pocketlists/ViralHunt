@@ -1,54 +1,95 @@
-html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Viral Hunt Pro</title>
-    <!-- CSS File Link -->
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: sans-serif; background: #0f0f13; color: #fff; padding: 15px; }
+        .container { max-width: 800px; margin: auto; }
+        input, button, textarea { width: 100%; padding: 12px; margin: 5px 0; background: #1c1c24; border: 1px solid #333; color: white; border-radius: 6px; box-sizing: border-box; }
+        button { background: #00e676; color: #000; font-weight: bold; cursor: pointer; }
+        .modal { display: none; position: fixed; top: 10%; left: 10%; width: 80%; height: 80%; background: #1c1c24; padding: 20px; border-radius: 10px; overflow-y: auto; border: 2px solid #00e676; }
+        .script-box { background: #000; padding: 15px; border-radius: 6px; border-left: 4px solid #00e676; margin-top: 10px; }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>🚀 Viral Hunt Pro</h1>
-        <p class="subtitle">Find low-subscriber channels with high-view videos (Last 24 Hours)</p>
-
-        <!-- API Key Input -->
-        <div class="card">
-            <input type="password" id="apiKey" placeholder="🔑 Paste your YouTube API Key here...">
-        </div>
-
-        <!-- Filters & Search -->
-        <div class="card filters">
-            <input type="text" id="searchQuery" placeholder="🔍 Enter topic (e.g., anime recap)">
-            <div class="sub-filter">
-                <label>Max Subs:</label>
-                <input type="number" id="maxSubs" value="5000">
-            </div>
-            <button onclick="startHunt()" id="huntBtn">Start Hunting</button>
-        </div>
-
-        <!-- Status Tracker -->
-        <div id="status"></div>
-        
-        <!-- Results Table -->
-        <div class="table-responsive" id="tableContainer" style="display: none;">
-            <table id="resultsTable">
-                <thead>
-                    <tr>
-                        <th>Thumbnail</th>
-                        <th>Video Info</th>
-                        <th>Subscribers</th>
-                        <th>Link</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-        </div>
+        <input type="password" id="ytKey" placeholder="YouTube API Key">
+        <input type="password" id="geminiKey" placeholder="Gemini API Key">
+        <input type="text" id="query" placeholder="Topic">
+        <button onclick="startHunting()">Start Hunting</button>
+        <div id="results"></div>
     </div>
 
-    <!-- JS File Link -->
-    <script src="app.js"></script>
+    <!-- Script Panel -->
+    <div id="scriptModal" class="modal">
+        <button onclick="document.getElementById('scriptModal').style.display='none'">❌ Close</button>
+        <h3 id="modalTitle">Work on Video</h3>
+        <textarea id="transcriptInput" rows="10" placeholder="Paste transcript here..."></textarea>
+        <button onclick="fetchAutoTranscript()">⚡ Fetch Auto-Transcript</button>
+        <button onclick="generateAI()">🤖 Generate Viral Script</button>
+        <div id="aiOutput" class="script-box"></div>
+    </div>
+
+    <script>
+        // Keys Save rakho
+        window.onload = () => {
+            document.getElementById('ytKey').value = localStorage.getItem('ytKey') || '';
+            document.getElementById('geminiKey').value = localStorage.getItem('geminiKey') || '';
+        };
+
+        function saveKeys() {
+            localStorage.setItem('ytKey', document.getElementById('ytKey').value);
+            localStorage.setItem('geminiKey', document.getElementById('geminiKey').value);
+        }
+
+        let currentVidId = "";
+
+        async function startHunting() {
+            saveKeys();
+            const ytKey = document.getElementById('ytKey').value;
+            const query = document.getElementById('query').value;
+            const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=10&order=viewCount&q=${encodeURIComponent(query)}&key=${ytKey}`);
+            const data = await res.json();
+            
+            document.getElementById('results').innerHTML = data.items.map(v => `
+                <div style="border-bottom:1px solid #333; padding:10px;">
+                    <p>${v.snippet.title}</p>
+                    <button onclick="openPanel('${v.id.videoId}', '${v.snippet.title}')">Open Editor</button>
+                </div>`).join('');
+        }
+
+        function openPanel(vidId, title) {
+            currentVidId = vidId;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('scriptModal').style.display = 'block';
+        }
+
+        async function fetchAutoTranscript() {
+            document.getElementById('transcriptInput').value = "Fetching...";
+            const res = await fetch(`https://pipedapi.kavin.rocks/streams/${currentVidId}`);
+            const data = await res.json();
+            const sub = data.subtitles.find(s => s.code.startsWith('en'));
+            const subRes = await fetch(sub.url);
+            document.getElementById('transcriptInput').value = await subRes.text();
+        }
+
+        async function generateAI() {
+            const transcript = document.getElementById('transcriptInput').value;
+            const geminiKey = document.getElementById('geminiKey').value;
+            const out = document.getElementById('aiOutput');
+            out.innerHTML = "Thinking...";
+            
+            const aiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: "Rewrite this as a viral script for ZanimeDose: " + transcript.substring(0, 5000) }] }] })
+            });
+            const aiData = await aiRes.json();
+            out.innerHTML = aiData.candidates[0].content.parts[0].text;
+        }
+    </script>
 </body>
 </html>
-```
