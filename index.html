@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viral Hunt Pro - Ultimate</title>
+    <title>Viral Hunt Pro - Clean Version</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f0f13; color: #fff; padding: 15px; }
         .container { max-width: 800px; margin: auto; }
@@ -12,7 +12,6 @@
         button:hover { background: #00c853; }
         .flex-row { display: flex; gap: 10px; }
         .modal { display: none; position: fixed; top: 5%; left: 5%; width: 90%; height: 90%; background: #1c1c24; padding: 20px; border-radius: 10px; overflow-y: auto; border: 2px solid #00e676; z-index: 100; box-sizing: border-box; }
-        .script-box { background: #000; padding: 15px; border-radius: 6px; border-left: 4px solid #00e676; margin-top: 10px; white-space: pre-wrap; font-size: 0.9rem; line-height: 1.5; }
         .video-card { background: #1c1c24; padding: 15px; border-radius: 8px; border: 1px solid #2d2d3b; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .video-info p { margin: 5px 0; }
         #status { margin-top: 10px; font-weight: bold; }
@@ -21,13 +20,12 @@
 <body>
     <div class="container">
         <h1 style="color: #00e676; margin-bottom: 5px;">🚀 Viral Hunt Pro</h1>
-        <p style="color: #a0a0a0; margin-top: 0;">Search, Filter & AI Rewrite Engine</p>
+        <p style="color: #a0a0a0; margin-top: 0;">Find Viral Videos & Extract Transcripts</p>
 
-        <!-- API Keys -->
+        <!-- Sirf YouTube API Key -->
         <input type="password" id="ytKey" placeholder="🔑 YouTube API Key">
-        <input type="password" id="geminiKey" placeholder="🤖 Gemini API Key">
         
-        <!-- Search & Filter (0 Sub Fix Included) -->
+        <!-- Search & Filter -->
         <div class="flex-row">
             <input type="text" id="query" placeholder="🔍 Topic (e.g. anime recap)" style="flex: 2;">
             <input type="number" id="maxSubs" placeholder="Max Subs" value="5000" style="flex: 1;">
@@ -40,34 +38,27 @@
         <div id="results" style="margin-top: 20px;"></div>
     </div>
 
-    <!-- 📝 Editor Modal (Hidden by default) -->
+    <!-- 📝 Editor Modal (No Gemini) -->
     <div id="scriptModal" class="modal">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 id="modalTitle" style="color: #00e676; margin: 0;">Work on Video</h3>
+            <h3 id="modalTitle" style="color: #00e676; margin: 0;">Video Transcript</h3>
             <button onclick="closePanel()" style="width: auto; background: #ff4444; color: white;">❌ Close</button>
         </div>
         
         <p style="color: #a0a0a0; font-size: 0.9rem;">Auto-fetch transcript ya manually paste karo:</p>
-        <textarea id="transcriptInput" rows="8" placeholder="Paste transcript here..."></textarea>
         
-        <div class="flex-row">
-            <button onclick="fetchAutoTranscript()">⬇️ Fetch Auto-Transcript</button>
-            <button onclick="generateAI()" style="background: #00C851;">🤖 Generate Viral Script</button>
-        </div>
-        
-        <div id="aiOutput" class="script-box" style="display: none;"></div>
+        <button onclick="fetchAutoTranscript()">⬇️ Fetch Auto-Transcript</button>
+        <textarea id="transcriptInput" rows="15" placeholder="Transcript yahan aayegi..."></textarea>
     </div>
 
     <script>
-        // 💾 1. Keys ko browser mein save rakhna
+        // 💾 1. Sirf YouTube Key save rakhna
         window.onload = () => {
             document.getElementById('ytKey').value = localStorage.getItem('ytKey') || '';
-            document.getElementById('geminiKey').value = localStorage.getItem('geminiKey') || '';
         };
 
         function saveKeys() {
             localStorage.setItem('ytKey', document.getElementById('ytKey').value.trim());
-            localStorage.setItem('geminiKey', document.getElementById('geminiKey').value.trim());
         }
 
         let currentVidId = "";
@@ -78,7 +69,6 @@
             const ytKey = document.getElementById('ytKey').value.trim();
             const query = document.getElementById('query').value.trim();
             
-            // ✅ THE BUG FIX: Exactly 0 subs support
             const maxSubsInput = document.getElementById('maxSubs').value;
             const maxSubs = maxSubsInput === "" ? 5000 : parseInt(maxSubsInput);
 
@@ -96,11 +86,9 @@
             resultsDiv.innerHTML = "";
 
             try {
-                // Last 24 hours calculation
                 let yesterday = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
                 let publishedAfter = yesterday.toISOString();
 
-                // Step A: Search Videos
                 const searchRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=50&order=viewCount&publishedAfter=${publishedAfter}&q=${encodeURIComponent(query)}&key=${ytKey}`);
                 const searchData = await searchRes.json();
 
@@ -113,7 +101,6 @@
 
                 status.innerHTML = `<span style='color:#fff;'>⚙️ 2/2: ${searchData.items.length} channels ke subs check kar raha hu...</span>`;
 
-                // Step B: Fetch Channel Subs
                 let channelIds = searchData.items.map(v => v.snippet.channelId).join(',');
                 const channelRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelIds}&key=${ytKey}`);
                 const channelData = await channelRes.json();
@@ -123,7 +110,6 @@
                     channelStats[c.id] = parseInt(c.statistics.subscriberCount) || 0;
                 });
 
-                // Step C: Filter & Display
                 let found = false;
                 for (let v of searchData.items) {
                     let subs = channelStats[v.snippet.channelId];
@@ -132,14 +118,16 @@
                         let vidId = v.id.videoId;
                         let cleanTitle = v.snippet.title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                         
+                        // YAHAN HAI SUB COUNT (Highlight kiya hua)
                         resultsDiv.innerHTML += `
                             <div class="video-card">
                                 <div class="video-info" style="width: 70%;">
                                     <p style="color: #fff; font-weight: bold; font-size: 1rem;">${v.snippet.title}</p>
-                                    <p style="color: #a0a0a0; font-size: 0.85rem;">👤 ${v.snippet.channelTitle} • <span style="color:#00e676; font-weight:bold;">${subs.toLocaleString()} Subs</span></p>
+                                    <p style="color: #a0a0a0; font-size: 0.85rem;">👤 ${v.snippet.channelTitle}</p>
+                                    <p style="color: #00e676; font-size: 1.1rem; font-weight: bold; margin-top: 5px;">📉 ${subs.toLocaleString()} Subscribers</p>
                                 </div>
                                 <div style="width: 25%; text-align: right;">
-                                    <button onclick="openPanel('${vidId}', '${cleanTitle}')" style="width: 100%; font-size: 0.9rem;">📝 Edit AI Script</button>
+                                    <button onclick="openPanel('${vidId}', '${cleanTitle}')" style="width: 100%; font-size: 0.9rem;">📝 Get Transcript</button>
                                 </div>
                             </div>
                         `;
@@ -164,7 +152,6 @@
             currentVidId = vidId;
             document.getElementById('modalTitle').innerText = title;
             document.getElementById('transcriptInput').value = "";
-            document.getElementById('aiOutput').style.display = "none";
             document.getElementById('scriptModal').style.display = 'block';
         }
 
@@ -190,55 +177,11 @@
                 const subRes = await fetch(sub.url);
                 const subText = await subRes.text();
                 
-                // Basic clean up of XML/VTT
                 let cleanText = subText.replace(/<[^>]+>/g, ' ').replace(/\d{2}:\d{2}:\d{2}\.\d{3} --> \d{2}:\d{2}:\d{2}\.\d{3}/g, '').replace(/WEBVTT/g, '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
                 
                 input.value = cleanText;
             } catch (error) {
                 input.value = "❌ Error fetching transcript. Please try copying manually from YouTube.";
-            }
-        }
-
-        // 🤖 5. AI Script Generator (Gemini)
-        async function generateAI() {
-            saveKeys();
-            const transcript = document.getElementById('transcriptInput').value.trim();
-            const geminiKey = document.getElementById('geminiKey').value.trim();
-            const outBox = document.getElementById('aiOutput');
-            
-            if (!geminiKey) {
-                alert("Please enter your Gemini API Key in the main screen!");
-                return;
-            }
-            if (!transcript || transcript.startsWith("⏳") || transcript.startsWith("⚠️") || transcript.startsWith("❌")) {
-                alert("Please fetch or paste a valid transcript first!");
-                return;
-            }
-
-            outBox.style.display = "block";
-            outBox.innerHTML = "⏳ AI Soch raha hai... Nayi script likhi jaa rahi hai... 🤖";
-            
-            try {
-                // AniZen (anime) ya Pocket Lists (gaming) ke liye perfect script prompt
-                let promptText = `Tum ek professional YouTube script writer ho. Niche ek viral video ki transcript di gayi hai. Ise dhyan se padho aur mere YouTube channel (AniZen) ke liye ek bilkul fresh, highly engaging, aur fast-paced script likho. Start with a strong hook, keep the storytelling tight, and end with a call to action. Yeh rahi purani transcript: ${transcript.substring(0, 7000)}`;
-
-                const aiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        contents: [{ parts: [{ text: promptText }] }] 
-                    })
-                });
-                
-                const aiData = await aiRes.json();
-                
-                if (aiData.error) {
-                    outBox.innerHTML = `<span style='color:#ff4444;'>❌ Gemini API Error: ${aiData.error.message}</span>`;
-                } else {
-                    outBox.innerHTML = `<h4 style="color:#00e676; margin-top:0;">✅ Ready-to-Record Script:</h4>` + aiData.candidates[0].content.parts[0].text;
-                }
-            } catch (error) {
-                outBox.innerHTML = `<span style='color:#ff4444;'>❌ System Error: ${error.message}</span>`;
             }
         }
     </script>
