@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+l<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,7 @@
     <title>Viral Hunt Pro</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f0f13; color: #ffffff; margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: auto; }
+        .container { max-width: 950px; margin: auto; }
         h1 { color: #00e676; margin-bottom: 5px; }
         .card { background: #1c1c24; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #2d2d3b; }
         input, button { padding: 12px; margin: 5px 0; border-radius: 6px; border: 1px solid #333; background: #0f0f13; color: white; box-sizing: border-box; }
@@ -14,10 +14,14 @@
         button:hover { background: #00c853; }
         
         .table-responsive { overflow-x: auto; background: #1c1c24; border-radius: 10px; border: 1px solid #2d2d3b; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #2d2d3b; }
         th { background: #2d2d3b; color: #a0a0a0; }
-        img { border-radius: 8px; width: 120px; }
+        
+        /* Thumbnails & Links */
+        .thumb-img { border-radius: 8px; width: 140px; display: block; }
+        .watch-link { color: #00e676; text-decoration: none; font-weight: bold; }
+        .watch-link:hover { text-decoration: underline; }
         
         .modal { display: none; position: fixed; top: 10%; left: 10%; width: 80%; height: 80%; background: #1c1c24; padding: 20px; border-radius: 10px; border: 2px solid #00e676; z-index: 100; }
         #status { margin: 15px 0; font-weight: bold; }
@@ -26,8 +30,7 @@
 <body>
     <div class="container">
         <h1>🚀 Viral Hunt Pro</h1>
-        <p style="color: #a0a0a0;">Find Viral Videos, Check Stats & Extract Scripts</p>
-
+        
         <input type="password" id="ytKey" placeholder="🔑 Paste your YouTube API Key here..." style="width: 100%;">
         
         <div style="display: flex; gap: 10px;">
@@ -44,7 +47,7 @@
                     <tr>
                         <th>Thumbnail</th>
                         <th>Video Title</th>
-                        <th>Subscribers</th>
+                        <th>Subs</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -63,31 +66,27 @@
 
     <script>
         window.onload = () => { document.getElementById('ytKey').value = localStorage.getItem('ytKey') || ''; };
-        
         let currentVidId = "";
 
         async function startHunting() {
             const ytKey = document.getElementById('ytKey').value.trim();
             localStorage.setItem('ytKey', ytKey);
             const query = document.getElementById('query').value.trim();
-            
-            // 0 Sub Bug Fix
-            const maxSubsInput = document.getElementById('maxSubs').value;
-            const maxSubs = maxSubsInput === "" ? 5000 : parseInt(maxSubsInput);
-
+            const maxSubs = parseInt(document.getElementById('maxSubs').value) || 5000;
             const statusBox = document.getElementById('status');
             const tableBody = document.getElementById('tableBody');
             const tableContainer = document.getElementById('tableContainer');
 
             if (!ytKey || !query) { statusBox.innerHTML = "⚠️ API Key aur Topic daalo!"; return; }
 
-            statusBox.innerHTML = "🔍 Hunting...";
+            statusBox.innerHTML = "🔍 Hunting (Filtering Shorts)...";
             tableBody.innerHTML = "";
             tableContainer.style.display = "none";
 
             try {
                 let yesterday = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
-                const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=50&order=viewCount&publishedAfter=${yesterday.toISOString()}&q=${encodeURIComponent(query)}&key=${ytKey}`);
+                // videoDuration=long filters out Shorts
+                const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=50&order=viewCount&videoDuration=long&publishedAfter=${yesterday.toISOString()}&q=${encodeURIComponent(query)}&key=${ytKey}`);
                 const data = await res.json();
 
                 let channelIds = data.items.map(v => v.snippet.channelId).join(',');
@@ -100,11 +99,15 @@
                     let subs = stats[v.snippet.channelId];
                     if (subs <= maxSubs) {
                         tableContainer.style.display = "table";
+                        let vidId = v.id.videoId;
                         tableBody.innerHTML += `<tr>
-                            <td><img src="${v.snippet.thumbnails.medium.url}"></td>
-                            <td>${v.snippet.title}<br><small style="color:#a0a0a0">${v.snippet.channelTitle}</small></td>
+                            <td><a href="https://www.youtube.com/watch?v=${vidId}" target="_blank"><img class="thumb-img" src="${v.snippet.thumbnails.medium.url}"></a></td>
+                            <td>
+                                <a href="https://www.youtube.com/watch?v=${vidId}" target="_blank" style="color:white; text-decoration:none;">${v.snippet.title}</a>
+                                <br><small style="color:#a0a0a0">${v.snippet.channelTitle}</small>
+                            </td>
                             <td style="color:#00e676; font-weight:bold;">${subs.toLocaleString()}</td>
-                            <td><button onclick="openPanel('${v.id.videoId}', '${v.snippet.title.replace(/'/g, "\\'")}')">📝 Transcript</button></td>
+                            <td><button onclick="openPanel('${vidId}', '${v.snippet.title.replace(/'/g, "\\'")}')">📝 Transcript</button></td>
                         </tr>`;
                     }
                 }
