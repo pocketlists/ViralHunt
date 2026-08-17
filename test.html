@@ -1,36 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transcript API Test</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #121212; color: #fff; padding: 20px; }
-        .container { max-width: 600px; margin: auto; background: #1c1c24; padding: 20px; border-radius: 10px; border: 1px solid #2d2d3b; }
-        input { padding: 12px; margin: 10px 0; width: 100%; box-sizing: border-box; background: #0f0f13; border: 1px solid #333; color: white; border-radius: 6px; }
-        button { background: #00e676; color: #000; border: none; padding: 12px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; }
-        button:hover { background: #00c853; }
-        #output { margin-top: 20px; background: #0f0f13; padding: 15px; border-radius: 6px; max-height: 300px; overflow-y: auto; border: 1px solid #333; font-size: 0.9rem; line-height: 1.5; }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <h2 style="color: #00e676; margin-top: 0;">📝 Transcript Tester</h2>
-        <p style="color: #a0a0a0; font-size: 0.9rem;">Kisi bhi video ka poora link daalo aur uski script nikaalo.</p>
-        
-        <!-- RapidAPI Key Box -->
-        <input type="text" id="rapidKey" placeholder="🔑 Paste RapidAPI Key Here">
-        
-        <!-- Full YouTube Link Box -->
-        <input type="text" id="vidId" placeholder="📺 Paste Full YouTube Link (e.g., https://youtu.be/...)">
-        
-        <button onclick="getTranscript()" id="btn">Extract Script ⚡</button>
-
-        <!-- Result Box -->
-        <div id="output">Transcript yahan aayegi...</div>
-    </div>
-
     <script>
         async function getTranscript() {
             const rapidKey = document.getElementById('rapidKey').value.trim();
@@ -43,16 +10,16 @@
                 return;
             }
 
-            // 🪄 SMART FILTER: Poore link me se automatically Video ID nikalna
+            // SMART FILTER: Video ID Extract Karna
             let vidId = rawInput;
             let match = rawInput.match(/(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
             if (match && match[1]) {
-                vidId = match[1]; // Agar link hai, toh usme se ID chura lo
+                vidId = match[1]; 
             }
 
             btn.innerText = "Extracting Script... ⏳";
             btn.style.opacity = "0.7";
-            output.innerHTML = `Subtitles fetch kar raha hu... ID: <b>${vidId}</b> (इसमें 5-10 second lag sakte hain)`;
+            output.innerHTML = `Subtitles fetch kar raha hu... ID: <b>${vidId}</b>`;
 
             const url = `https://youtube-transcript3.p.rapidapi.com/api/transcript-with-metadata?videoId=${vidId}&lang=en`;
             
@@ -68,23 +35,28 @@
                 const response = await fetch(url, options);
                 const data = await response.json();
 
-                if (data && data.transcript) {
+                // 🪄 MAGIC FIX: Asli Error Pakadne Wala Logic
+                if (data.message) {
+                    // Agar RapidAPI block kar raha hai
+                    output.innerHTML = `<span style='color:#ffbb33;'>⚠️ <b>RapidAPI Error:</b> ${data.message} <br><br>👉 <b>Solution:</b> Shayad tumne RapidAPI ki website par is API ke liye 'Subscribe to Test' (Free Plan) par click nahi kiya hai.</span>`;
+                } 
+                else if (data && data.transcript && data.transcript.length > 0) {
+                    // Agar success ho gaya
                     let fullText = data.transcript.map(item => item.text).join(' ');
-                    
                     output.innerHTML = `
                         <p style="color:#00e676; font-weight:bold;">✅ Script Extracted Successfully!</p>
                         <p>${fullText}</p>
                     `;
-                } else {
-                    output.innerHTML = `<span style='color:#ffbb33;'>⚠️ Transcript nahi mili. Shayad creator ne subtitles off rakhe hain.</span>`;
+                } 
+                else {
+                    // Agar API koi ajeeb data bhej rahi hai
+                    output.innerHTML = `<span style='color:#ffbb33;'>⚠️ API ne script nahi di, balki yeh code bheja hai:<br><br> <code style="color:#fff; background:#000; padding:5px;">${JSON.stringify(data)}</code></span>`;
                 }
             } catch (error) {
-                output.innerHTML = `<span style='color:#ff4444;'>❌ Error aa gaya: ${error.message}. API Key check karo.</span>`;
+                output.innerHTML = `<span style='color:#ff4444;'>❌ System Error: ${error.message}</span>`;
             }
 
             btn.innerText = "Extract Script ⚡";
             btn.style.opacity = "1";
         }
     </script>
-</body>
-</html>
