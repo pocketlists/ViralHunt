@@ -1,3 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transcript API Test</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #121212; color: #fff; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: #1c1c24; padding: 20px; border-radius: 10px; border: 1px solid #2d2d3b; }
+        input { padding: 12px; margin: 10px 0; width: 100%; box-sizing: border-box; background: #0f0f13; border: 1px solid #333; color: white; border-radius: 6px; }
+        button { background: #00e676; color: #000; border: none; padding: 12px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        button:hover { background: #00c853; }
+        #output { margin-top: 20px; background: #0f0f13; padding: 15px; border-radius: 6px; max-height: 300px; overflow-y: auto; border: 1px solid #333; font-size: 0.9rem; line-height: 1.5; word-wrap: break-word; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 style="color: #00e676; margin-top: 0;">📝 Transcript Tester</h2>
+        <p style="color: #a0a0a0; font-size: 0.9rem;">Kisi bhi video ka poora link daalo aur uski script nikaalo.</p>
+        
+        <!-- RapidAPI Key Box -->
+        <input type="text" id="rapidKey" placeholder="🔑 Paste RapidAPI Key Here">
+        
+        <!-- Full YouTube Link Box -->
+        <input type="text" id="vidId" placeholder="📺 Paste Full YouTube Link (e.g., https://youtu.be/...)">
+        
+        <button onclick="getTranscript()" id="btn">Extract Script ⚡</button>
+
+        <!-- Result Box -->
+        <div id="output">Transcript yahan aayegi...</div>
+    </div>
+
     <script>
         async function getTranscript() {
             const rapidKey = document.getElementById('rapidKey').value.trim();
@@ -60,3 +93,5 @@
             btn.style.opacity = "1";
         }
     </script>
+</body>
+</html>
