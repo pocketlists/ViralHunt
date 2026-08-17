@@ -1,42 +1,51 @@
-l<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Viral Hunt Pro</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f0f13; color: #ffffff; margin: 0; padding: 20px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f0f13; color: #ffffff; margin: 0; padding: 15px; }
         .container { max-width: 950px; margin: auto; }
-        h1 { color: #00e676; margin-bottom: 5px; }
-        .card { background: #1c1c24; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #2d2d3b; }
-        input, button { padding: 12px; margin: 5px 0; border-radius: 6px; border: 1px solid #333; background: #0f0f13; color: white; box-sizing: border-box; }
+        h1 { color: #00e676; margin-bottom: 5px; font-size: 1.8rem; }
+        p.desc { color: #a0a0a0; margin-top: 0; margin-bottom: 15px; font-size: 0.9rem; }
+        
+        input, button { padding: 12px; margin: 5px 0; border-radius: 6px; border: 1px solid #333; background: #1c1c24; color: white; box-sizing: border-box; font-size: 0.95rem; }
         button { background: #00e676; color: #000; font-weight: bold; cursor: pointer; border: none; }
         button:hover { background: #00c853; }
         
-        .table-responsive { overflow-x: auto; background: #1c1c24; border-radius: 10px; border: 1px solid #2d2d3b; }
-        table { width: 100%; border-collapse: collapse; min-width: 700px; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #2d2d3b; }
-        th { background: #2d2d3b; color: #a0a0a0; }
+        .controls { display: flex; gap: 8px; flex-wrap: wrap; }
+        .controls input[type="text"] { flex: 2; min-width: 180px; }
+        .controls input[type="number"] { flex: 1; min-width: 100px; }
+        .controls button { flex: 1; min-width: 140px; }
+
+        #status { margin: 15px 0; font-size: 1rem; font-weight: 500; }
         
-        /* Thumbnails & Links */
-        .thumb-img { border-radius: 8px; width: 140px; display: block; }
-        .watch-link { color: #00e676; text-decoration: none; font-weight: bold; }
-        .watch-link:hover { text-decoration: underline; }
+        .table-responsive { overflow-x: auto; background: #1c1c24; border-radius: 8px; border: 1px solid #2d2d3b; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; min-width: 650px; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #2d2d3b; vertical-align: middle; }
+        th { background: #2d2d3b; color: #a0a0a0; font-size: 0.85rem; text-transform: uppercase; }
         
-        .modal { display: none; position: fixed; top: 10%; left: 10%; width: 80%; height: 80%; background: #1c1c24; padding: 20px; border-radius: 10px; border: 2px solid #00e676; z-index: 100; }
-        #status { margin: 15px 0; font-weight: bold; }
+        .thumb-img { border-radius: 6px; width: 120px; height: 68px; object-fit: cover; display: block; }
+        .video-title { color: #fff; text-decoration: none; font-weight: 600; font-size: 0.95rem; display: block; margin-bottom: 4px; }
+        .video-title:hover { color: #00e676; }
+        .channel-title { color: #888; font-size: 0.8rem; }
+        .sub-badge { color: #00e676; font-weight: bold; font-size: 1.1rem; }
+        .watch-btn { display: inline-block; padding: 8px 14px; background: #00e676; color: #000; text-decoration: none; border-radius: 6px; font-size: 0.9rem; font-weight: bold; }
+        .watch-btn:hover { background: #00c853; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🚀 Viral Hunt Pro</h1>
-        
+        <p class="desc">Find low-subscriber channels with high-view videos (Last 24 Hours)</p>
+
         <input type="password" id="ytKey" placeholder="🔑 Paste your YouTube API Key here..." style="width: 100%;">
         
-        <div style="display: flex; gap: 10px;">
-            <input type="text" id="query" placeholder="🔍 Enter topic (e.g., anime recap)" style="flex: 2;">
-            <input type="number" id="maxSubs" value="5000" placeholder="Max Subs" style="flex: 1;">
-            <button onclick="startHunting()" id="huntBtn" style="flex: 1;">Start Hunting ⚡</button>
+        <div class="controls">
+            <input type="text" id="query" placeholder="🔍 Topic (e.g., anime recap, gaming)">
+            <input type="number" id="maxSubs" value="5000" placeholder="Max Subs">
+            <button onclick="startHunting()" id="huntBtn">Start Hunting ⚡</button>
         </div>
 
         <div id="status"></div>
@@ -46,9 +55,9 @@ l<!DOCTYPE html>
                 <thead>
                     <tr>
                         <th>Thumbnail</th>
-                        <th>Video Title</th>
-                        <th>Subs</th>
-                        <th>Action</th>
+                        <th>Video Title & Channel</th>
+                        <th>Subscribers</th>
+                        <th>Watch Video</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
@@ -56,79 +65,111 @@ l<!DOCTYPE html>
         </div>
     </div>
 
-    <!-- Script Editor Modal -->
-    <div id="scriptModal" class="modal">
-        <button onclick="closePanel()" style="background:#ff4444; color:white; width: auto;">❌ Close</button>
-        <h3 id="modalTitle" style="color: #00e676;">Transcript Extractor</h3>
-        <button onclick="fetchAutoTranscript()">⬇️ Fetch Transcript Automatically</button>
-        <textarea id="transcriptInput" rows="15" style="width: 100%; margin-top: 10px; background: #000; color: #fff;"></textarea>
-    </div>
-
     <script>
-        window.onload = () => { document.getElementById('ytKey').value = localStorage.getItem('ytKey') || ''; };
-        let currentVidId = "";
+        window.onload = () => { 
+            document.getElementById('ytKey').value = localStorage.getItem('ytKey') || ''; 
+        };
 
         async function startHunting() {
             const ytKey = document.getElementById('ytKey').value.trim();
             localStorage.setItem('ytKey', ytKey);
             const query = document.getElementById('query').value.trim();
-            const maxSubs = parseInt(document.getElementById('maxSubs').value) || 5000;
+            
+            const maxSubsInput = document.getElementById('maxSubs').value.trim();
+            const maxSubs = maxSubsInput === "" ? 5000 : parseInt(maxSubsInput);
+
             const statusBox = document.getElementById('status');
             const tableBody = document.getElementById('tableBody');
             const tableContainer = document.getElementById('tableContainer');
+            const huntBtn = document.getElementById('huntBtn');
 
-            if (!ytKey || !query) { statusBox.innerHTML = "⚠️ API Key aur Topic daalo!"; return; }
+            if (!ytKey || !query) { 
+                statusBox.innerHTML = "<span style='color:#ff4444;'>⚠️ API Key aur Topic dono daalna zaroori hai!</span>"; 
+                return; 
+            }
 
-            statusBox.innerHTML = "🔍 Hunting (Filtering Shorts)...";
+            huntBtn.disabled = true;
+            huntBtn.innerText = "Hunting... ⏳";
+            statusBox.innerHTML = "<span style='color:#fff;'>🔍 1/2: Latest videos fetch ho rahi hain...</span>";
             tableBody.innerHTML = "";
             tableContainer.style.display = "none";
 
             try {
                 let yesterday = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
-                // videoDuration=long filters out Shorts
-                const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=50&order=viewCount&videoDuration=long&publishedAfter=${yesterday.toISOString()}&q=${encodeURIComponent(query)}&key=${ytKey}`);
+                
+                const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=50&order=viewCount&publishedAfter=${yesterday.toISOString()}&q=${encodeURIComponent(query)}&key=${ytKey}`);
                 const data = await res.json();
+
+                if (data.error) throw new Error(data.error.message);
+                if (!data.items || data.items.length === 0) {
+                    statusBox.innerHTML = "<span style='color:#ffbb33;'>⚠️ Is topic par pichle 24 ghante mein koi video nahi mili.</span>";
+                    resetBtn();
+                    return;
+                }
+
+                statusBox.innerHTML = `<span style='color:#fff;'>⚙️ 2/2: ${data.items.length} channels ke Subscribers check ho rahe hain...</span>`;
 
                 let channelIds = data.items.map(v => v.snippet.channelId).join(',');
                 const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelIds}&key=${ytKey}`);
                 const chData = await chRes.json();
+
                 let stats = {};
-                chData.items.forEach(c => stats[c.id] = parseInt(c.statistics.subscriberCount) || 0);
+                chData.items.forEach(c => {
+                    stats[c.id] = parseInt(c.statistics.subscriberCount) || 0;
+                });
+
+                let matchCount = 0;
 
                 for (let v of data.items) {
-                    let subs = stats[v.snippet.channelId];
+                    let chId = v.snippet.channelId;
+                    let subs = stats[chId] !== undefined ? stats[chId] : 0;
+
                     if (subs <= maxSubs) {
-                        tableContainer.style.display = "table";
+                        matchCount++;
                         let vidId = v.id.videoId;
-                        tableBody.innerHTML += `<tr>
-                            <td><a href="https://www.youtube.com/watch?v=${vidId}" target="_blank"><img class="thumb-img" src="${v.snippet.thumbnails.medium.url}"></a></td>
-                            <td>
-                                <a href="https://www.youtube.com/watch?v=${vidId}" target="_blank" style="color:white; text-decoration:none;">${v.snippet.title}</a>
-                                <br><small style="color:#a0a0a0">${v.snippet.channelTitle}</small>
-                            </td>
-                            <td style="color:#00e676; font-weight:bold;">${subs.toLocaleString()}</td>
-                            <td><button onclick="openPanel('${vidId}', '${v.snippet.title.replace(/'/g, "\\'")}')">📝 Transcript</button></td>
-                        </tr>`;
+                        let thumb = v.snippet.thumbnails.medium ? v.snippet.thumbnails.medium.url : v.snippet.thumbnails.default.url;
+                        let videoUrl = `https://www.youtube.com/watch?v=${vidId}`;
+
+                        tableBody.innerHTML += `
+                            <tr>
+                                <td>
+                                    <a href="${videoUrl}" target="_blank">
+                                        <img class="thumb-img" src="${thumb}" alt="Thumbnail">
+                                    </a>
+                                </td>
+                                <td>
+                                    <a class="video-title" href="${videoUrl}" target="_blank">${v.snippet.title}</a>
+                                    <span class="channel-title">📺 ${v.snippet.channelTitle}</span>
+                                </td>
+                                <td>
+                                    <span class="sub-badge">${subs.toLocaleString()}</span>
+                                </td>
+                                <td>
+                                    <a class="watch-btn" href="${videoUrl}" target="_blank">Watch ↗</a>
+                                </td>
+                            </tr>
+                        `;
                     }
                 }
-                statusBox.innerHTML = "✅ Hunt Complete!";
-            } catch(e) { statusBox.innerHTML = "❌ Error: " + e.message; }
-        }
 
-        function openPanel(id, title) { currentVidId = id; document.getElementById('modalTitle').innerText = title; document.getElementById('scriptModal').style.display = 'block'; }
-        function closePanel() { document.getElementById('scriptModal').style.display = 'none'; }
+                if (matchCount > 0) {
+                    tableContainer.style.display = "block";
+                    statusBox.innerHTML = `<span style='color:#00e676;'>✅ Hunt Complete! <b>${matchCount} videos</b> mili jinke subs ≤ ${maxSubs.toLocaleString()} hain.</span>`;
+                } else {
+                    tableContainer.style.display = "none";
+                    statusBox.innerHTML = `<span style='color:#ffbb33;'>⚠️ Videos mili lekin kisi ke subs ≤ ${maxSubs} nahi the. Max subs limit badha kar dekho.</span>`;
+                }
 
-        async function fetchAutoTranscript() {
-            const input = document.getElementById('transcriptInput');
-            input.value = "⏳ Fetching...";
-            try {
-                const res = await fetch(`https://pipedapi.kavin.rocks/streams/${currentVidId}`);
-                const data = await res.json();
-                let sub = data.subtitles.find(s => s.code.startsWith('en')) || data.subtitles[0];
-                const subRes = await fetch(sub.url);
-                const subText = await subRes.text();
-                input.value = subText.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-            } catch(e) { input.value = "⚠️ Transcript nahi mili."; }
+            } catch (err) {
+                statusBox.innerHTML = `<span style='color:#ff4444;'>❌ Error: ${err.message}</span>`;
+            }
+
+            resetBtn();
+
+            function resetBtn() {
+                huntBtn.disabled = false;
+                huntBtn.innerText = "Start Hunting ⚡";
+            }
         }
     </script>
 </body>
