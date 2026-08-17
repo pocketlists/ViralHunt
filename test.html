@@ -3,94 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Auto-Script Hack</title>
+    <title>Transcript API Test</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #0f0f13; color: #fff; padding: 20px; }
-        .box { background: #1c1c24; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; border: 1px solid #2d2d3b; }
-        input, button { padding: 12px; margin: 10px 0; width: 100%; box-sizing: border-box; border-radius: 6px; }
-        input { background: #0f0f13; border: 1px solid #333; color: white; font-size: 1rem; }
-        button { background: #00e676; border: none; color: black; font-weight: bold; font-size: 1rem; cursor: pointer; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #121212; color: #fff; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: #1c1c24; padding: 20px; border-radius: 10px; border: 1px solid #2d2d3b; }
+        input { padding: 12px; margin: 10px 0; width: 100%; box-sizing: border-box; background: #0f0f13; border: 1px solid #333; color: white; border-radius: 6px; }
+        button { background: #00e676; color: #000; border: none; padding: 12px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; }
         button:hover { background: #00c853; }
-        #output { margin-top: 20px; background: #0f0f13; padding: 15px; border-radius: 6px; max-height: 400px; overflow-y: auto; border: 1px solid #333; font-size: 0.95em; line-height: 1.5; }
+        #output { margin-top: 20px; background: #0f0f13; padding: 15px; border-radius: 6px; max-height: 300px; overflow-y: auto; border: 1px solid #333; font-size: 0.9rem; line-height: 1.5; }
     </style>
 </head>
 <body>
 
-    <div class="box">
-        <h2 style="color: #00e676; text-align: center;">⚡ Ultimate Script Hack</h2>
-        <p style="color: #a0a0a0; text-align: center; font-size: 0.9em;">(Powered by Free Open-Source API)</p>
+    <div class="container">
+        <h2 style="color: #00e676; margin-top: 0;">📝 Transcript Tester</h2>
+        <p style="color: #a0a0a0; font-size: 0.9rem;">Kisi bhi video ka poora link daalo aur uski script nikaalo.</p>
         
-        <input type="text" id="vidInput" placeholder="Paste Full YouTube Link Here...">
-        <button onclick="extractScript()" id="extractBtn">Hack Transcript 😈</button>
+        <!-- RapidAPI Key Box -->
+        <input type="text" id="rapidKey" placeholder="🔑 Paste RapidAPI Key Here">
+        
+        <!-- Full YouTube Link Box -->
+        <input type="text" id="vidId" placeholder="📺 Paste Full YouTube Link (e.g., https://youtu.be/...)">
+        
+        <button onclick="getTranscript()" id="btn">Extract Script ⚡</button>
 
+        <!-- Result Box -->
         <div id="output">Transcript yahan aayegi...</div>
     </div>
 
     <script>
-        async function extractScript() {
-            const inputVal = document.getElementById('vidInput').value.trim();
+        async function getTranscript() {
+            const rapidKey = document.getElementById('rapidKey').value.trim();
+            let rawInput = document.getElementById('vidId').value.trim();
             const output = document.getElementById('output');
-            const extractBtn = document.getElementById('extractBtn');
+            const btn = document.getElementById('btn');
 
-            if(!inputVal) {
-                output.innerHTML = "<span style='color:red;'>⚠️ Pehle Link daalo bhai!</span>";
+            if(!rapidKey || !rawInput) {
+                output.innerHTML = "<span style='color:#ff4444;'>⚠️ Bhai, API Key aur Link dono daalna zaroori hai!</span>";
                 return;
             }
 
-            // SMART EXTRACTOR
-            let videoId = null;
-            let match = inputVal.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})/);
+            // 🪄 SMART FILTER: Poore link me se automatically Video ID nikalna
+            let vidId = rawInput;
+            let match = rawInput.match(/(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
             if (match && match[1]) {
-                videoId = match[1];
-            } else if (inputVal.length === 11) {
-                videoId = inputVal;
+                vidId = match[1]; // Agar link hai, toh usme se ID chura lo
             }
 
-            if (!videoId) {
-                output.innerHTML = "<span style='color:red;'>⚠️ Sahi YouTube Link daalo!</span>";
-                return;
-            }
+            btn.innerText = "Extracting Script... ⏳";
+            btn.style.opacity = "0.7";
+            output.innerHTML = `Subtitles fetch kar raha hu... ID: <b>${vidId}</b> (इसमें 5-10 second lag sakte hain)`;
 
-            extractBtn.disabled = true;
-            extractBtn.innerText = "Extracting Script... ⏳";
-            output.innerHTML = "<p style='color: #a0a0a0;'>1/2: Connecting to Open-Source API...</p>";
+            const url = `https://youtube-transcript3.p.rapidapi.com/api/transcript-with-metadata?videoId=${vidId}&lang=en`;
+            
+            const options = {
+                method: 'GET',
+                headers: {
+                    'X-RapidAPI-Key': rapidKey,
+                    'X-RapidAPI-Host': 'youtube-transcript3.p.rapidapi.com'
+                }
+            };
 
             try {
-                // STEP 1: Piped API se video details nikalna
-                const apiUrl = `https://pipedapi.kavin.rocks/streams/${videoId}`;
-                let response = await fetch(apiUrl);
-                let data = await response.json();
+                const response = await fetch(url, options);
+                const data = await response.json();
 
-                if (!data.subtitles || data.subtitles.length === 0) {
-                    throw new Error("Bhai, is video par sach mein koi subtitles (CC) nahi hain. Koi aisi video try karo jisme CC ka option ho.");
+                if (data && data.transcript) {
+                    let fullText = data.transcript.map(item => item.text).join(' ');
+                    
+                    output.innerHTML = `
+                        <p style="color:#00e676; font-weight:bold;">✅ Script Extracted Successfully!</p>
+                        <p>${fullText}</p>
+                    `;
+                } else {
+                    output.innerHTML = `<span style='color:#ffbb33;'>⚠️ Transcript nahi mili. Shayad creator ne subtitles off rakhe hain.</span>`;
                 }
-
-                output.innerHTML += "<p style='color: #a0a0a0;'>2/2: Script mil gayi, saaf kar raha hu...</p>";
-
-                // Sabse pehli subtitle file (zyadatar Auto-generated ya English) uthana
-                let subUrl = data.subtitles[0].url;
-
-                // STEP 2: Subtitle text (VTT format) download karna
-                let subResponse = await fetch(subUrl);
-                let vttText = await subResponse.text();
-
-                // STEP 3: VTT File ko clean karke normal text banana (Timestamps aur code hatana)
-                let cleanText = vttText
-                    .replace(/WEBVTT[\s\S]*?(?=\d{2}:\d{2}:\d{2})/g, '') // Shuru ka kachra hatana
-                    .replace(/\d{2}:\d{2}:\d{2}.*?\n/g, '') // Timestamps hatana
-                    .replace(/<[^>]+>/g, '') // HTML tags hatana
-                    .replace(/\n+/g, ' ') // Lines ko jodna
-                    .trim();
-
-                output.innerHTML = `<h3 style="color:#00e676;">✅ Script Hunt Successful!</h3>
-                                    <p style="color:white;">${cleanText}</p>`;
-
             } catch (error) {
-                output.innerHTML = `<p style="color:#ff4444;">❌ Error: ${error.message}</p>`;
+                output.innerHTML = `<span style='color:#ff4444;'>❌ Error aa gaya: ${error.message}. API Key check karo.</span>`;
             }
 
-            extractBtn.disabled = false;
-            extractBtn.innerText = "Hack Transcript 😈";
+            btn.innerText = "Extract Script ⚡";
+            btn.style.opacity = "1";
         }
     </script>
 </body>
