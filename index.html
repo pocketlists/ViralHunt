@@ -1,1 +1,55 @@
 
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viral Hunt Pro</title>
+    <!-- CSS File Link -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Viral Hunt Pro</h1>
+        <p class="subtitle">Find low-subscriber channels with high-view videos (Last 24 Hours)</p>
+
+        <!-- API Key Input -->
+        <div class="card">
+            <input type="password" id="apiKey" placeholder="🔑 Paste your YouTube API Key here...">
+        </div>
+
+        <!-- Filters & Search -->
+        <div class="card filters">
+            <input type="text" id="searchQuery" placeholder="🔍 Enter topic (e.g., anime recap)">
+            <div class="sub-filter">
+                <label>Max Subs:</label>
+                <input type="number" id="maxSubs" value="5000">
+            </div>
+            <button onclick="startHunt()" id="huntBtn">Start Hunting</button>
+        </div>
+
+        <!-- Status Tracker -->
+        <div id="status"></div>
+        
+        <!-- Results Table -->
+        <div class="table-responsive" id="tableContainer" style="display: none;">
+            <table id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>Thumbnail</th>
+                        <th>Video Info</th>
+                        <th>Subscribers</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- JS File Link -->
+    <script src="app.js"></script>
+</body>
+</html>
+```
