@@ -1,1 +1,140 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0f0f13;
+    color: #ffffff;
+    margin: 0;
+    padding: 15px;
+}
+.container {
+    max-width: 800px;
+    margin: auto;
+}
+h1 {
+    color: #00e676;
+    margin-bottom: 5px;
+    font-size: 1.8rem;
+}
+.subtitle {
+    color: #a0a0a0;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+.card {
+    background: #1c1c24;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #2d2d3b;
+}
+input {
+    width: 100%;
+    padding: 12px;
+    background: #0f0f13;
+    border: 1px solid #333;
+    color: white;
+    border-radius: 6px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+.filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.filters input[type="text"] {
+    flex: 1;
+    min-width: 100%;
+}
+.sub-filter {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0f0f13;
+    padding: 0 10px;
+    border: 1px solid #333;
+    border-radius: 6px;
+    min-width: 120px;
+}
+.sub-filter label {
+    color: #a0a0a0;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+.sub-filter input {
+    margin: 0;
+    border: none;
+    padding: 12px 5px;
+    width: 80px;
+    text-align: right;
+}
+button {
+    background: #00e676;
+    color: #000;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    flex: 1;
+    min-width: 100%;
+}
+button:hover {
+    background: #00c853;
+}
+/* Mobile scrollable table */
+.table-responsive {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid #2d2d3b;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1c1c24;
+    min-width: 500px;
+}
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #2d2d3b;
+    font-size: 0.9rem;
+}
+th {
+    background: #2d2d3b;
+    color: #a0a0a0;
+    white-space: nowrap;
+}
+img {
+    border-radius: 8px;
+    width: 120px;
+    min-width: 100px;
+}
+a {
+    color: #00e676;
+    text-decoration: none;
+    font-weight: bold;
+}
+a:hover {
+    text-decoration: underline;
+}
+#status {
+    margin: 15px 0;
+    font-size: 1rem;
+    word-wrap: break-word;
+}
 
+/* Desktop view adjustments */
+@media (min-width: 600px) {
+    .filters input[type="text"] {
+        flex: 2;
+        min-width: unset;
+        margin-bottom: 0;
+    }
+    button {
+        min-width: unset;
+    }
+}
