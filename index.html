@@ -6,16 +6,20 @@
     <title>Viral Hunt Pro | Liquid Glass Edition</title>
     <!-- 
       ========================================================================
-      VIRAL HUNT PRO - LIQUID GLASS EDITION (ENTERPRISE)
+      VIRAL HUNT PRO - LIQUID GLASS EDITION (ENTERPRISE UNMINIFIED)
       ========================================================================
-      UI/UX: Premium Glassmorphism, Animated Mesh Gradients, Blur Effects
-      Features: VPH Tracking, Outlier Math, Hidden Niches, Competitor Spy
-      Alerts: Custom Toast Notification System (No browser alerts)
+      Features Included:
+      - Dynamic Date Filters (Fixes the 0 results bug for specific queries)
+      - Live API Key Verification (Fixes the red unverified bug)
+      - VPH (Velocity) Tracking & Outlier Math
+      - Hidden Niches Database & Keyword Alphabet Soup
+      - Competitor Spy Modal & CSV Export
+      - Grid vs Table Toggle
       ========================================================================
     -->
     <style>
         /* ======================================================================
-           PREMIUM DESIGN TOKENS & COLOR PALETTE
+           1. PREMIUM DESIGN TOKENS & COLOR PALETTE
            ====================================================================== */
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
@@ -40,7 +44,7 @@
             --text-secondary: rgba(255, 255, 255, 0.65);
             --text-tertiary: rgba(255, 255, 255, 0.4);
             
-            /* Premium Accent Colors (Cyber/Neon feel but subtle) */
+            /* Premium Accent Colors */
             --accent-cyan: #00f0ff;
             --accent-purple: #9d4edd;
             --accent-pink: #ff007f;
@@ -60,9 +64,13 @@
         }
 
         /* ======================================================================
-           GLOBAL RESET & ANIMATED BACKGROUND
+           2. GLOBAL RESET & ANIMATED BACKGROUND
            ====================================================================== */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
         
         body, html {
             min-height: 100vh;
@@ -73,22 +81,24 @@
             scroll-behavior: smooth;
         }
 
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
         /* Animated Mesh Gradient Background */
         .animated-bg {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1;
-            overflow: hidden;
-            background: var(--bg-base);
+            z-index: -1; overflow: hidden; background: var(--bg-base);
         }
 
         .blob {
-            position: absolute;
-            filter: blur(90px);
-            opacity: 0.5;
-            border-radius: 50%;
-            animation: float 20s infinite alternate ease-in-out;
+            position: absolute; filter: blur(90px); opacity: 0.5;
+            border-radius: 50%; animation: float 20s infinite alternate ease-in-out;
         }
+
         .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--bg-mesh-1); animation-delay: 0s; }
         .blob-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: var(--bg-mesh-2); animation-delay: -5s; }
         .blob-3 { top: 40%; left: 40%; width: 40vw; height: 40vw; background: var(--bg-mesh-3); animation-delay: -10s; }
@@ -100,46 +110,27 @@
             100% { transform: translate(0, 0) scale(1); }
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
-
         .app-container { max-width: 1350px; margin: 0 auto; padding: 40px 20px 100px; }
 
         /* ======================================================================
-           GLASSMORPHISM UTILITIES
+           3. GLASSMORPHISM UTILITIES
            ====================================================================== */
         .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--rad-lg);
-            box-shadow: var(--glass-shadow);
-        }
-
-        .glass-panel-inner {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--rad-md);
+            background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border); border-radius: var(--rad-lg); box-shadow: var(--glass-shadow);
         }
 
         /* ======================================================================
-           HEADER & API CONFIGURATION (LIQUID FIX)
+           4. HEADER & API CONFIGURATION
            ====================================================================== */
         .header-layout {
-            display: flex; justify-content: space-between; align-items: stretch;
-            margin-bottom: 40px; flex-wrap: wrap; gap: 20px;
+            display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 40px; flex-wrap: wrap; gap: 20px;
         }
 
         .brand-box {
-            padding: 30px; display: flex; flex-direction: column; justify-content: center; flex: 1; min-width: 300px;
-            position: relative; overflow: hidden;
+            padding: 30px; display: flex; flex-direction: column; justify-content: center; flex: 1; min-width: 300px; position: relative; overflow: hidden;
         }
         
-        /* Glass Shine Effect on Brand Box */
         .brand-box::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: linear-gradient(to bottom right, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 100%);
@@ -154,18 +145,13 @@
         }
         .brand-subtitle { color: var(--text-secondary); font-size: 16px; font-weight: 400; }
 
-        .api-box {
-            padding: 25px 30px; display: flex; flex-direction: column; justify-content: center; width: 450px; flex-shrink: 0;
-        }
+        .api-box { padding: 25px 30px; display: flex; flex-direction: column; justify-content: center; width: 450px; flex-shrink: 0; }
         .api-box-title { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-tertiary); font-weight: 700; margin-bottom: 12px; }
         
         .api-input-wrapper { display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: var(--rad-md); padding: 5px 15px; transition: 0.3s; }
         .api-input-wrapper:focus-within { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); }
-        .api-input-wrapper input {
-            flex: 1; background: transparent; border: none; color: var(--text-primary); padding: 12px 0; font-family: var(--font-mono); font-size: 14px; outline: none;
-        }
+        .api-input-wrapper input { flex: 1; background: transparent; border: none; color: var(--text-primary); padding: 12px 0; font-family: var(--font-mono); font-size: 14px; outline: none; }
         
-        /* Status Indicator Logic Fixed */
         .status-container { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 6px 12px; border-radius: var(--rad-pill); }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 8px currentColor; }
         .status-dot.red { background: var(--accent-red); color: var(--accent-red); }
@@ -175,7 +161,7 @@
         .status-text.verified { color: var(--accent-green); }
 
         /* ======================================================================
-           FLOATING NAVIGATION (APPLE STYLE PILL)
+           5. FLOATING NAVIGATION (APPLE STYLE PILL)
            ====================================================================== */
         .nav-wrapper { display: flex; justify-content: center; margin-bottom: 40px; position: sticky; top: 20px; z-index: 100; }
         .nav-pill {
@@ -194,18 +180,16 @@
         .tab-content.active { display: block; opacity: 1; transform: translateY(0); }
 
         /* ======================================================================
-           INPUT CONTROLS & FORMS (PREMIUM UI)
+           6. INPUT CONTROLS & FORMS (PREMIUM UI)
            ====================================================================== */
         .control-dashboard { padding: 25px; margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; }
-        
         .input-group { display: flex; flex-direction: column; gap: 10px; flex: 1; min-width: 200px; }
         .input-group-sm { flex: 0 0 150px; }
         .input-group label { font-size: 12px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 1px; margin-left: 5px; }
         
         .glass-input {
             background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary);
-            padding: 14px 20px; border-radius: var(--rad-md); font-size: 15px; font-family: var(--font-main);
-            transition: all 0.3s; width: 100%;
+            padding: 14px 20px; border-radius: var(--rad-md); font-size: 15px; font-family: var(--font-main); transition: all 0.3s; width: 100%;
         }
         .glass-input:focus { border-color: var(--accent-cyan); background: rgba(0,240,255,0.02); outline: none; }
         
@@ -216,7 +200,6 @@
         }
         select.glass-input option { background: var(--bg-base); color: var(--text-primary); }
 
-        /* Liquid Buttons */
         .btn-liquid {
             position: relative; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border: none;
             color: #fff; font-size: 15px; font-weight: 700; font-family: var(--font-main); padding: 14px 30px; border-radius: var(--rad-md);
@@ -240,7 +223,7 @@
         .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
 
         /* ======================================================================
-           CUSTOM TOAST NOTIFICATIONS (NO BROWSER ALERTS)
+           7. CUSTOM TOAST NOTIFICATIONS
            ====================================================================== */
         #toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
         .toast {
@@ -257,12 +240,9 @@
         @keyframes toastFadeOut { to { opacity: 0; transform: translateY(-20px); } }
 
         /* ======================================================================
-           DATA PRESENTATION (GRID & TABLE)
+           8. DATA PRESENTATION (GRID & TABLE)
            ====================================================================== */
-        .actions-bar {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
-            padding: 15px 25px; display: none; /* Hidden until data loads */
-        }
+        .actions-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 15px 25px; display: none; }
         .view-switcher { display: flex; background: rgba(0,0,0,0.3); padding: 5px; border-radius: var(--rad-md); border: 1px solid var(--glass-border); }
         .view-btn { background: transparent; border: none; color: var(--text-secondary); padding: 8px 16px; border-radius: var(--rad-sm); cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.3s; }
         .view-btn.active { background: rgba(255,255,255,0.1); color: var(--text-primary); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
@@ -278,41 +258,28 @@
         /* GRID LAYOUT */
         .data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; display: none; }
         .data-grid.active { display: grid; }
-        .video-card {
-            background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: var(--rad-lg);
-            overflow: hidden; transition: 0.4s; position: relative; display: flex; flex-direction: column;
-        }
+        .video-card { background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: var(--rad-lg); overflow: hidden; transition: 0.4s; position: relative; display: flex; flex-direction: column; }
         .video-card:hover { transform: translateY(-8px); background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-        
         .thumb-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; overflow: hidden; }
         .thumb-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
         .video-card:hover .thumb-wrapper img { transform: scale(1.05); }
-        
-        /* Premium VPH Badge */
-        .vph-badge {
-            position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1); color: var(--accent-cyan); font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 6px 12px; border-radius: var(--rad-pill); box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 2;
-        }
 
+        .vph-badge { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); color: var(--accent-cyan); font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 6px 12px; border-radius: var(--rad-pill); box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 2; }
         .card-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
         .card-title { font-size: 16px; font-weight: 600; color: var(--text-primary); line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-decoration: none; }
         .card-title:hover { color: var(--accent-cyan); }
         .card-channel { font-size: 13px; color: var(--text-tertiary); display: flex; align-items: center; gap: 6px; margin-bottom: 20px; }
-        
         .card-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; padding: 15px 0; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); }
         .stat-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
         .stat-val { font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--text-primary); }
         .stat-val.highlight { color: var(--accent-green); }
         .stat-lbl { font-size: 10px; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 1px; margin-top: 4px; }
-        
-        /* Outlier Ratios */
         .ratio-pill { display: inline-block; padding: 2px 8px; border-radius: var(--rad-pill); font-family: var(--font-mono); font-size: 13px; font-weight: 700; }
         .ratio-insane { background: rgba(255,0,127,0.2); color: var(--accent-pink); border: 1px solid rgba(255,0,127,0.4); box-shadow: 0 0 15px rgba(255,0,127,0.2); }
         .ratio-high { background: rgba(0,255,136,0.2); color: var(--accent-green); border: 1px solid rgba(0,255,136,0.4); }
         .ratio-normal { background: rgba(255,255,255,0.05); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.1); }
-
         .card-actions { display: flex; gap: 10px; margin-top: auto; }
-        .card-btn { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); color: var(--text-secondary); padding: 10px; border-radius: var(--rad-sm); font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .card-btn { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); color: var(--text-secondary); padding: 10px; border-radius: var(--rad-sm); font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; }
         .card-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
         .btn-spy:hover { background: rgba(157, 78, 221, 0.2); color: var(--accent-purple); border-color: rgba(157, 78, 221, 0.5); }
         .btn-save.saved { background: rgba(255,0,127,0.2); color: var(--accent-pink); border-color: rgba(255,0,127,0.5); }
@@ -326,19 +293,12 @@
         .glass-table td { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.02); vertical-align: middle; transition: 0.2s; }
         .glass-table tr:hover td { background: rgba(255,255,255,0.02); }
         .tbl-thumb { width: 120px; height: 68px; object-fit: cover; border-radius: var(--rad-sm); }
-        
-        /* ======================================================================
-           SPECIFIC TABS: KEYWORDS & NICHES
-           ====================================================================== */
+
         /* Keywords Tag Cloud */
         .kw-container { display: flex; flex-direction: column; gap: 30px; margin-top: 30px; display: none; }
         .kw-section-title { font-size: 16px; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
         .kw-cloud { display: flex; flex-wrap: wrap; gap: 10px; }
-        .kw-pill {
-            background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.2); color: var(--accent-cyan);
-            padding: 10px 18px; border-radius: var(--rad-pill); font-size: 14px; font-weight: 500; cursor: pointer;
-            transition: 0.3s; display: inline-flex; align-items: center; gap: 8px;
-        }
+        .kw-pill { background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.2); color: var(--accent-cyan); padding: 10px 18px; border-radius: var(--rad-pill); font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
         .kw-pill:hover { background: var(--accent-cyan); color: #000; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 240, 255, 0.3); }
         .kw-pill.secondary { background: rgba(255,255,255,0.03); border-color: var(--glass-border); color: var(--text-secondary); }
         .kw-pill.secondary:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
@@ -362,25 +322,20 @@
         .btn-del { background: rgba(255, 51, 102, 0.1); color: var(--accent-red); border: none; padding: 6px 12px; border-radius: var(--rad-sm); font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .btn-del:hover { background: var(--accent-red); color: #fff; }
 
-        /* ======================================================================
-           SPY MODAL (COMPETITOR METADATA)
-           ====================================================================== */
+        /* SPY MODAL */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
         .modal-content { background: #0f1115; border: 1px solid var(--glass-border-light); border-radius: var(--rad-lg); width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; position: relative; transform: translateY(30px); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
         .modal-overlay.active .modal-content { transform: translateY(0); }
-        
         .modal-header { padding: 30px; border-bottom: 1px solid var(--glass-border); position: relative; }
         .modal-close { position: absolute; top: 30px; right: 30px; background: rgba(255,255,255,0.05); border: none; color: var(--text-secondary); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
         .modal-close:hover { background: var(--accent-red); color: #fff; transform: rotate(90deg); }
         .modal-title { font-size: 22px; font-weight: 700; color: #fff; padding-right: 50px; line-height: 1.3; margin-bottom: 8px; }
-        
         .modal-body { padding: 30px; }
         .spy-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .spy-stat-card { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 20px; border-radius: var(--rad-md); text-align: center; }
         .spy-label { font-size: 11px; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 1px; margin-bottom: 8px; }
         .spy-val { font-size: 18px; font-weight: 700; color: #fff; font-family: var(--font-mono); }
-        
         .spy-section-title { font-size: 14px; font-weight: 700; color: var(--text-secondary); margin-bottom: 15px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; }
         .desc-box { background: #000; border: 1px solid var(--glass-border); padding: 20px; border-radius: var(--rad-md); font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary); line-height: 1.6; max-height: 300px; overflow-y: auto; white-space: pre-wrap; margin-bottom: 30px;}
 
@@ -388,6 +343,7 @@
         .empty-state { text-align: center; padding: 80px 20px; color: var(--text-tertiary); }
         .empty-state svg { width: 64px; height: 64px; margin-bottom: 20px; opacity: 0.3; }
         .empty-state h3 { font-size: 20px; color: var(--text-secondary); margin-bottom: 10px; }
+        .empty-state p { font-size: 14px; max-width: 400px; margin: 0 auto; }
 
         @media (max-width: 768px) {
             .header-layout { flex-direction: column; }
@@ -414,7 +370,7 @@
         <div class="modal-content">
             <button class="modal-close" onclick="ui.closeModal()">✖</button>
             <div class="modal-header">
-                <h2 id="spyTitle" class="modal-title">Analyzing Video...</h2>
+                <h2 id="spyTitle" class="modal-title">Analyzing Video Metadata...</h2>
                 <div style="color: var(--accent-cyan); font-size: 14px;" id="spyChannel">📺 Channel Name</div>
             </div>
             <div class="modal-body">
@@ -434,29 +390,26 @@
                 </div>
 
                 <div class="spy-section-title">🏷️ Hidden SEO Tags (<span id="spyTagCount">0</span>)</div>
-                <div id="spyTags" class="kw-cloud" style="margin-bottom: 30px;">
-                    <!-- Tags will inject here -->
-                </div>
+                <div id="spyTags" class="kw-cloud" style="margin-bottom: 30px;"></div>
 
                 <div class="spy-section-title">📝 Original Description Snippet</div>
-                <div id="spyDesc" class="desc-box">
-                    <!-- Description will inject here -->
-                </div>
+                <div id="spyDesc" class="desc-box"></div>
             </div>
         </div>
     </div>
 
+    <!-- MAIN APP WRAPPER -->
     <div class="app-container">
         
-        <!-- HEADER & API CONFIG -->
+        <!-- HEADER & API CONFIGURATION -->
         <header class="header-layout">
-            <div class="brand-box glass-panel">
+            <div classclass="brand-box glass-panel">
                 <h1 class="brand-title">
                     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                     Viral Hunt Pro
                 </h1>
                 <p class="brand-subtitle">Liquid Glass Edition • Enterprise SaaS Tool</p>
-                <div style="margin-top: 15px;"><span class="version-tag">GOD MODE v8.0</span></div>
+                <div style="margin-top: 15px;"><span class="version-tag">GOD MODE v9.0</span></div>
             </div>
             
             <div class="api-box glass-panel">
@@ -465,6 +418,7 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
                     <input type="password" id="apiInput" placeholder="Paste YouTube API v3 Key...">
                 </div>
+                <!-- Status updates LIVE when typing -->
                 <div class="status-container" style="margin-top: 15px;" id="apiStatusContainer">
                     <span class="status-dot red"></span><span class="status-text unverified">Unverified</span>
                 </div>
@@ -484,7 +438,7 @@
             </nav>
         </div>
 
-        <!-- GLOBAL ACTIONS BAR (Glassmorphism) -->
+        <!-- GLOBAL ACTIONS BAR (Export & Views) -->
         <div class="glass-panel actions-bar" id="actionBar">
             <button class="btn-outline" onclick="core.exportCSV()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px; vertical-align: middle;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -497,69 +451,69 @@
         </div>
 
         <main>
-            <!-- =========================================================
-                 TAB 1: SEARCH OUTLIERS
-                 ========================================================= -->
+            <!-- TAB 1: SEARCH OUTLIERS -->
             <section id="tabSearch" class="tab-content active">
                 <div class="glass-panel control-dashboard">
                     <div class="input-group" style="flex: 2;">
                         <label>Target Topic / Keyword</label>
                         <input type="text" class="glass-input" id="inpQuery" placeholder="e.g. faceless channel, scary stories...">
                     </div>
+                    
+                    <!-- THE BUG FIX: TIME FILTER -->
+                    <div class="input-group input-group-sm">
+                        <label>Date Filter</label>
+                        <select class="glass-input" id="inpDateFilter">
+                            <option value="24h">Last 24 Hours</option>
+                            <option value="7d" selected>Last 7 Days</option>
+                            <option value="30d">Last 30 Days</option>
+                            <option value="all">Any Time</option>
+                        </select>
+                    </div>
+
                     <div class="input-group">
                         <label>Category Filter</label>
                         <select class="glass-input" id="inpCat">
                             <option value="">Global (All Categories)</option>
                             <option value="20">🎮 Gaming</option>
-                            <option value="28">💻 Science & Tech (AI)</option>
+                            <option value="28">💻 Science & Tech</option>
                             <option value="27">📚 Education</option>
-                            <option value="1">🎬 Film & Animation (Anime)</option>
+                            <option value="1">🎬 Animation & Anime</option>
                             <option value="24">🍿 Entertainment</option>
-                            <option value="22">👥 People & Blogs</option>
                         </select>
                     </div>
+
                     <div class="input-group input-group-sm">
                         <label>Max Subs Limit</label>
                         <input type="number" class="glass-input" id="inpSubs" value="5000">
                     </div>
-                    <button class="btn-liquid" id="btnSearch" onclick="engine.runSearch()">
-                        Scan Matrix 🚀
-                    </button>
+
+                    <button class="btn-liquid" id="btnSearch" onclick="engine.runSearch()">Scan Matrix 🚀</button>
                 </div>
                 
-                <!-- Dynamic Skeleton Loader -->
                 <div class="skeleton-wrapper" id="skelSearch"></div>
-                <!-- Results Wrappers -->
                 <div id="gridSearch" class="data-grid"></div>
                 <div id="tableSearch" class="data-table-wrap"></div>
             </section>
 
-            <!-- =========================================================
-                 TAB 2: GENERAL TRENDING
-                 ========================================================= -->
+            <!-- TAB 2: GENERAL TRENDING -->
             <section id="tabTrend" class="tab-content">
                 <div class="glass-panel control-dashboard">
                     <div class="input-group" style="flex: 2;">
-                        <label>Trending Category (To block music/movies)</label>
+                        <label>Trending Category</label>
                         <select class="glass-input" id="inpTrendCat">
-                            <option value="20" selected>🎮 Gaming (Highly Recommended)</option>
+                            <option value="20" selected>🎮 Gaming (Recommended)</option>
                             <option value="">🌍 All Categories</option>
                             <option value="28">💻 Technology</option>
-                            <option value="24">🍿 Entertainment</option>
                         </select>
                     </div>
-                    <button class="btn-liquid" id="btnTrend" onclick="engine.runTrending(false)">
-                        Fetch Top Trends 🔥
-                    </button>
+                    <button class="btn-liquid" id="btnTrend" onclick="engine.runTrending(false)">Fetch Top Trends 🔥</button>
                 </div>
                 <div class="skeleton-wrapper" id="skelTrend"></div>
                 <div id="gridTrend" class="data-grid"></div>
                 <div id="tableTrend" class="data-table-wrap"></div>
             </section>
 
-            <!-- =========================================================
-                 TAB 3: SMALL TRENDS
-                 ========================================================= -->
+            <!-- TAB 3: SMALL TRENDS -->
             <section id="tabSmallTrend" class="tab-content">
                 <div class="glass-panel control-dashboard">
                     <div class="input-group" style="flex: 2;">
@@ -567,36 +521,28 @@
                         <select class="glass-input" id="inpSmTrendCat">
                             <option value="20" selected>🎮 Gaming</option>
                             <option value="">🌍 All Categories</option>
-                            <option value="28">💻 Technology</option>
                         </select>
                     </div>
                     <div class="input-group input-group-sm">
                         <label>Max Subs Limit</label>
                         <input type="number" class="glass-input" id="inpSmTrendSubs" value="50000">
                     </div>
-                    <button class="btn-liquid" id="btnSmTrend" onclick="engine.runTrending(true)">
-                        Hunt Small Channels 🎯
-                    </button>
+                    <button class="btn-liquid" id="btnSmTrend" onclick="engine.runTrending(true)">Hunt Small Channels 🎯</button>
                 </div>
                 <div class="skeleton-wrapper" id="skelSmTrend"></div>
                 <div id="gridSmTrend" class="data-grid"></div>
                 <div id="tableSmTrend" class="data-table-wrap"></div>
             </section>
 
-            <!-- =========================================================
-                 TAB 4: KEYWORDS (ALPHABET SOUP)
-                 ========================================================= -->
+            <!-- TAB 4: KEYWORDS ALPHABET SOUP -->
             <section id="tabKeyword" class="tab-content">
                 <div class="glass-panel control-dashboard">
                     <div class="input-group" style="flex: 2;">
                         <label>Seed Keyword</label>
                         <input type="text" class="glass-input" id="inpKw" placeholder="e.g. offline games android...">
                     </div>
-                    <button class="btn-liquid" style="background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));" id="btnKw" onclick="engine.runKeywords()">
-                        Generate Alphabet Soup 🧠
-                    </button>
+                    <button class="btn-liquid" style="background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));" id="btnKw" onclick="engine.runKeywords()">Generate Alphabet Soup 🧠</button>
                 </div>
-
                 <div id="kwWrap" class="kw-container glass-panel" style="padding: 30px;">
                     <div>
                         <div class="kw-section-title">🔥 High Volume Autocomplete</div>
@@ -609,23 +555,16 @@
                 </div>
             </section>
 
-            <!-- =========================================================
-                 TAB 5: HIDDEN NICHES DB
-                 ========================================================= -->
+            <!-- TAB 5: HIDDEN NICHES DB -->
             <section id="tabNiche" class="tab-content">
                 <div class="glass-panel" style="padding: 25px; margin-bottom: 10px; background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2);">
                     <h3 style="color: var(--accent-cyan); font-size: 20px; margin-bottom: 8px;">The Secret Niche Database</h3>
                     <p style="color: var(--text-secondary); font-size: 14px;">A hardcoded list of low-competition, high-reward micro-niches. Click "Auto-Hunt" to scan the matrix instantly.</p>
                 </div>
-                
-                <div id="nicheWrap" class="niche-grid">
-                    <!-- DB Injected Here -->
-                </div>
+                <div id="nicheWrap" class="niche-grid"></div>
             </section>
 
-            <!-- =========================================================
-                 TAB 6: COMPETITOR WATCH
-                 ========================================================= -->
+            <!-- TAB 6: COMPETITOR WATCH -->
             <section id="tabComp" class="tab-content">
                 <div class="glass-panel control-dashboard">
                     <div class="input-group" style="flex: 2;">
@@ -633,157 +572,161 @@
                         <input type="text" class="glass-input" id="inpComp" placeholder="e.g. UCX6OQ3DkcsbYNE6H8uQQuQA">
                     </div>
                     <button class="btn-outline" onclick="engine.addComp()">+ Add Target</button>
-                    <button class="btn-liquid" style="background: linear-gradient(135deg, var(--accent-orange), var(--accent-red));" id="btnComp" onclick="engine.scanComps()">
-                        Initiate Deep Scan 👁️
-                    </button>
+                    <button class="btn-liquid" style="background: linear-gradient(135deg, var(--accent-orange), var(--accent-red));" id="btnComp" onclick="engine.scanComps()">Initiate Deep Scan 👁️</button>
                 </div>
-
                 <div id="compListWrap" class="comp-grid"></div>
-
                 <div class="skeleton-wrapper" id="skelComp"></div>
                 <div id="gridComp" class="data-grid"></div>
                 <div id="tableComp" class="data-table-wrap"></div>
             </section>
 
-            <!-- =========================================================
-                 TAB 7: SAVED IDEAS
-                 ========================================================= -->
+            <!-- TAB 7: SAVED IDEAS -->
             <section id="tabSaved" class="tab-content">
                 <div class="glass-panel" style="padding: 25px; margin-bottom: 20px; background: rgba(255, 0, 127, 0.05); border-color: rgba(255, 0, 127, 0.2);">
                     <h3 style="color: var(--accent-pink); font-size: 20px; margin-bottom: 8px;">Content Calendar (Bookmarks)</h3>
                     <p style="color: var(--text-secondary); font-size: 14px;">Videos saved during your research sessions are securely stored in your browser's local cache.</p>
                 </div>
-
                 <div id="gridSaved" class="data-grid"></div>
                 <div id="tableSaved" class="data-table-wrap"></div>
             </section>
-
         </main>
     </div>
 
     <!-- 
       ========================================================================
-      MASTER JAVASCRIPT ENGINE
+      MASTER JAVASCRIPT ENGINE (FULLY EXPANDED & COMMENTED)
       ========================================================================
     -->
     <script>
         /**
-         * System Config & Massive Niche Database
+         * 1. SYSTEM CONFIGURATION & DATABASE
+         * Contains API endpoints, storage keys, and the massive hidden niches DB.
          */
         const CONFIG = {
             API_URL: 'https://www.googleapis.com/youtube/v3',
-            KEY_API: 'VHP_LIQUID_API',
-            KEY_SAVED: 'VHP_LIQUID_SAVED',
-            KEY_COMP: 'VHP_LIQUID_COMP'
+            KEY_API: 'VHP_LIQUID_API_V9',
+            KEY_SAVED: 'VHP_LIQUID_SAVED_V9',
+            KEY_COMP: 'VHP_LIQUID_COMP_V9'
         };
 
         const NICHE_DB = [
             {
                 icon: "🎮", title: "Micro-Gaming & Emulation", cat: "20",
-                items: ["offline android games under 100mb", "ps2 emulation on android setup", "roblox scary horror maps multiplayer", "co-op mobile games with friends local wifi", "ppsspp highly compressed games download", "indie horror games itch.io gameplay"]
+                items: [
+                    "offline android games under 100mb", "ps2 emulation on android setup", "roblox scary horror maps multiplayer", 
+                    "co-op mobile games with friends local wifi", "ppsspp highly compressed games download", "indie horror games itch.io gameplay"
+                ]
             },
             {
                 icon: "🎌", title: "Anime & Manga (Faceless)", cat: "1",
-                items: ["manhwa recaps in hindi full story", "underrated isekai anime you missed", "anime iceberg explained lowest tier", "one piece theories confirmed hindi", "top 10 overpowered main character anime", "solo leveling light novel ending explained"]
+                items: [
+                    "manhwa recaps in hindi full story", "underrated isekai anime you missed", "anime iceberg explained lowest tier", 
+                    "one piece theories confirmed hindi", "top 10 overpowered main character anime", "solo leveling light novel ending explained"
+                ]
             },
             {
                 icon: "🤖", title: "AI & Automation Trends", cat: "28",
-                items: ["ai historical documentaries faceless", "reddit scary stories tts short form", "chatgpt advanced prompts for students", "free ai video generators 2024 no watermark", "stoicism quotes ai voice generator", "automate youtube shorts python script"]
+                items: [
+                    "ai historical documentaries faceless", "reddit scary stories tts short form", "chatgpt advanced prompts for students", 
+                    "free ai video generators 2024 no watermark", "stoicism quotes ai voice generator", "automate youtube shorts python script"
+                ]
             },
             {
                 icon: "💻", title: "Tech, Privacy & Software", cat: "28",
-                items: ["open source software alternatives to adobe", "vs code extensions for web developers", "windows 11 debloat script guide", "linux desktop customization rice", "free useful websites you didn't know", "degoogle your life privacy guide"]
+                items: [
+                    "open source software alternatives to adobe", "vs code extensions for web developers", "windows 11 debloat script guide", 
+                    "linux desktop customization rice", "free useful websites you didn't know", "degoogle your life privacy guide"
+                ]
             },
             {
                 icon: "💰", title: "High CPM Finance & Wealth", cat: "27",
-                items: ["dark psychology principles for manipulation", "side hustles for teens 2024 no money", "trading psychology in hindi banknifty", "frugal living tips to save money fast", "dividend investing portfolio for beginners", "credit card churning travel hacks"]
+                items: [
+                    "dark psychology principles for manipulation", "side hustles for teens 2024 no money", "trading psychology in hindi banknifty", 
+                    "frugal living tips to save money fast", "dividend investing portfolio for beginners", "credit card churning travel hacks"
+                ]
             },
             {
                 icon: "🕵️", title: "Mysteries & True Crime", cat: "24",
-                items: ["unsolved internet mysteries iceberg", "creepy lost media found footage", "backrooms lore explained in order", "scp foundation files reading", "abandoned places exploration history", "deep web iceberg explained"]
+                items: [
+                    "unsolved internet mysteries iceberg", "creepy lost media found footage", "backrooms lore explained in order", 
+                    "scp foundation files reading", "abandoned places exploration history", "deep web iceberg explained"
+                ]
             }
         ];
 
         /**
-         * Global State
+         * 2. GLOBAL STATE MANAGEMENT
          */
         const state = {
-            activeTab: 'tabSearch',
-            viewMode: 'grid', // default to grid for beautiful thumbnails
-            dataset: [],
-            datasetType: '' // search, trend, smalltrend, comp, saved
+            activeTab: 'tabSearch', viewMode: 'grid', dataset: [], datasetType: ''
         };
 
         /**
-         * Custom Toast Notification System (Replaces alert())
+         * 3. CUSTOM TOAST NOTIFICATION SYSTEM
          */
         const Toast = {
-            show: (msg, type = 'info') => {
+            show: (message, type = 'info') => {
                 const container = document.getElementById('toast-container');
-                const toast = document.createElement('div');
-                toast.className = `toast ${type}`;
-                
-                let icon = 'ℹ️';
-                if(type === 'success') icon = '✅';
-                if(type === 'error') icon = '⚠️';
+                const toastElement = document.createElement('div');
+                toastElement.className = `toast ${type}`;
+                let iconSymbol = 'ℹ️';
+                if (type === 'success') iconSymbol = '✅';
+                else if (type === 'error') iconSymbol = '⚠️';
 
-                toast.innerHTML = `<span>${icon}</span> <div>${msg}</div>`;
-                container.appendChild(toast);
+                toastElement.innerHTML = `<span>${iconSymbol}</span> <div>${message}</div>`;
+                container.appendChild(toastElement);
 
                 setTimeout(() => {
-                    toast.style.animation = 'toastFadeOut 0.4s forwards';
-                    setTimeout(() => { if (container.contains(toast)) container.removeChild(toast); }, 400);
+                    toastElement.style.animation = 'toastFadeOut 0.4s forwards';
+                    setTimeout(() => { if (container.contains(toastElement)) container.removeChild(toastElement); }, 400);
                 }, 3500);
             }
         };
 
         /**
-         * Utilities & Math
+         * 4. UTILITIES & MATHEMATICAL FUNCTIONS
          */
         const utils = {
-            formatNum: (n) => {
-                if (!n || isNaN(n)) return '0';
-                if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
-                if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
-                if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
-                return String(n);
+            formatNum: (num) => {
+                if (!num || isNaN(num)) return '0';
+                if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
+                if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+                if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+                return String(num);
             },
-            calcVPH: (views, pubStr) => {
-                if(!pubStr || !views) return 0;
-                const hrs = Math.max((Date.now() - new Date(pubStr).getTime()) / 3600000, 1);
-                return Math.round(views / hrs);
+            calcVPH: (views, pubDate) => {
+                if (!pubDate || !views) return 0;
+                const hoursPassed = Math.max((Date.now() - new Date(pubDate).getTime()) / (1000 * 60 * 60), 1);
+                return Math.round(views / hoursPassed);
             },
             getRatio: (views, subs) => (views && subs) ? views / Math.max(subs, 1) : 0,
-            formatRatio: (r) => r >= 10 ? Math.round(r) + 'x' : (Math.round(r * 10)/10) + 'x',
+            formatRatio: (r) => r >= 10 ? Math.round(r) + 'x' : (Math.round(r * 10) / 10) + 'x',
             getTier: (r) => r >= 50 ? 'ratio-insane' : (r >= 10 ? 'ratio-high' : 'ratio-normal'),
             escape: (s) => { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; },
             parseSubs: (v) => { const n = Number(String(v).trim()); return (isNaN(n) || n < 0) ? 5000 : Math.floor(n); },
-            chunk: (arr, size) => Array.from({length: Math.ceil(arr.length / size)}, (v, i) => arr.slice(i * size, i * size + size)),
-            formatDur: (s) => s ? s.replace('PT','').replace('H','h ').replace('M','m ').replace('S','s') : 'Unknown'
+            chunkArray: (arr, size) => { const res = []; for (let i = 0; i < arr.length; i += size) res.push(arr.slice(i, i + size)); return res; },
+            formatDuration: (str) => str ? str.replace('PT', '').replace('H', 'h ').replace('M', 'm ').replace('S', 's') : 'Unknown'
         };
 
         /**
-         * UI Manager
+         * 5. USER INTERFACE MANAGER
          */
         const ui = {
-            updateApiStatus: (hasKey) => {
+            updateApiStatus: (isVerified) => {
                 const el = document.getElementById('apiStatusContainer');
-                if (hasKey) {
-                    el.innerHTML = `<span class="status-dot green"></span><span class="status-text verified">Verified & Active</span>`;
-                } else {
-                    el.innerHTML = `<span class="status-dot red"></span><span class="status-text unverified">Unverified</span>`;
-                }
+                el.innerHTML = isVerified ? 
+                    `<span class="status-dot green"></span><span class="status-text verified">Verified & Active</span>` : 
+                    `<span class="status-dot red"></span><span class="status-text unverified">Unverified</span>`;
             },
-            setLoading: (btnId, isLoading, text, skelId) => {
+            setLoading: (btnId, isLoading, defaultText, skeletonId) => {
                 const btn = document.getElementById(btnId);
-                if(btn) {
+                if (btn) {
                     btn.disabled = isLoading;
-                    btn.innerHTML = isLoading ? `<span class="spinner" style="margin-right:8px;"></span> Scanning...` : text;
+                    btn.innerHTML = isLoading ? `<span class="spinner" style="margin-right:8px;"></span> Scanning Matrix...` : defaultText;
                 }
-                
-                if(skelId) {
-                    const skelWrap = document.getElementById(skelId);
-                    if(isLoading) {
+                if (skeletonId) {
+                    const skelWrap = document.getElementById(skeletonId);
+                    if (isLoading) {
                         skelWrap.innerHTML = Array(6).fill(0).map(() => `
                             <div class="glass-panel skeleton-card">
                                 <div class="skeleton-thumb"></div>
@@ -793,10 +736,9 @@
                             </div>
                         `).join('');
                         skelWrap.classList.add('active');
-                        ui.hideDataWraps(skelId.replace('skel','')); // hide table/grid
+                        ui.hideDataWraps(skeletonId.replace('skel', ''));
                     } else {
-                        skelWrap.classList.remove('active');
-                        skelWrap.innerHTML = '';
+                        skelWrap.classList.remove('active'); skelWrap.innerHTML = '';
                     }
                 }
             },
@@ -804,53 +746,54 @@
                 document.getElementById('grid' + suffix).classList.remove('active');
                 document.getElementById('table' + suffix).classList.remove('active');
             },
-            switchView: (mode) => {
-                state.viewMode = mode;
-                document.getElementById('viewTblBtn').className = mode === 'table' ? 'view-btn active' : 'view-btn';
-                document.getElementById('viewGrdBtn').className = mode === 'grid' ? 'view-btn active' : 'view-btn';
+            switchView: (viewMode) => {
+                state.viewMode = viewMode;
+                document.getElementById('viewTblBtn').className = viewMode === 'table' ? 'view-btn active' : 'view-btn';
+                document.getElementById('viewGrdBtn').className = viewMode === 'grid' ? 'view-btn active' : 'view-btn';
                 core.renderActiveTab();
             },
-            toggleActions: (show) => {
-                document.getElementById('actionBar').style.display = show ? 'flex' : 'none';
-            },
-            emptyHTML: (msg) => `<div class="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                <h3>Scan Completed</h3><p>${msg}</p></div>`,
-            
+            toggleActions: (shouldShow) => document.getElementById('actionBar').style.display = shouldShow ? 'flex' : 'none',
+            generateEmptyStateHtml: (msg) => `
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <h3>Scan Completed</h3><p>${msg}</p>
+                </div>`,
             closeModal: () => document.getElementById('spyModal').classList.remove('active')
         };
 
         /**
-         * API Controllers
+         * 6. API COMMUNICATION LAYER
          */
         const api = {
             getKey: () => {
                 const k = document.getElementById('apiInput').value.trim();
-                if(!k) { Toast.show('Please enter your YouTube API Key in the top right.', 'error'); return null; }
+                if (!k) { Toast.show('API Authorization Required: Please paste your YouTube API Key.', 'error'); return null; }
                 return k;
             },
-            get: async (url) => {
+            fetchEndpoint: async (url) => {
                 const res = await fetch(url);
                 const data = await res.json();
-                if(!res.ok) throw new Error(data.error?.message || `HTTP ${res.status}`);
+                if (!res.ok) throw new Error(data.error?.message || `HTTP Error ${res.status}`);
                 return data;
             },
-            getVidStats: async (ids, key) => {
-                if(!ids.length) return {}; const map = {};
-                for(let c of utils.chunk(ids, 50)) {
-                    const data = await api.get(`${CONFIG.API_URL}/videos?part=statistics,snippet,contentDetails&id=${c.join(',')}&key=${key}`);
-                    (data.items||[]).forEach(v => {
-                        map[v.id] = { views: parseInt(v.statistics?.viewCount||'0'), pubAt: v.snippet.publishedAt, tags: v.snippet.tags||[], desc: v.snippet.description||'', dur: v.contentDetails?.duration||'' };
+            getVideoDetailsBatched: async (ids, key) => {
+                if (ids.length === 0) return {}; 
+                const map = {};
+                for (const chunk of utils.chunkArray(ids, 50)) {
+                    const data = await api.fetchEndpoint(`${CONFIG.API_URL}/videos?part=statistics,snippet,contentDetails&id=${chunk.join(',')}&key=${key}`);
+                    (data.items || []).forEach(v => {
+                        map[v.id] = { views: parseInt(v.statistics?.viewCount || '0'), publishedAt: v.snippet.publishedAt, tags: v.snippet.tags || [], description: v.snippet.description || '', duration: v.contentDetails?.duration || '' };
                     });
                 }
                 return map;
             },
-            getChStats: async (ids, key) => {
-                if(!ids.length) return {}; const map = {};
-                for(let c of utils.chunk(ids, 50)) {
-                    const data = await api.get(`${CONFIG.API_URL}/channels?part=statistics&id=${c.join(',')}&key=${key}`);
-                    (data.items||[]).forEach(ch => {
-                        map[ch.id] = { subs: ch.statistics?.hiddenSubscriberCount ? null : parseInt(ch.statistics?.subscriberCount||'0'), hidden: !!ch.statistics?.hiddenSubscriberCount };
+            getChannelStatsBatched: async (ids, key) => {
+                if (ids.length === 0) return {}; 
+                const map = {};
+                for (const chunk of utils.chunkArray(ids, 50)) {
+                    const data = await api.fetchEndpoint(`${CONFIG.API_URL}/channels?part=statistics&id=${chunk.join(',')}&key=${key}`);
+                    (data.items || []).forEach(c => {
+                        map[c.id] = { subs: c.statistics?.hiddenSubscriberCount ? null : parseInt(c.statistics?.subscriberCount || '0'), hidden: !!c.statistics?.hiddenSubscriberCount };
                     });
                 }
                 return map;
@@ -858,395 +801,388 @@
         };
 
         /**
-         * Main Data Processing Engine
+         * 7. CORE LOGIC ENGINE
          */
         const engine = {
-            processAndRender: async (items, key, maxSubs, enforceFilter, dsType, suffix) => {
-                const vIds = items.map(i => i.id.videoId);
-                const cIds = [...new Set(items.map(i => i.snippet.channelId))];
+            processAndRenderData: async (rawItems, apiKey, maxSubsLimit, shouldEnforceSubFilter, datasetType, tabSuffix) => {
+                const videoIds = rawItems.map(item => item.id.videoId);
+                const channelIds = [...new Set(rawItems.map(item => item.snippet.channelId))];
                 
-                // Parallel Fetch
-                const [vStats, cStats] = await Promise.all([api.getVidStats(vIds, key), api.getChStats(cIds, key)]);
+                const [videoStatsMap, channelStatsMap] = await Promise.all([
+                    api.getVideoDetailsBatched(videoIds, apiKey),
+                    api.getChannelStatsBatched(channelIds, apiKey)
+                ]);
 
-                state.dataset = items.map(i => {
-                    const vid = i.id.videoId;
-                    const v = vStats[vid] || {}, c = cStats[i.snippet.channelId] || {};
-                    const views = v.views || 0, subs = c.subs || 0;
-                    const vph = utils.calcVPH(views, v.pubAt);
-                    const ratio = utils.getRatio(views, subs);
+                state.dataset = rawItems.map(item => {
+                    const vid = item.id.videoId, cid = item.snippet.channelId;
+                    const vDetails = videoStatsMap[vid] || {}, cDetails = channelStatsMap[cid] || {};
+                    const views = vDetails.views || 0, subs = cDetails.subs || 0;
                     
                     return {
-                        id: vid, title: i.snippet.title, channel: i.snippet.channelTitle,
-                        thumb: i.snippet.thumbnails?.maxres?.url || i.snippet.thumbnails?.medium?.url || '',
-                        views, subs, vph, ratio, pubAt: v.pubAt, tags: v.tags, desc: v.desc, dur: v.dur, hidden: c.hidden||false
+                        id: vid, title: item.snippet.title, channel: item.snippet.channelTitle,
+                        thumb: item.snippet.thumbnails?.maxres?.url || item.snippet.thumbnails?.medium?.url || '',
+                        views, subs, vph: utils.calcVPH(views, vDetails.publishedAt), ratio: utils.getRatio(views, subs), 
+                        pubAt: vDetails.publishedAt, tags: vDetails.tags, desc: vDetails.description, dur: vDetails.duration, hidden: cDetails.hidden || false
                     };
                 });
 
-                if(enforceFilter) state.dataset = state.dataset.filter(r => !r.hidden && r.subs !== null && r.subs <= maxSubs);
-                state.dataset.sort((a,b) => b.ratio - a.ratio || b.vph - a.vph); // Sort by Outlier Ratio
-                state.datasetType = dsType;
-
-                const gId = 'grid' + suffix, tId = 'table' + suffix;
+                if (shouldEnforceSubFilter) {
+                    state.dataset = state.dataset.filter(r => !r.hidden && r.subs !== null && r.subs <= maxSubsLimit);
+                }
                 
-                if(!state.dataset.length) {
-                    document.getElementById(gId).innerHTML = '';
-                    document.getElementById(tId).innerHTML = ui.emptyHTML(`0 videos matched the criteria (<${maxSubs} subs).`);
-                    document.getElementById(tId).classList.add('active');
+                state.dataset.sort((a, b) => b.ratio - a.ratio || b.vph - a.vph);
+                state.datasetType = datasetType;
+
+                const gridId = 'grid' + tabSuffix, tableId = 'table' + tabSuffix;
+                
+                if (state.dataset.length === 0) {
+                    document.getElementById(gridId).innerHTML = '';
+                    document.getElementById(tableId).innerHTML = ui.generateEmptyStateHtml(`0 channels matched your criteria (under ${maxSubsLimit} subscribers). Try increasing your Max Subs Limit or Date Filter.`);
+                    document.getElementById(tableId).classList.add('active');
                     ui.toggleActions(false);
                     Toast.show('No outliers found matching your limit.', 'info');
                 } else {
                     ui.toggleActions(true);
                     Toast.show(`Successfully isolated ${state.dataset.length} high-signal videos!`, 'success');
-                    core.renderView(gId, tId, state.dataset);
+                    core.renderView(gridId, tableId, state.dataset);
                 }
             },
 
-            // TAB 1: Search
+            // --- TAB 1: Outlier Search (With Date Filter Fix) ---
             runSearch: async () => {
-                const k = api.getKey(); if(!k) return;
-                const q = document.getElementById('inpQuery').value.trim();
-                const c = document.getElementById('inpCat').value;
-                const ms = utils.parseSubs(document.getElementById('inpSubs').value);
+                const apiKey = api.getKey(); if (!apiKey) return;
+                const searchQuery = document.getElementById('inpQuery').value.trim();
+                const categoryId = document.getElementById('inpCat').value;
+                const maxSubsLimit = utils.parseSubs(document.getElementById('inpSubs').value);
+                const dateFilterValue = document.getElementById('inpDateFilter').value;
                 
-                if(!q) { Toast.show('Enter a keyword to search.', 'error'); return; }
+                if (!searchQuery) { Toast.show('Search Operation Halted: Keyword cannot be empty.', 'error'); return; }
                 
                 ui.setLoading('btnSearch', true, 'Scan Matrix 🚀', 'skelSearch');
                 ui.toggleActions(false);
 
                 try {
-                    const pubAfter = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
-                    let url = `${CONFIG.API_URL}/search?part=snippet&type=video&order=viewCount&videoDuration=long&publishedAfter=${encodeURIComponent(pubAfter)}&maxResults=50&q=${encodeURIComponent(q)}&key=${k}`;
-                    if(c) url += `&videoCategoryId=${c}`;
+                    let publishedAfterString = '';
+                    const rightNow = Date.now();
+                    
+                    if (dateFilterValue === '24h') publishedAfterString = new Date(rightNow - (24 * 3600 * 1000)).toISOString();
+                    else if (dateFilterValue === '7d') publishedAfterString = new Date(rightNow - (7 * 24 * 3600 * 1000)).toISOString();
+                    else if (dateFilterValue === '30d') publishedAfterString = new Date(rightNow - (30 * 24 * 3600 * 1000)).toISOString();
 
-                    const data = await api.get(url);
-                    const items = (data.items||[]).filter(i => i.id?.videoId);
-                    if(!items.length) { 
-                        document.getElementById('tableSearch').innerHTML = ui.emptyHTML('No long-form videos found in last 24h.');
+                    let fetchUrl = `${CONFIG.API_URL}/search?part=snippet&type=video&order=viewCount&videoDuration=long&maxResults=50&q=${encodeURIComponent(searchQuery)}&key=${apiKey}`;
+                    if (categoryId) fetchUrl += `&videoCategoryId=${categoryId}`;
+                    if (publishedAfterString) fetchUrl += `&publishedAfter=${encodeURIComponent(publishedAfterString)}`;
+
+                    const responseData = await api.fetchEndpoint(fetchUrl);
+                    const rawItems = (responseData.items || []).filter(item => item.id?.videoId);
+                    
+                    if (rawItems.length === 0) { 
+                        document.getElementById('tableSearch').innerHTML = ui.generateEmptyStateHtml(`No long-form videos found. Try changing the Date Filter to "Any Time".`);
                         document.getElementById('tableSearch').classList.add('active');
-                        Toast.show('No results found.', 'info');
+                        Toast.show('No results found. Expand Date Filter.', 'info');
                         return;
                     }
-                    await engine.processAndRender(items, k, ms, true, 'search', 'Search');
-                } catch(e) { Toast.show(e.message, 'error'); }
+                    await engine.processAndRenderData(rawItems, apiKey, maxSubsLimit, true, 'search', 'Search');
+                } catch (error) { Toast.show(error.message, 'error'); } 
                 finally { ui.setLoading('btnSearch', false, 'Scan Matrix 🚀', 'skelSearch'); }
             },
 
-            // TAB 2 & 3: Trends
-            runTrending: async (isSmall) => {
-                const k = api.getKey(); if(!k) return;
-                const suf = isSmall ? 'SmTrend' : 'Trend';
-                const c = document.getElementById('inp' + suf + 'Cat').value;
-                const ms = isSmall ? utils.parseSubs(document.getElementById('inpSmTrendSubs').value) : null;
-                const btn = isSmall ? 'btnSmTrend' : 'btnTrend';
-                const lbl = isSmall ? 'Hunt Small Channels 🎯' : 'Fetch Top Trends 🔥';
+            // --- TAB 2 & 3: Trending Engines ---
+            runTrending: async (isSmallTrendsMode) => {
+                const apiKey = api.getKey(); if (!apiKey) return;
+                const tabSuffix = isSmallTrendsMode ? 'SmTrend' : 'Trend';
+                const categoryId = document.getElementById('inp' + tabSuffix + 'Cat').value;
+                const maxSubsLimit = isSmallTrendsMode ? utils.parseSubs(document.getElementById('inpSmTrendSubs').value) : null;
+                const buttonId = isSmallTrendsMode ? 'btnSmTrend' : 'btnTrend';
+                const buttonLabel = isSmallTrendsMode ? 'Hunt Small Channels 🎯' : 'Fetch Top Trends 🔥';
                 
-                ui.setLoading(btn, true, lbl, 'skel' + suf);
+                ui.setLoading(buttonId, true, buttonLabel, 'skel' + tabSuffix);
                 ui.toggleActions(false);
 
                 try {
-                    let url = `${CONFIG.API_URL}/videos?part=snippet,statistics&chart=mostPopular&regionCode=IN&maxResults=50&key=${k}`;
-                    if(c) url += `&videoCategoryId=${c}`;
+                    let fetchUrl = `${CONFIG.API_URL}/videos?part=snippet,statistics&chart=mostPopular&regionCode=IN&maxResults=50&key=${apiKey}`;
+                    if (categoryId) fetchUrl += `&videoCategoryId=${categoryId}`;
 
-                    const data = await api.get(url);
-                    if(!data.items?.length) { 
-                        document.getElementById('table'+suf).innerHTML = ui.emptyHTML('YouTube Trending API is empty.');
-                        document.getElementById('table'+suf).classList.add('active'); return; 
+                    const responseData = await api.fetchEndpoint(fetchUrl);
+                    if (!responseData.items || responseData.items.length === 0) { 
+                        document.getElementById('table' + tabSuffix).innerHTML = ui.generateEmptyStateHtml('YouTube Trending API is empty for this category.');
+                        document.getElementById('table' + tabSuffix).classList.add('active'); return; 
                     }
-                    let mItems = data.items.map(i => ({ id: { videoId: i.id }, snippet: i.snippet }));
-                    await engine.processAndRender(mItems, k, ms, isSmall, isSmall ? 'smalltrend' : 'trend', suf);
-                } catch(e) { Toast.show(e.message, 'error'); }
-                finally { ui.setLoading(btn, false, lbl, 'skel' + suf); }
+                    
+                    let mappedItems = responseData.items.map(item => ({ id: { videoId: item.id }, snippet: item.snippet }));
+                    await engine.processAndRenderData(mappedItems, apiKey, maxSubsLimit, isSmallTrendsMode, isSmallTrendsMode ? 'smalltrend' : 'trend', tabSuffix);
+                } catch(error) { Toast.show(error.message, 'error'); } 
+                finally { ui.setLoading(buttonId, false, buttonLabel, 'skel' + tabSuffix); }
             },
 
-            // TAB 4: Keywords (JSONP)
-            fetchJSONP: (q) => {
-                return new Promise(res => {
-                    const cb = 'yt_' + Math.random().toString(36).substr(2,9);
-                    window[cb] = (d) => { res(d[1]||[]); delete window[cb]; document.body.removeChild(sc); };
-                    const sc = document.createElement('script');
-                    sc.src = `https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=${encodeURIComponent(q)}&jsonp=${cb}`;
-                    document.body.appendChild(sc);
+            // --- TAB 4: Alphabet Soup JSONP Engine ---
+            fetchJSONP: (queryString) => {
+                return new Promise(resolve => {
+                    const callbackName = 'yt_jsonp_' + Math.random().toString(36).substring(2, 11);
+                    window[callbackName] = (responseData) => { resolve(responseData[1] || []); delete window[callbackName]; document.body.removeChild(scriptNode); };
+                    const scriptNode = document.createElement('script');
+                    scriptNode.src = `https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=${encodeURIComponent(queryString)}&jsonp=${callbackName}`;
+                    document.body.appendChild(scriptNode);
                 });
             },
             runKeywords: async () => {
-                const seed = document.getElementById('inpKw').value.trim();
-                if(!seed) { Toast.show('Enter seed keyword.', 'error'); return; }
+                const seedKeyword = document.getElementById('inpKw').value.trim();
+                if (!seedKeyword) { Toast.show('Please enter a seed keyword first.', 'error'); return; }
                 
-                const btn = document.getElementById('btnKw'); btn.innerHTML = '<span class="spinner"></span> Working...'; btn.disabled = true;
-                document.getElementById('kwWrap').style.display = 'none';
+                const runButton = document.getElementById('btnKw'); 
+                runButton.innerHTML = '<span class="spinner" style="margin-right:8px;"></span> Analyzing Search Trees...'; 
+                runButton.disabled = true; document.getElementById('kwWrap').style.display = 'none';
 
                 try {
-                    const pri = await engine.fetchJSONP(seed);
-                    const sufs = [' a',' b',' c',' d',' e',' f',' g',' in hindi',' 2024',' vs',' review'];
-                    const lTails = new Set();
-                    const arrs = await Promise.all(sufs.map(s => engine.fetchJSONP(seed + s)));
+                    const primaryKeywords = await engine.fetchJSONP(seedKeyword);
+                    const appendSuffixes = [' a', ' b', ' c', ' d', ' e', ' f', ' g', ' in hindi', ' 2024', ' vs', ' review', ' tutorial'];
+                    const longTailSet = new Set();
                     
-                    arrs.forEach(a => a.forEach(k => {
-                        let w = typeof k === 'string' ? k : k[0];
-                        if(w && !pri.includes(w) && w.length > seed.length) lTails.add(w);
-                    }));
+                    const promiseArray = appendSuffixes.map(suffix => engine.fetchJSONP(seedKeyword + suffix));
+                    const resolvedArrays = await Promise.all(promiseArray);
+                    
+                    resolvedArrays.forEach(keywordArray => {
+                        keywordArray.forEach(kwData => {
+                            let word = typeof kwData === 'string' ? kwData : kwData[0];
+                            if (word && !primaryKeywords.includes(word) && word.length > seedKeyword.length) longTailSet.add(word);
+                        });
+                    });
 
-                    if(!pri.length && !lTails.size) { Toast.show('No keywords found.', 'info'); return; }
+                    if (primaryKeywords.length === 0 && longTailSet.size === 0) { Toast.show('Algorithm yielded zero keywords.', 'info'); return; }
 
-                    document.getElementById('kwPrimary').innerHTML = pri.map(k => `<div class="kw-pill" onclick="core.autoHunt('${utils.escape(k)}')">🔍 ${utils.escape(k)}</div>`).join('');
-                    document.getElementById('kwLongTail').innerHTML = Array.from(lTails).slice(0,35).map(k => `<div class="kw-pill secondary" onclick="core.autoHunt('${utils.escape(k)}')">✨ ${utils.escape(k)}</div>`).join('');
+                    document.getElementById('kwPrimary').innerHTML = primaryKeywords.map(keyword => `<div class="kw-pill" onclick="core.triggerAutoHunt('${utils.escape(keyword)}')">🔍 ${utils.escape(keyword)}</div>`).join('') || '<span style="color:var(--text-muted)">No exact matches.</span>';
+                    document.getElementById('kwLongTail').innerHTML = Array.from(longTailSet).slice(0, 45).map(keyword => `<div class="kw-pill secondary" onclick="core.triggerAutoHunt('${utils.escape(keyword)}')">✨ ${utils.escape(keyword)}</div>`).join('');
                     
                     document.getElementById('kwWrap').style.display = 'block';
-                    Toast.show('Alphabet Soup Extraction Complete!', 'success');
-                } catch(e) { Toast.show('Failed to fetch keywords.', 'error'); }
-                finally { btn.innerHTML = 'Generate Alphabet Soup 🧠'; btn.disabled = false; }
+                    Toast.show('Alphabet Soup Extraction Successful!', 'success');
+                } catch(error) { Toast.show('Algorithm block detected. Try again later.', 'error'); } 
+                finally { runButton.innerHTML = 'Generate Alphabet Soup 🧠'; runButton.disabled = false; }
             },
 
-            // TAB 6: Competitors
+            // --- TAB 6: Competitor Engine ---
             addComp: () => {
-                let id = document.getElementById('inpComp').value.trim();
-                if(!id || !id.startsWith('UC')) { Toast.show('Invalid Channel ID (Must start with UC)', 'error'); return; }
-                let c = core.getComps(); if(!c.includes(id)) { c.push(id); localStorage.setItem(CONFIG.KEY_COMP, JSON.stringify(c)); document.getElementById('inpComp').value=''; core.renderComps(); Toast.show('Target Added!', 'success'); }
+                let channelId = document.getElementById('inpComp').value.trim();
+                if (!channelId || !channelId.startsWith('UC')) { Toast.show('Channel ID must start with "UC"', 'error'); return; }
+                let trackedChannels = core.getCompList(); 
+                if (!trackedChannels.includes(channelId)) { 
+                    trackedChannels.push(channelId); localStorage.setItem(CONFIG.KEY_COMP, JSON.stringify(trackedChannels)); 
+                    document.getElementById('inpComp').value = ''; core.renderCompList(); Toast.show('Target Acquired!', 'success'); 
+                } else { Toast.show('Target is already being tracked.', 'info'); }
             },
             scanComps: async () => {
-                const k = api.getKey(); if(!k) return;
-                const c = core.getComps(); if(!c.length) { Toast.show('Add a target channel first.', 'error'); return; }
+                const apiKey = api.getKey(); if (!apiKey) return;
+                const trackedChannels = core.getCompList(); 
+                if (trackedChannels.length === 0) { Toast.show('Your target list is empty.', 'error'); return; }
 
                 ui.setLoading('btnComp', true, 'Initiate Deep Scan 👁️', 'skelComp');
                 ui.toggleActions(false);
 
                 try {
-                    let items = [];
-                    const pros = c.map(id => api.get(`${CONFIG.API_URL}/search?part=snippet&type=video&order=date&maxResults=3&channelId=${id}&key=${k}`).catch(()=>({items:[]})));
-                    const res = await Promise.all(pros);
-                    res.forEach(r => { if(r.items) items.push(...r.items); });
+                    let collectedItems = [];
+                    const promiseArray = trackedChannels.map(id => api.fetchEndpoint(`${CONFIG.API_URL}/search?part=snippet&type=video&order=date&maxResults=3&channelId=${id}&key=${apiKey}`).catch(() => ({items:[]})));
+                    const resolvedResponses = await Promise.all(promiseArray);
+                    resolvedResponses.forEach(response => { if (response.items) collectedItems.push(...response.items); });
 
-                    if(!items.length) { document.getElementById('tableComp').innerHTML = ui.emptyHTML('No recent videos from targets.'); document.getElementById('tableComp').classList.add('active'); return; }
-                    await engine.processAndRender(items, k, 999999, false, 'comp', 'Comp');
-                } catch(e) { Toast.show(e.message, 'error'); }
+                    if (collectedItems.length === 0) { 
+                        document.getElementById('tableComp').innerHTML = ui.generateEmptyStateHtml('No recent uploads detected from targeted channels.'); 
+                        document.getElementById('tableComp').classList.add('active'); return; 
+                    }
+                    await engine.processAndRenderData(collectedItems, apiKey, 99999999, false, 'comp', 'Comp');
+                } catch(error) { Toast.show(`Scan Disrupted: ${error.message}`, 'error'); } 
                 finally { ui.setLoading('btnComp', false, 'Initiate Deep Scan 👁️', 'skelComp'); }
             }
         };
 
         /**
-         * HTML Builders & Core Controllers
+         * 8. CORE APPLICATION MANAGER & DOM BUILDERS
          */
         const core = {
             boot: () => {
-                const k = localStorage.getItem(CONFIG.KEY_API);
-                if(k) { document.getElementById('apiInput').value = k; ui.updateApiStatus(true); }
+                // Live Input Binding for API Key Verification Indicator
+                const storedKey = localStorage.getItem(CONFIG.KEY_API);
+                if (storedKey) { document.getElementById('apiInput').value = storedKey; ui.updateApiStatus(true); }
+                
+                document.getElementById('apiInput').addEventListener('input', (event) => {
+                    const inputValue = event.target.value.trim();
+                    if (inputValue) { localStorage.setItem(CONFIG.KEY_API, inputValue); ui.updateApiStatus(true); } 
+                    else { localStorage.removeItem(CONFIG.KEY_API); ui.updateApiStatus(false); }
+                });
 
-                // Build Niches
-                document.getElementById('nicheWrap').innerHTML = NICHE_DB.map(n => `
+                // Inject Hidden Niches
+                document.getElementById('nicheWrap').innerHTML = NICHE_DB.map(nicheObj => `
                     <div class="glass-panel niche-card">
-                        <div class="niche-header"><span>${n.icon}</span> ${utils.escape(n.title)}</div>
+                        <div class="niche-header"><span>${nicheObj.icon}</span> ${utils.escape(nicheObj.title)}</div>
                         <ul class="niche-list">
-                            ${n.items.map(i => `
+                            ${nicheObj.items.map(topicString => `
                                 <li class="niche-item">
-                                    <span class="niche-text">${utils.escape(i)}</span>
-                                    <button class="btn-hunt" onclick="core.autoHunt('${utils.escape(i)}', '${n.cat}')">Auto-Hunt</button>
+                                    <span class="niche-text">${utils.escape(topicString)}</span>
+                                    <button class="btn-hunt" onclick="core.triggerAutoHunt('${utils.escape(topicString)}', '${nicheObj.cat}')">Auto-Hunt</button>
                                 </li>
                             `).join('')}
                         </ul>
                     </div>
                 `).join('');
 
-                core.renderComps();
+                core.renderCompList();
 
-                // Tab Logic
-                document.querySelectorAll('.nav-btn').forEach(b => {
-                    b.addEventListener('click', () => {
+                // Tab Routing
+                document.querySelectorAll('.nav-btn').forEach(navButton => {
+                    navButton.addEventListener('click', () => {
                         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
                         document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-                        b.classList.add('active');
+                        navButton.classList.add('active');
                         
-                        const tId = b.getAttribute('data-tab');
-                        document.getElementById(tId).classList.add('active');
-                        state.activeTab = tId;
+                        const targetTabId = navButton.getAttribute('data-tab');
+                        document.getElementById(targetTabId).classList.add('active');
+                        state.activeTab = targetTabId;
 
-                        // Manage Action Bar
-                        if(['tabSearch', 'tabTrend', 'tabSmallTrend', 'tabComp'].includes(tId)) {
-                            let typeMap = { 'tabSearch':'search', 'tabTrend':'trend', 'tabSmallTrend':'smalltrend', 'tabComp':'comp' };
-                            ui.toggleActions(state.datasetType === typeMap[tId] && state.dataset.length > 0);
-                        } else if (tId === 'tabSaved') {
-                            core.renderSaved(); ui.toggleActions(true);
-                        } else {
-                            ui.toggleActions(false);
-                        }
+                        const dataTabs = ['tabSearch', 'tabTrend', 'tabSmallTrend', 'tabComp'];
+                        if (dataTabs.includes(targetTabId)) {
+                            const typeMapping = { 'tabSearch': 'search', 'tabTrend': 'trend', 'tabSmallTrend': 'smalltrend', 'tabComp': 'comp' };
+                            ui.toggleActions(state.datasetType === typeMapping[targetTabId] && state.dataset.length > 0);
+                        } else if (targetTabId === 'tabSaved') {
+                            core.renderSavedTab(); ui.toggleActions(true);
+                        } else { ui.toggleActions(false); }
                     });
                 });
             },
 
-            renderView: (gId, tId, data) => {
-                const gWrap = document.getElementById(gId);
-                const tWrap = document.getElementById(tId);
-                
-                if(state.viewMode === 'grid') {
-                    tWrap.classList.remove('active'); gWrap.classList.add('active');
-                    gWrap.innerHTML = core.buildGrid(data);
+            renderView: (gridContainerId, tableContainerId, dataArray) => {
+                const gridWrapper = document.getElementById(gridContainerId);
+                const tableWrapper = document.getElementById(tableContainerId);
+                if (state.viewMode === 'grid') {
+                    tableWrapper.classList.remove('active'); gridWrapper.classList.add('active');
+                    gridWrapper.innerHTML = core.buildGridHtml(dataArray);
                 } else {
-                    gWrap.classList.remove('active'); tWrap.classList.add('active');
-                    tWrap.innerHTML = core.buildTable(data);
+                    gridWrapper.classList.remove('active'); tableWrapper.classList.add('active');
+                    tableWrapper.innerHTML = core.buildTableHtml(dataArray);
                 }
             },
 
             renderActiveTab: () => {
-                let suf = '';
-                if(state.activeTab === 'tabSearch') suf = 'Search';
-                if(state.activeTab === 'tabTrend') suf = 'Trend';
-                if(state.activeTab === 'tabSmallTrend') suf = 'SmTrend';
-                if(state.activeTab === 'tabComp') suf = 'Comp';
-                if(state.activeTab === 'tabSaved') { core.renderSaved(); return; }
-                
-                if(suf && state.dataset.length) core.renderView('grid'+suf, 'table'+suf, state.dataset);
+                let suffixMap = { 'tabSearch': 'Search', 'tabTrend': 'Trend', 'tabSmallTrend': 'SmTrend', 'tabComp': 'Comp' };
+                if (state.activeTab === 'tabSaved') { core.renderSavedTab(); return; }
+                let currentSuffix = suffixMap[state.activeTab];
+                if (currentSuffix && state.dataset.length > 0) core.renderView('grid' + currentSuffix, 'table' + currentSuffix, state.dataset);
             },
 
-            buildGrid: (arr) => arr.map(r => `
+            buildGridHtml: (arrayData) => arrayData.map(record => `
                 <div class="video-card">
                     <div class="thumb-wrapper">
-                        <img src="${utils.escape(r.thumb)}" loading="lazy">
-                        <div class="vph-badge">🔥 ${utils.formatNum(r.vph)} VPH</div>
+                        <img src="${utils.escape(record.thumb)}" loading="lazy" alt="Thumbnail">
+                        <div class="vph-badge">🔥 ${utils.formatNum(record.vph)} VPH</div>
                     </div>
                     <div class="card-content">
-                        <a href="https://youtube.com/watch?v=${r.id}" target="_blank" class="card-title">${utils.escape(r.title)}</a>
-                        <div class="card-channel">📺 ${utils.escape(r.channel)}</div>
+                        <a href="https://youtube.com/watch?v=${record.id}" target="_blank" class="card-title">${utils.escape(record.title)}</a>
+                        <div class="card-channel">📺 ${utils.escape(record.channel)}</div>
                         <div class="card-stats">
-                            <div class="stat-item">
-                                <div class="stat-val">${utils.formatNum(r.views)}</div>
-                                <div class="stat-lbl">Views</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-val highlight">${utils.formatNum(r.subs)}</div>
-                                <div class="stat-lbl">Subs</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="ratio-pill ${utils.getTier(r.ratio)}">${utils.formatRatio(r.ratio)}</div>
-                                <div class="stat-lbl">Outlier</div>
-                            </div>
+                            <div class="stat-item"><div class="stat-val">${utils.formatNum(record.views)}</div><div class="stat-lbl">Views</div></div>
+                            <div class="stat-item"><div class="stat-val highlight">${utils.formatNum(record.subs)}</div><div class="stat-lbl">Subs</div></div>
+                            <div class="stat-item"><div class="ratio-pill ${utils.getTier(record.ratio)}">${utils.formatRatio(record.ratio)}</div><div class="stat-lbl">Outlier</div></div>
                         </div>
                         <div class="card-actions">
-                            <button class="card-btn btn-spy" onclick="core.openSpy('${r.id}')">🕵️ Spy Data</button>
-                            <button class="card-btn btn-save ${core.isSaved(r.id)?'saved':''}" onclick="core.toggleSave('${r.id}')">${core.isSaved(r.id)?'📌 Saved':'❤️ Save'}</button>
+                            <button class="card-btn btn-spy" onclick="core.openSpyModal('${record.id}')">🕵️ Spy Data</button>
+                            <button class="card-btn btn-save ${core.isRecordSaved(record.id)?'saved':''}" onclick="core.toggleSaveAction('${record.id}')">${core.isRecordSaved(record.id)?'📌 Saved':'❤️ Save'}</button>
                         </div>
                     </div>
                 </div>
             `).join(''),
 
-            buildTable: (arr) => {
-                let rows = arr.map(r => `
-                <tr>
-                    <td><img src="${utils.escape(r.thumb)}" class="tbl-thumb" loading="lazy"></td>
-                    <td>
-                        <a href="https://youtube.com/watch?v=${r.id}" target="_blank" class="card-title" style="font-size:14px; margin-bottom:4px;">${utils.escape(r.title)}</a>
-                        <div class="card-channel" style="margin:0;">📺 ${utils.escape(r.channel)}</div>
-                        <div style="color:var(--accent-cyan); font-size:11px; font-weight:700; margin-top:4px;">🔥 ${utils.formatNum(r.vph)} VPH (Velocity)</div>
-                    </td>
-                    <td>
-                        <div style="font-size:14px; font-weight:700;">${utils.formatNum(r.views)}</div>
-                        <div style="font-size:11px; color:var(--text-tertiary);">Views</div>
-                    </td>
-                    <td>
-                        <div style="font-size:14px; font-weight:700; color:var(--accent-green);">${utils.formatNum(r.subs)}</div>
-                        <div style="font-size:11px; color:var(--text-tertiary);">Subs</div>
-                    </td>
-                    <td><div class="ratio-pill ${utils.getTier(r.ratio)}">${utils.formatRatio(r.ratio)}</div></td>
-                    <td>
-                        <div style="display:flex; flex-direction:column; gap:6px;">
-                            <button class="card-btn btn-spy" style="padding:6px; font-size:11px;" onclick="core.openSpy('${r.id}')">🕵️ Spy</button>
-                            <button class="card-btn btn-save ${core.isSaved(r.id)?'saved':''}" style="padding:6px; font-size:11px;" onclick="core.toggleSave('${r.id}')">${core.isSaved(r.id)?'Saved':'Save'}</button>
-                        </div>
-                    </td>
-                </tr>`).join('');
-                return `<div style="overflow-x:auto;"><table class="glass-table"><thead><tr><th>Thumb</th><th>Video Details</th><th>Views</th><th>Subs</th><th>Outlier</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+            buildTableHtml: (arrayData) => {
+                let rowsHtml = arrayData.map(record => `
+                    <tr>
+                        <td><img src="${utils.escape(record.thumb)}" class="tbl-thumb" loading="lazy" alt="Thumbnail"></td>
+                        <td>
+                            <a href="https://youtube.com/watch?v=${record.id}" target="_blank" class="card-title" style="font-size:14px; margin-bottom:4px;">${utils.escape(record.title)}</a>
+                            <div class="card-channel" style="margin:0;">📺 ${utils.escape(record.channel)}</div>
+                            <div style="color:var(--accent-cyan); font-size:11px; font-weight:700; margin-top:4px;">🔥 ${utils.formatNum(record.vph)} VPH (Velocity)</div>
+                        </td>
+                        <td><div style="font-size:14px; font-weight:700;">${utils.formatNum(record.views)}</div><div style="font-size:11px; color:var(--text-tertiary);">Views</div></td>
+                        <td><div style="font-size:14px; font-weight:700; color:var(--accent-green);">${utils.formatNum(record.subs)}</div><div style="font-size:11px; color:var(--text-tertiary);">Subs</div></td>
+                        <td><div class="ratio-pill ${utils.getTier(record.ratio)}">${utils.formatRatio(record.ratio)}</div></td>
+                        <td>
+                            <div style="display:flex; flex-direction:column; gap:6px;">
+                                <button class="card-btn btn-spy" style="padding:6px; font-size:11px;" onclick="core.openSpyModal('${record.id}')">🕵️ Spy</button>
+                                <button class="card-btn btn-save ${core.isRecordSaved(record.id)?'saved':''}" style="padding:6px; font-size:11px;" onclick="core.toggleSaveAction('${record.id}')">${core.isRecordSaved(record.id)?'Saved':'Save'}</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+                return `<div style="overflow-x:auto;"><table class="glass-table"><thead><tr><th>Thumb</th><th>Video Details</th><th>Views</th><th>Subs</th><th>Outlier</th><th>Actions</th></tr></thead><tbody>${rowsHtml}</tbody></table></div>`;
             },
 
-            autoHunt: (kw, cat = "") => {
+            triggerAutoHunt: (keywordString, categoryId = "") => {
                 document.querySelector('[data-tab="tabSearch"]').click();
-                document.getElementById('inpQuery').value = kw;
-                document.getElementById('inpCat').value = cat;
-                window.scrollTo({top:0, behavior:'smooth'});
+                document.getElementById('inpQuery').value = keywordString;
+                document.getElementById('inpCat').value = categoryId;
+                window.scrollTo({top: 0, behavior: 'smooth'});
                 engine.runSearch();
             },
 
-            getComps: () => JSON.parse(localStorage.getItem(CONFIG.KEY_COMP)||'[]'),
-            renderComps: () => {
-                const c = core.getComps();
-                document.getElementById('compListWrap').innerHTML = c.length ? c.map(id => `
-                    <div class="glass-panel comp-card">
-                        <span class="comp-id">📺 ${utils.escape(id)}</span>
-                        <button class="btn-del" onclick="engine.removeCompetitor('${utils.escape(id)}')">Remove</button>
-                    </div>
-                `).join('') : `<div style="color:var(--text-tertiary); font-size:13px;">No competitors tracked. Add Channel ID above.</div>`;
+            getCompList: () => JSON.parse(localStorage.getItem(CONFIG.KEY_COMP) || '[]'),
+            renderCompList: () => {
+                const arr = core.getCompList(); const wrapper = document.getElementById('compListWrap');
+                if (arr.length === 0) { wrapper.innerHTML = `<div style="color:var(--text-tertiary); font-size:13px;">No competitors tracked. Add Channel ID above.</div>`; return; }
+                wrapper.innerHTML = arr.map(id => `<div class="glass-panel comp-card"><span class="comp-id">📺 ${utils.escape(id)}</span><button class="btn-del" onclick="engine.removeCompetitor('${utils.escape(id)}')">Remove</button></div>`).join('');
             },
 
-            getSaved: () => JSON.parse(localStorage.getItem(CONFIG.KEY_SAVED)||'[]'),
-            isSaved: (id) => core.getSaved().some(v => v.id === id),
-            toggleSave: (id) => {
-                let saved = core.getSaved();
-                if(core.isSaved(id)) saved = saved.filter(v => v.id !== id);
-                else {
-                    let v = state.dataset.find(x => x.id === id) || saved.find(x => x.id === id);
-                    if(v) saved.push(v);
-                }
-                localStorage.setItem(CONFIG.KEY_SAVED, JSON.stringify(saved));
-                
-                if(state.activeTab === 'tabSaved') core.renderSaved();
-                else core.renderActiveTab();
-                Toast.show('Calendar updated.', 'success');
+            getSavedDB: () => JSON.parse(localStorage.getItem(CONFIG.KEY_SAVED) || '[]'),
+            isRecordSaved: (videoId) => core.getSavedDB().some(record => record.id === videoId),
+            toggleSaveAction: (videoId) => {
+                let db = core.getSavedDB();
+                if (core.isRecordSaved(videoId)) { db = db.filter(r => r.id !== videoId); Toast.show('Removed from Calendar.', 'info'); } 
+                else { let tr = state.dataset.find(x => x.id === videoId) || db.find(x => x.id === videoId); if (tr) { db.push(tr); Toast.show('Successfully Bookmarked!', 'success'); } }
+                localStorage.setItem(CONFIG.KEY_SAVED, JSON.stringify(db));
+                if (state.activeTab === 'tabSaved') core.renderSavedTab(); else core.renderActiveTab();
             },
-            renderSaved: () => {
-                const s = core.getSaved();
-                const g = 'gridSaved', t = 'tableSaved';
-                if(!s.length) {
-                    ui.clearWrap(t, g);
-                    document.getElementById(t).innerHTML = ui.emptyHTML('No saved ideas yet. Click the ❤️ Save button on videos to bookmark them here.');
-                    document.getElementById(t).classList.add('active');
-                    return;
-                }
-                s.sort((a,b) => b.vph - a.vph);
-                core.renderView(g, t, s);
+            renderSavedTab: () => {
+                const s = core.getSavedDB(); const gId = 'gridSaved'; const tId = 'tableSaved';
+                if (s.length === 0) { ui.clearWrap(tId, gId); document.getElementById(tId).innerHTML = ui.generateEmptyStateHtml('Your calendar is empty. Click the ❤️ Save button on videos to bookmark them.'); document.getElementById(tId).classList.add('active'); ui.toggleActions(false); return; }
+                s.sort((a, b) => b.vph - a.vph); ui.toggleActions(true); core.renderView(gId, tId, s);
             },
 
-            openSpy: (id) => {
-                let v = state.dataset.find(x => x.id === id) || core.getSaved().find(x => x.id === id);
-                if(!v) return;
+            openSpyModal: (videoId) => {
+                let record = state.dataset.find(x => x.id === videoId) || core.getSavedDB().find(x => x.id === videoId);
+                if (!record) return;
+                document.getElementById('spyTitle').innerText = record.title;
+                document.getElementById('spyChannel').innerText = '📺 ' + record.channel;
+                document.getElementById('spyVPH').innerText = utils.formatNum(record.vph);
+                document.getElementById('spyDate').innerText = new Date(record.pubAt).toLocaleString();
+                document.getElementById('spyDuration').innerText = utils.formatDuration(record.dur);
+                document.getElementById('spyTagCount').innerText = record.tags?.length || 0;
                 
-                document.getElementById('spyTitle').innerText = v.title;
-                document.getElementById('spyChannel').innerText = '📺 ' + v.channel;
-                document.getElementById('spyVPH').innerText = utils.formatNum(v.vph);
-                document.getElementById('spyDate').innerText = new Date(v.pubAt).toLocaleString();
-                document.getElementById('spyDuration').innerText = utils.formatDur(v.dur);
-                
-                document.getElementById('spyTagCount').innerText = v.tags?.length||0;
-                document.getElementById('spyTags').innerHTML = v.tags?.length ? v.tags.map(t => `<span class="kw-pill secondary" style="padding:6px 12px; font-size:12px;">${utils.escape(t)}</span>`).join('') : '<span style="color:var(--text-tertiary)">No tags found.</span>';
-                document.getElementById('spyDesc').innerText = v.desc || 'No description provided.';
-                
+                const tWrap = document.getElementById('spyTags');
+                if (record.tags && record.tags.length > 0) tWrap.innerHTML = record.tags.map(t => `<span class="kw-pill secondary" style="padding:6px 12px; font-size:12px;">${utils.escape(t)}</span>`).join('');
+                else tWrap.innerHTML = '<span style="color:var(--text-tertiary)">No hidden tags injected by creator.</span>';
+                document.getElementById('spyDesc').innerText = record.desc || 'No description provided.';
                 document.getElementById('spyModal').classList.add('active');
             },
 
             exportCSV: () => {
-                let data = state.activeTab === 'tabSaved' ? core.getSaved() : state.dataset;
-                if(!data.length) { Toast.show('No data to export.', 'error'); return; }
-
-                let csv = "Title,Channel,Views,Subscribers,Outlier_Ratio,VPH,Published,Link\n";
-                data.forEach(r => {
-                    let title = r.title.replace(/"/g, '""');
-                    csv += `"${title}","${r.channel}",${r.views},${r.subs},${r.ratio},${r.vph},"${r.pubAt}","https://youtube.com/watch?v=${r.id}"\n`;
+                let dataToExport = state.activeTab === 'tabSaved' ? core.getSavedDB() : state.dataset;
+                if (dataToExport.length === 0) { Toast.show('Data Error: Nothing to export.', 'error'); return; }
+                let csvContentString = "Video_Title,Channel_Name,Total_Views,Subscribers,Outlier_Ratio,Velocity_VPH,Published_Date,YouTube_Link\n";
+                dataToExport.forEach(record => {
+                    let sanitizedTitle = record.title.replace(/"/g, '""');
+                    csvContentString += `"${sanitizedTitle}","${record.channel}",${record.views},${record.subs},${record.ratio},${record.vph},"${record.pubAt}","https://youtube.com/watch?v=${record.id}"\n`;
                 });
-
-                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.download = `VHP_Export_${Date.now()}.csv`;
-                link.click();
-                Toast.show('CSV Downloaded!', 'success');
+                const blobObject = new Blob([csvContentString], { type: 'text/csv;charset=utf-8;' });
+                const downloadLink = document.createElement("a");
+                downloadLink.href = URL.createObjectURL(blobObject);
+                downloadLink.download = `VHP_Export_Data_${Date.now()}.csv`;
+                downloadLink.click();
+                Toast.show('CSV Downloaded to your device!', 'success');
             }
         };
 
-        // Keybindings
-        document.getElementById('inpQuery').addEventListener('keydown', e => { if(e.key==='Enter') engine.runSearch(); });
-        document.getElementById('inpKw').addEventListener('keydown', e => { if(e.key==='Enter') engine.runKeywords(); });
-        document.getElementById('spyModal').addEventListener('click', e => { if(e.target.id === 'spyModal') ui.closeModal(); });
+        // Event Bindings
+        document.getElementById('inpQuery').addEventListener('keydown', event => { if (event.key === 'Enter') engine.runSearch(); });
+        document.getElementById('inpKw').addEventListener('keydown', event => { if (event.key === 'Enter') engine.runKeywords(); });
+        document.getElementById('spyModal').addEventListener('click', event => { if (event.target.id === 'spyModal') ui.closeModal(); });
         engine.removeCompetitor = core.removeCompetitor;
 
-        // Boot
+        // Boot system
         core.boot();
     </script>
 </body>
 </html>
-
