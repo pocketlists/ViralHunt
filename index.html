@@ -1,176 +1,591 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viral Hunt Pro</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f0f13; color: #ffffff; margin: 0; padding: 15px; }
-        .container { max-width: 950px; margin: auto; }
-        h1 { color: #00e676; margin-bottom: 5px; font-size: 1.8rem; }
-        p.desc { color: #a0a0a0; margin-top: 0; margin-bottom: 15px; font-size: 0.9rem; }
-        
-        input, button { padding: 12px; margin: 5px 0; border-radius: 6px; border: 1px solid #333; background: #1c1c24; color: white; box-sizing: border-box; font-size: 0.95rem; }
-        button { background: #00e676; color: #000; font-weight: bold; cursor: pointer; border: none; }
-        button:hover { background: #00c853; }
-        
-        .controls { display: flex; gap: 8px; flex-wrap: wrap; }
-        .controls input[type="text"] { flex: 2; min-width: 180px; }
-        .controls input[type="number"] { flex: 1; min-width: 100px; }
-        .controls button { flex: 1; min-width: 140px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viral Hunt Pro</title>
+<style>
+  :root {
+    --void: #0a0b0d;
+    --panel: #131519;
+    --panel-2: #0e0f13;
+    --line: rgba(255,255,255,0.08);
+    --signal: #ff4429;
+    --signal-dim: rgba(255,68,41,0.14);
+    --phosphor: #5eefa0;
+    --amber: #ffb454;
+    --ink: #ecebee;
+    --ink-dim: #86838e;
+    --ink-faint: #5b5860;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--void);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background-image: radial-gradient(rgba(255,255,255,0.045) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .app { max-width: 1080px; margin: 0 auto; padding: 32px 20px 80px; }
 
-        #status { margin: 15px 0; font-size: 1rem; font-weight: 500; }
-        
-        .table-responsive { overflow-x: auto; background: #1c1c24; border-radius: 8px; border: 1px solid #2d2d3b; margin-top: 15px; }
-        table { width: 100%; border-collapse: collapse; min-width: 650px; }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #2d2d3b; vertical-align: middle; }
-        th { background: #2d2d3b; color: #a0a0a0; font-size: 0.85rem; text-transform: uppercase; }
-        
-        .thumb-img { border-radius: 6px; width: 120px; height: 68px; object-fit: cover; display: block; }
-        .video-title { color: #fff; text-decoration: none; font-weight: 600; font-size: 0.95rem; display: block; margin-bottom: 4px; }
-        .video-title:hover { color: #00e676; }
-        .channel-title { color: #888; font-size: 0.8rem; }
-        .sub-badge { color: #00e676; font-weight: bold; font-size: 1.1rem; }
-        .watch-btn { display: inline-block; padding: 8px 14px; background: #00e676; color: #000; text-decoration: none; border-radius: 6px; font-size: 0.9rem; font-weight: bold; }
-        .watch-btn:hover { background: #00c853; }
-    </style>
+  .app-header { margin-bottom: 24px; }
+  .app-header h1 {
+    font-size: 26px; font-weight: 800; margin: 0 0 4px;
+    letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px;
+  }
+  .app-header .tagline { margin: 0; color: var(--ink-dim); font-size: 14px; }
+
+  .api-key-section {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 14px; padding: 16px 18px; margin-bottom: 22px;
+  }
+  .api-key-section label {
+    display: block; font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--ink-faint); margin-bottom: 8px;
+  }
+  .api-key-row { display: flex; align-items: center; gap: 10px; }
+  .api-key-row input { flex: 1; }
+  .key-status { font-size: 12px; color: var(--ink-faint); white-space: nowrap; font-family: ui-monospace, 'SF Mono', Consolas, monospace; }
+  .key-status.saved { color: var(--phosphor); }
+  .key-hint { margin: 8px 0 0; font-size: 12px; color: var(--ink-faint); }
+
+  input[type="text"], input[type="number"], input[type="password"] {
+    background: var(--panel-2); border: 1px solid var(--line); color: var(--ink);
+    border-radius: 10px; padding: 11px 14px; font-size: 14px; outline: none;
+    transition: border-color .15s, box-shadow .15s; width: 100%; font-family: inherit;
+  }
+  input:focus { border-color: var(--signal); box-shadow: 0 0 0 3px var(--signal-dim); }
+
+  .tabs { display: flex; gap: 6px; margin-bottom: 22px; border-bottom: 1px solid var(--line); }
+  .tab-btn {
+    background: transparent; border: none; color: var(--ink-dim); font-size: 14.5px;
+    font-weight: 700; padding: 11px 16px; cursor: pointer; border-radius: 10px 10px 0 0;
+    position: relative; top: 1px; transition: color .15s; font-family: inherit;
+  }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: #fff; border-bottom: 2px solid var(--signal); }
+  .tab-btn:focus-visible, .primary-btn:focus-visible, .watch-link:focus-visible {
+    outline: 2px solid var(--phosphor); outline-offset: 2px;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeIn .25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .controls { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+  .field { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 200px; }
+  .field-small { flex: 0 0 150px; min-width: 130px; }
+  .field label {
+    font-size: 11px; font-weight: 700; color: var(--ink-faint);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .region-chip {
+    background: rgba(255,255,255,0.04); border: 1px solid var(--line); color: var(--ink-dim);
+    font-size: 13.5px; font-weight: 600; padding: 11px 16px; border-radius: 10px; white-space: nowrap;
+  }
+
+  .primary-btn {
+    background: var(--signal); border: none; color: #fff; font-weight: 700; font-size: 14px;
+    padding: 12px 22px; border-radius: 10px; cursor: pointer; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: transform .12s, box-shadow .12s, opacity .12s, background .12s;
+    box-shadow: 0 4px 14px rgba(255,68,41,0.25); font-family: inherit;
+  }
+  .primary-btn:hover:not(:disabled) { background: #ff5b3f; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(255,68,41,0.35); }
+  .primary-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+  .status-msg { font-size: 13.5px; margin: 10px 0 14px; min-height: 18px; }
+  .status-msg.info { color: var(--ink-dim); }
+  .status-msg.success { color: var(--phosphor); }
+  .status-msg.error { color: #ff6b6b; }
+
+  .results-wrap { overflow-x: auto; border-radius: 14px; }
+  .results-table {
+    width: 100%; border-collapse: collapse; background: var(--panel-2);
+    border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+  }
+  .results-table thead th {
+    text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: .07em;
+    color: var(--ink-faint); padding: 12px 16px; border-bottom: 1px solid var(--line); font-weight: 700;
+  }
+  .results-table tbody tr { border-bottom: 1px solid rgba(255,255,255,.05); transition: background .15s; }
+  .results-table tbody tr:last-child { border-bottom: none; }
+  .results-table tbody tr:hover { background: rgba(255,255,255,.025); }
+  .results-table td { padding: 12px 16px; vertical-align: middle; }
+
+  .video-cell { display: flex; align-items: center; gap: 12px; min-width: 260px; }
+  .thumb { width: 96px; height: 54px; object-fit: cover; border-radius: 8px; background: #1a1c21; flex-shrink: 0; }
+  .video-meta { min-width: 0; }
+  .video-title {
+    font-size: 14px; font-weight: 600; color: var(--ink); overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.35;
+  }
+  .video-channel { font-size: 12.5px; color: var(--ink-dim); margin-top: 2px; }
+  .video-views {
+    font-size: 11.5px; color: var(--ink-faint); margin-top: 2px;
+    font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+  }
+
+  .badge {
+    display: inline-block; padding: 5px 11px; border-radius: 999px; font-size: 12.5px;
+    font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;
+    font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+  }
+  .badge-phosphor { color: var(--phosphor); background: rgba(94,239,160,0.12); }
+  .badge-amber { color: var(--amber); background: rgba(255,180,84,0.12); }
+
+  .ratio-badge { font-weight: 800; }
+  .ratio-badge.ratio-hot { color: #fff; background: var(--signal); }
+  .ratio-badge.ratio-warm { color: var(--amber); background: rgba(255,180,84,0.14); }
+  .ratio-badge.ratio-mild { color: var(--ink-dim); background: rgba(255,255,255,0.06); }
+
+  .watch-link {
+    color: #fff; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+    padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; text-decoration: none;
+    white-space: nowrap; transition: background .15s, border-color .15s; display: inline-block;
+  }
+  .watch-link:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.2); }
+
+  .empty-state {
+    text-align: center; padding: 48px 20px; background: var(--panel-2);
+    border: 1px dashed var(--line); border-radius: 14px; color: var(--ink-dim);
+  }
+  .empty-icon { font-size: 28px; margin-bottom: 10px; opacity: 0.8; }
+
+  .spinner {
+    width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff;
+    border-radius: 50%; display: inline-block; animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 640px) {
+    .app { padding: 20px 14px 60px; }
+    .video-cell { min-width: 200px; }
+    .thumb { width: 68px; height: 38px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚀 Viral Hunt Pro</h1>
-        <p class="desc">Find low-subscriber channels with high-view videos (Last 24 Hours)</p>
+  <div class="app">
+    <header class="app-header">
+      <h1>🎯 Viral Hunt Pro</h1>
+      <p class="tagline">Scanning YouTube for signals buried in the noise.</p>
+    </header>
 
-        <input type="password" id="ytKey" placeholder="🔑 Paste your YouTube API Key here..." style="width: 100%;">
-        
+    <section class="api-key-section">
+      <label for="apiKeyInput">YouTube Data API v3 Key</label>
+      <div class="api-key-row">
+        <input type="password" id="apiKeyInput" placeholder="Paste your API key…" autocomplete="off">
+        <span id="apiKeyStatus" class="key-status"></span>
+      </div>
+      <p class="key-hint">From Google Cloud Console. Enable YouTube Data API v3 on your project first.</p>
+    </section>
+
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="search" type="button">🔍 Search Topic</button>
+      <button class="tab-btn" data-tab="trending" type="button">🔥 Top Trending</button>
+    </nav>
+
+    <main>
+      <section id="searchTab" class="tab-panel active">
         <div class="controls">
-            <input type="text" id="query" placeholder="🔍 Topic (e.g., anime recap, gaming)">
-            <input type="number" id="maxSubs" value="5000" placeholder="Max Subs">
-            <button onclick="startHunting()" id="huntBtn">Start Hunting ⚡</button>
+          <div class="field">
+            <label for="queryInput">Query</label>
+            <input type="text" id="queryInput" placeholder="e.g. ai automation, dark psychology…">
+          </div>
+          <div class="field field-small">
+            <label for="maxSubsInput">Max Subs</label>
+            <input type="number" id="maxSubsInput" value="5000" min="0" step="1">
+          </div>
+          <button id="searchBtn" class="primary-btn" type="button">Search</button>
         </div>
+        <div id="searchStatus" class="status-msg"></div>
+        <div id="searchResultsWrap" class="results-wrap"></div>
+      </section>
 
-        <div id="status"></div>
-        
-        <div class="table-responsive" id="tableContainer" style="display: none;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Thumbnail</th>
-                        <th>Video Title & Channel</th>
-                        <th>Subscribers</th>
-                        <th>Watch Video</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
+      <section id="trendingTab" class="tab-panel">
+        <div class="controls">
+          <div class="region-chip">🇮🇳 Region: India</div>
+          <button id="trendingBtn" class="primary-btn" type="button">Fetch Trending</button>
         </div>
-    </div>
+        <div id="trendingStatus" class="status-msg"></div>
+        <div id="trendingResultsWrap" class="results-wrap"></div>
+      </section>
+    </main>
+  </div>
 
-    <script>
-        window.onload = () => { 
-            document.getElementById('ytKey').value = localStorage.getItem('ytKey') || ''; 
-        };
+<script>
+'use strict';
 
-        async function startHunting() {
-            const ytKey = document.getElementById('ytKey').value.trim();
-            localStorage.setItem('ytKey', ytKey);
-            const query = document.getElementById('query').value.trim();
-            
-            const maxSubsInput = document.getElementById('maxSubs').value.trim();
-            const maxSubs = maxSubsInput === "" ? 5000 : parseInt(maxSubsInput);
+const YT_API_BASE = 'https://www.googleapis.com/youtube/v3';
+const API_KEY_STORAGE = 'viralHuntPro_apiKey';
 
-            const statusBox = document.getElementById('status');
-            const tableBody = document.getElementById('tableBody');
-            const tableContainer = document.getElementById('tableContainer');
-            const huntBtn = document.getElementById('huntBtn');
+/* ---------- API key persistence ---------- */
 
-            if (!ytKey || !query) { 
-                statusBox.innerHTML = "<span style='color:#ff4444;'>⚠️ API Key aur Topic dono daalna zaroori hai!</span>"; 
-                return; 
-            }
+function loadApiKey() {
+  const saved = localStorage.getItem(API_KEY_STORAGE);
+  if (saved) {
+    document.getElementById('apiKeyInput').value = saved;
+    setKeyStatus(true);
+  }
+}
 
-            huntBtn.disabled = true;
-            huntBtn.innerText = "Hunting... ⏳";
-            statusBox.innerHTML = "<span style='color:#fff;'>🔍 1/2: Latest videos fetch ho rahi hain...</span>";
-            tableBody.innerHTML = "";
-            tableContainer.style.display = "none";
+function setKeyStatus(hasKey) {
+  const el = document.getElementById('apiKeyStatus');
+  el.textContent = hasKey ? '● saved' : '';
+  el.className = hasKey ? 'key-status saved' : 'key-status';
+}
 
-            try {
-                let yesterday = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
-                
-                const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=50&order=viewCount&publishedAfter=${yesterday.toISOString()}&q=${encodeURIComponent(query)}&key=${ytKey}`);
-                const data = await res.json();
+document.getElementById('apiKeyInput').addEventListener('input', (e) => {
+  const val = e.target.value.trim();
+  if (val) {
+    localStorage.setItem(API_KEY_STORAGE, val);
+    setKeyStatus(true);
+  } else {
+    localStorage.removeItem(API_KEY_STORAGE);
+    setKeyStatus(false);
+  }
+});
 
-                if (data.error) throw new Error(data.error.message);
-                if (!data.items || data.items.length === 0) {
-                    statusBox.innerHTML = "<span style='color:#ffbb33;'>⚠️ Is topic par pichle 24 ghante mein koi video nahi mili.</span>";
-                    resetBtn();
-                    return;
-                }
+function getApiKey() {
+  return document.getElementById('apiKeyInput').value.trim();
+}
 
-                statusBox.innerHTML = `<span style='color:#fff;'>⚙️ 2/2: ${data.items.length} channels ke Subscribers check ho rahe hain...</span>`;
+function requireApiKey(statusElId) {
+  const key = getApiKey();
+  if (!key) {
+    showStatus(statusElId, 'Add your YouTube Data API v3 key above first.', 'error');
+    document.getElementById('apiKeyInput').focus();
+    return null;
+  }
+  return key;
+}
 
-                let channelIds = data.items.map(v => v.snippet.channelId).join(',');
-                const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelIds}&key=${ytKey}`);
-                const chData = await chRes.json();
+/* ---------- Tabs ---------- */
 
-                let stats = {};
-                chData.items.forEach(c => {
-                    stats[c.id] = parseInt(c.statistics.subscriberCount) || 0;
-                });
+document.querySelectorAll('.tab-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab + 'Tab').classList.add('active');
+  });
+});
 
-                let matchCount = 0;
+/* ---------- Shared helpers ---------- */
 
-                for (let v of data.items) {
-                    let chId = v.snippet.channelId;
-                    let subs = stats[chId] !== undefined ? stats[chId] : 0;
+function showStatus(elId, message, type) {
+  const el = document.getElementById(elId);
+  if (!message) {
+    el.textContent = '';
+    el.className = 'status-msg';
+    return;
+  }
+  el.textContent = message;
+  el.className = `status-msg ${type}`;
+}
 
-                    if (subs <= maxSubs) {
-                        matchCount++;
-                        let vidId = v.id.videoId;
-                        let thumb = v.snippet.thumbnails.medium ? v.snippet.thumbnails.medium.url : v.snippet.thumbnails.default.url;
-                        let videoUrl = `https://www.youtube.com/watch?v=${vidId}`;
+function setLoading(mode, isLoading) {
+  const btn = document.getElementById(mode === 'search' ? 'searchBtn' : 'trendingBtn');
+  const label = mode === 'search' ? 'Search' : 'Fetch Trending';
+  btn.disabled = isLoading;
+  btn.innerHTML = isLoading ? '<span class="spinner"></span> Loading…' : label;
+}
 
-                        tableBody.innerHTML += `
-                            <tr>
-                                <td>
-                                    <a href="${videoUrl}" target="_blank">
-                                        <img class="thumb-img" src="${thumb}" alt="Thumbnail">
-                                    </a>
-                                </td>
-                                <td>
-                                    <a class="video-title" href="${videoUrl}" target="_blank">${v.snippet.title}</a>
-                                    <span class="channel-title">📺 ${v.snippet.channelTitle}</span>
-                                </td>
-                                <td>
-                                    <span class="sub-badge">${subs.toLocaleString()}</span>
-                                </td>
-                                <td>
-                                    <a class="watch-btn" href="${videoUrl}" target="_blank">Watch ↗</a>
-                                </td>
-                            </tr>
-                        `;
-                    }
-                }
+function clearResults(wrapId) {
+  document.getElementById(wrapId).innerHTML = '';
+}
 
-                if (matchCount > 0) {
-                    tableContainer.style.display = "block";
-                    statusBox.innerHTML = `<span style='color:#00e676;'>✅ Hunt Complete! <b>${matchCount} videos</b> mili jinke subs ≤ ${maxSubs.toLocaleString()} hain.</span>`;
-                } else {
-                    tableContainer.style.display = "none";
-                    statusBox.innerHTML = `<span style='color:#ffbb33;'>⚠️ Videos mili lekin kisi ke subs ≤ ${maxSubs} nahi the. Max subs limit badha kar dekho.</span>`;
-                }
+function renderEmptyState(wrapId, message) {
+  document.getElementById(wrapId).innerHTML =
+    `<div class="empty-state"><div class="empty-icon">📡</div><p>${escapeHtml(message)}</p></div>`;
+}
 
-            } catch (err) {
-                statusBox.innerHTML = `<span style='color:#ff4444;'>❌ Error: ${err.message}</span>`;
-            }
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
 
-            resetBtn();
+function getThumbnailUrl(snippet) {
+  const thumbs = snippet && snippet.thumbnails;
+  if (!thumbs) return '';
+  const t = thumbs.medium || thumbs.high || thumbs.default || thumbs.standard || thumbs.maxres;
+  return t ? t.url : '';
+}
 
-            function resetBtn() {
-                huntBtn.disabled = false;
-                huntBtn.innerText = "Start Hunting ⚡";
-            }
-        }
-    </script>
+function formatAbbreviated(num) {
+  if (num == null || isNaN(num)) return '0';
+  if (num >= 1e9) return (num / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
+  if (num >= 1e6) return (num / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (num >= 1e3) return (num / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
+  return String(num);
+}
+
+function formatRatio(ratio) {
+  const rounded = ratio >= 10 ? Math.round(ratio) : Math.round(ratio * 10) / 10;
+  return `${rounded}×`;
+}
+
+function ratioTierClass(ratio) {
+  if (ratio >= 50) return 'ratio-hot';
+  if (ratio >= 10) return 'ratio-warm';
+  return 'ratio-mild';
+}
+
+function chunkArray(arr, size) {
+  const out = [];
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+  return out;
+}
+
+async function handleApiResponse(res) {
+  let data = null;
+  try {
+    data = await res.json();
+  } catch {
+    throw new Error('Unexpected response from the YouTube API.');
+  }
+  if (!res.ok) {
+    const apiMsg = data && data.error ? data.error.message : null;
+    if (res.status === 403) {
+      throw new Error(
+        apiMsg && apiMsg.toLowerCase().includes('quota')
+          ? 'Daily API quota exceeded. Try again tomorrow or use a different key.'
+          : `Access denied: ${apiMsg || 'check that your key is valid and YouTube Data API v3 is enabled.'}`
+      );
+    }
+    if (res.status === 400) throw new Error(`Bad request: ${apiMsg || 'check your inputs.'}`);
+    throw new Error(apiMsg || `YouTube API error (${res.status}).`);
+  }
+  return data;
+}
+
+// Zero Sub Bug Fix: an empty/invalid field falls back to 5000, but an explicit
+// "0" must survive as 0. A naive `parseInt(value) || 5000` breaks this because
+// 0 is falsy in JS, so empty/NaN is checked explicitly instead of relying on ||.
+function parseMaxSubs(raw) {
+  const trimmed = String(raw).trim();
+  if (trimmed === '') return 5000;
+  const num = Number(trimmed);
+  if (Number.isNaN(num) || num < 0) return 5000;
+  return Math.floor(num);
+}
+
+/* ---------- Search Topic ---------- */
+
+async function searchTopic() {
+  const apiKey = requireApiKey('searchStatus');
+  if (!apiKey) return;
+
+  const query = document.getElementById('queryInput').value.trim();
+  if (!query) {
+    showStatus('searchStatus', 'Enter a search query first.', 'error');
+    return;
+  }
+
+  const maxSubs = parseMaxSubs(document.getElementById('maxSubsInput').value);
+
+  setLoading('search', true);
+  clearResults('searchResultsWrap');
+  showStatus('searchStatus', 'Scanning the last 24 hours…', 'info');
+
+  try {
+    const publishedAfter = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    // videoDuration=long is required to fully exclude Shorts (Shorts always fall
+    // under YouTube's "short" bucket). Note it also excludes 4-20 min "medium"
+    // videos, so results are limited to 20+ minute long-form uploads.
+    const searchUrl = `${YT_API_BASE}/search?part=snippet&type=video&order=viewCount` +
+      `&videoDuration=long&publishedAfter=${encodeURIComponent(publishedAfter)}` +
+      `&maxResults=50&q=${encodeURIComponent(query)}&key=${encodeURIComponent(apiKey)}`;
+
+    const searchData = await handleApiResponse(await fetch(searchUrl));
+    const items = (searchData.items || []).filter((it) => it.id && it.id.videoId);
+
+    if (items.length === 0) {
+      showStatus('searchStatus', '');
+      renderEmptyState('searchResultsWrap', `No signal in the last 24 hours for "${query}". Try a broader query.`);
+      return;
+    }
+
+    const videoIds = items.map((it) => it.id.videoId);
+    const channelIds = [...new Set(items.map((it) => it.snippet.channelId))];
+
+    const [videoStats, channelStats] = await Promise.all([
+      fetchVideoStats(videoIds, apiKey),
+      fetchChannelStats(channelIds, apiKey),
+    ]);
+
+    let results = items.map((it) => {
+      const vid = it.id.videoId;
+      const ch = channelStats[it.snippet.channelId];
+      const vs = videoStats[vid];
+      const viewCount = vs ? vs.viewCount : null;
+      const subscriberCount = ch ? ch.subscriberCount : null;
+      return {
+        videoId: vid,
+        title: it.snippet.title,
+        channelTitle: it.snippet.channelTitle,
+        thumbnail: getThumbnailUrl(it.snippet),
+        viewCount,
+        subscriberCount,
+        hiddenSubs: ch ? ch.hidden : false,
+        ratio: viewCount != null && subscriberCount != null ? viewCount / Math.max(subscriberCount, 1) : 0,
+      };
+    });
+
+    // Channels that hide their subscriber count can't be checked against the
+    // threshold, so they're dropped rather than assumed to pass.
+    results = results.filter((r) => r.subscriberCount !== null && !r.hiddenSubs);
+    results = results.filter((r) => r.subscriberCount <= maxSubs);
+    results.sort((a, b) => b.ratio - a.ratio);
+
+    if (results.length === 0) {
+      showStatus('searchStatus', '');
+      renderEmptyState('searchResultsWrap', `0 videos found under ${maxSubs.toLocaleString()} subs, try increasing the limit.`);
+    } else {
+      showStatus('searchStatus', `Found ${results.length} outlier${results.length === 1 ? '' : 's'}.`, 'success');
+      document.getElementById('searchResultsWrap').innerHTML = buildSearchTableHTML(results);
+    }
+  } catch (err) {
+    showStatus('searchStatus', err.message || 'Something went wrong.', 'error');
+  } finally {
+    setLoading('search', false);
+  }
+}
+
+async function fetchVideoStats(videoIds, apiKey) {
+  if (videoIds.length === 0) return {};
+  const map = {};
+  for (const chunk of chunkArray(videoIds, 50)) {
+    const url = `${YT_API_BASE}/videos?part=statistics&id=${chunk.join(',')}&key=${encodeURIComponent(apiKey)}`;
+    const data = await handleApiResponse(await fetch(url));
+    (data.items || []).forEach((v) => {
+      map[v.id] = { viewCount: parseInt((v.statistics && v.statistics.viewCount) || '0', 10) };
+    });
+  }
+  return map;
+}
+
+async function fetchChannelStats(channelIds, apiKey) {
+  if (channelIds.length === 0) return {};
+  const map = {};
+  for (const chunk of chunkArray(channelIds, 50)) {
+    const url = `${YT_API_BASE}/channels?part=statistics&id=${chunk.join(',')}&key=${encodeURIComponent(apiKey)}`;
+    const data = await handleApiResponse(await fetch(url));
+    (data.items || []).forEach((ch) => {
+      const stats = ch.statistics || {};
+      map[ch.id] = {
+        subscriberCount: stats.hiddenSubscriberCount ? null : parseInt(stats.subscriberCount || '0', 10),
+        hidden: !!stats.hiddenSubscriberCount,
+      };
+    });
+  }
+  return map;
+}
+
+/* ---------- Top Trending ---------- */
+
+async function fetchTrending() {
+  const apiKey = requireApiKey('trendingStatus');
+  if (!apiKey) return;
+
+  setLoading('trending', true);
+  clearResults('trendingResultsWrap');
+  showStatus('trendingStatus', 'Reading the trending feed…', 'info');
+
+  try {
+    const url = `${YT_API_BASE}/videos?part=snippet,statistics&chart=mostPopular` +
+      `&regionCode=IN&maxResults=50&key=${encodeURIComponent(apiKey)}`;
+    const data = await handleApiResponse(await fetch(url));
+    const items = data.items || [];
+
+    if (items.length === 0) {
+      showStatus('trendingStatus', '');
+      renderEmptyState('trendingResultsWrap', 'No trending data available right now. Try again shortly.');
+      return;
+    }
+
+    const results = items.map((it) => ({
+      videoId: it.id,
+      title: it.snippet.title,
+      channelTitle: it.snippet.channelTitle,
+      thumbnail: getThumbnailUrl(it.snippet),
+      viewCount: parseInt((it.statistics && it.statistics.viewCount) || '0', 10),
+    }));
+
+    showStatus('trendingStatus', `Showing ${results.length} trending videos in India.`, 'success');
+    document.getElementById('trendingResultsWrap').innerHTML = buildTrendingTableHTML(results);
+  } catch (err) {
+    showStatus('trendingStatus', err.message || 'Something went wrong.', 'error');
+  } finally {
+    setLoading('trending', false);
+  }
+}
+
+/* ---------- Rendering ---------- */
+
+function buildSearchTableHTML(results) {
+  const rows = results.map((r) => {
+    const tier = ratioTierClass(r.ratio);
+    return `
+      <tr>
+        <td class="video-cell">
+          <img class="thumb" src="${escapeHtml(r.thumbnail)}" alt="" loading="lazy">
+          <div class="video-meta">
+            <div class="video-title" title="${escapeHtml(r.title)}">${escapeHtml(r.title)}</div>
+            <div class="video-channel">${escapeHtml(r.channelTitle)}</div>
+            <div class="video-views">${formatAbbreviated(r.viewCount)} views</div>
+          </div>
+        </td>
+        <td><span class="badge badge-phosphor">${r.subscriberCount.toLocaleString()} subs</span></td>
+        <td><span class="badge ratio-badge ${tier}">${formatRatio(r.ratio)}</span></td>
+        <td><a class="watch-link" href="https://www.youtube.com/watch?v=${encodeURIComponent(r.videoId)}" target="_blank" rel="noopener noreferrer">Watch ↗</a></td>
+      </tr>`;
+  }).join('');
+
+  return `<table class="results-table"><thead><tr>
+      <th>Video</th><th>Subs</th><th title="Views per subscriber">Outlier</th><th></th>
+    </tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function buildTrendingTableHTML(results) {
+  const rows = results.map((r) => `
+      <tr>
+        <td class="video-cell">
+          <img class="thumb" src="${escapeHtml(r.thumbnail)}" alt="" loading="lazy">
+          <div class="video-meta">
+            <div class="video-title" title="${escapeHtml(r.title)}">${escapeHtml(r.title)}</div>
+            <div class="video-channel">${escapeHtml(r.channelTitle)}</div>
+          </div>
+        </td>
+        <td><span class="badge badge-amber">${formatAbbreviated(r.viewCount)} views</span></td>
+        <td><a class="watch-link" href="https://www.youtube.com/watch?v=${encodeURIComponent(r.videoId)}" target="_blank" rel="noopener noreferrer">Watch ↗</a></td>
+      </tr>`).join('');
+
+  return `<table class="results-table"><thead><tr><th>Video</th><th>Views</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+/* ---------- Init ---------- */
+
+document.getElementById('searchBtn').addEventListener('click', searchTopic);
+document.getElementById('trendingBtn').addEventListener('click', fetchTrending);
+document.getElementById('queryInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') searchTopic();
+});
+document.getElementById('maxSubsInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') searchTopic();
+});
+
+loadApiKey();
+</script>
 </body>
 </html>
