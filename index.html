@@ -1,1188 +1,4380 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viral Hunt Pro | Liquid Glass Edition</title>
-    <!-- 
-      ========================================================================
-      VIRAL HUNT PRO - LIQUID GLASS EDITION (ENTERPRISE UNMINIFIED)
-      ========================================================================
-      Features Included:
-      - Dynamic Date Filters (Fixes the 0 results bug for specific queries)
-      - Live API Key Verification (Fixes the red unverified bug)
-      - VPH (Velocity) Tracking & Outlier Math
-      - Hidden Niches Database & Keyword Alphabet Soup
-      - Competitor Spy Modal & CSV Export
-      - Grid vs Table Toggle
-      ========================================================================
-    -->
-    <style>
-        /* ======================================================================
-           1. PREMIUM DESIGN TOKENS & COLOR PALETTE
-           ====================================================================== */
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>Viral Hunt Pro — Enterprise Edition</title>
 
-        :root {
-            /* Background Deep Colors */
-            --bg-base: #050505;
-            --bg-mesh-1: #4f149b; /* Deep Purple */
-            --bg-mesh-2: #0f4c81; /* Classic Blue */
-            --bg-mesh-3: #008774; /* Deep Teal */
-            
-            /* Glassmorphism Variables */
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-bg-hover: rgba(255, 255, 255, 0.06);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-border-light: rgba(255, 255, 255, 0.15);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-            --glass-blur: blur(16px);
-            
-            /* Typography Colors */
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.65);
-            --text-tertiary: rgba(255, 255, 255, 0.4);
-            
-            /* Premium Accent Colors */
-            --accent-cyan: #00f0ff;
-            --accent-purple: #9d4edd;
-            --accent-pink: #ff007f;
-            --accent-green: #00ff88;
-            --accent-orange: #ff7300;
-            --accent-red: #ff3366;
+  <!-- =========================================================
+       FONT IMPORTS
+       ========================================================= -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
 
-            /* Radii */
-            --rad-sm: 8px;
-            --rad-md: 16px;
-            --rad-lg: 24px;
-            --rad-pill: 9999px;
+  <style>
+    /* =========================================================
+       01. ROOT / VARIABLES
+       ========================================================= */
+    :root {
+      --bg: #050711;
+      --bg-soft: #090c17;
+      --panel: rgba(13, 17, 30, 0.78);
+      --panel-solid: #101522;
+      --panel-2: rgba(18, 23, 40, 0.92);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.14);
 
-            /* Fonts */
-            --font-main: 'Outfit', -apple-system, sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
+      --text: #f5f7ff;
+      --muted: #8f99b2;
+      --muted-2: #667089;
 
-        /* ======================================================================
-           2. GLOBAL RESET & ANIMATED BACKGROUND
-           ====================================================================== */
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-        }
-        
-        body, html {
-            min-height: 100vh;
-            background-color: var(--bg-base);
-            color: var(--text-primary);
-            font-family: var(--font-main);
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
+      --primary: #7c5cff;
+      --primary-2: #4e8cff;
+      --cyan: #27d9ff;
+      --green: #3fe28f;
+      --yellow: #ffd166;
+      --orange: #ff9d4d;
+      --red: #ff5577;
+      --pink: #fc63ba;
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+      --shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+      --radius: 18px;
+      --radius-sm: 12px;
 
-        /* Animated Mesh Gradient Background */
-        .animated-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1; overflow: hidden; background: var(--bg-base);
-        }
+      --transition: 180ms ease;
+      --sidebar-width: 270px;
+    }
 
-        .blob {
-            position: absolute; filter: blur(90px); opacity: 0.5;
-            border-radius: 50%; animation: float 20s infinite alternate ease-in-out;
-        }
+    /* =========================================================
+       02. GLOBAL RESET
+       ========================================================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--bg-mesh-1); animation-delay: 0s; }
-        .blob-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: var(--bg-mesh-2); animation-delay: -5s; }
-        .blob-3 { top: 40%; left: 40%; width: 40vw; height: 40vw; background: var(--bg-mesh-3); animation-delay: -10s; }
+    html {
+      scroll-behavior: smooth;
+    }
 
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(5vw, 10vh) scale(1.1); }
-            66% { transform: translate(-10vw, 5vh) scale(0.9); }
-            100% { transform: translate(0, 0) scale(1); }
-        }
+    body {
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(124, 92, 255, 0.12), transparent 30%),
+        radial-gradient(circle at 80% 10%, rgba(39, 217, 255, 0.08), transparent 25%),
+        radial-gradient(circle at 100% 80%, rgba(252, 99, 186, 0.06), transparent 30%),
+        var(--bg);
+      font-family: "Inter", sans-serif;
+      overflow-x: hidden;
+    }
 
-        .app-container { max-width: 1350px; margin: 0 auto; padding: 40px 20px 100px; }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, black, transparent);
+      z-index: -1;
+    }
 
-        /* ======================================================================
-           3. GLASSMORPHISM UTILITIES
-           ====================================================================== */
-        .glass-panel {
-            background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border); border-radius: var(--rad-lg); box-shadow: var(--glass-shadow);
-        }
+    button,
+    input,
+    select {
+      font: inherit;
+    }
 
-        /* ======================================================================
-           4. HEADER & API CONFIGURATION
-           ====================================================================== */
-        .header-layout {
-            display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 40px; flex-wrap: wrap; gap: 20px;
-        }
+    button {
+      border: 0;
+      cursor: pointer;
+    }
 
-        .brand-box {
-            padding: 30px; display: flex; flex-direction: column; justify-content: center; flex: 1; min-width: 300px; position: relative; overflow: hidden;
-        }
-        
-        .brand-box::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(to bottom right, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 100%);
-            transform: rotate(30deg); pointer-events: none;
-        }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-        .brand-title { font-size: 42px; font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; display: flex; align-items: center; gap: 15px; }
-        .version-tag {
-            font-size: 14px; font-weight: 700; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; border: 1px solid rgba(157, 78, 221, 0.4);
-            padding: 4px 12px; border-radius: var(--rad-pill); letter-spacing: 1px;
-        }
-        .brand-subtitle { color: var(--text-secondary); font-size: 16px; font-weight: 400; }
+    img {
+      max-width: 100%;
+      display: block;
+    }
 
-        .api-box { padding: 25px 30px; display: flex; flex-direction: column; justify-content: center; width: 450px; flex-shrink: 0; }
-        .api-box-title { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-tertiary); font-weight: 700; margin-bottom: 12px; }
-        
-        .api-input-wrapper { display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: var(--rad-md); padding: 5px 15px; transition: 0.3s; }
-        .api-input-wrapper:focus-within { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); }
-        .api-input-wrapper input { flex: 1; background: transparent; border: none; color: var(--text-primary); padding: 12px 0; font-family: var(--font-mono); font-size: 14px; outline: none; }
-        
-        .status-container { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 6px 12px; border-radius: var(--rad-pill); }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 8px currentColor; }
-        .status-dot.red { background: var(--accent-red); color: var(--accent-red); }
-        .status-dot.green { background: var(--accent-green); color: var(--accent-green); }
-        .status-text { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        .status-text.unverified { color: var(--accent-red); }
-        .status-text.verified { color: var(--accent-green); }
+    .mono {
+      font-family: "JetBrains Mono", monospace;
+    }
 
-        /* ======================================================================
-           5. FLOATING NAVIGATION (APPLE STYLE PILL)
-           ====================================================================== */
-        .nav-wrapper { display: flex; justify-content: center; margin-bottom: 40px; position: sticky; top: 20px; z-index: 100; }
-        .nav-pill {
-            display: inline-flex; background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border-light); border-radius: var(--rad-pill); padding: 6px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            overflow-x: auto; max-width: 100%; scrollbar-width: none;
-        }
-        .nav-btn {
-            background: transparent; border: none; color: var(--text-secondary); font-size: 14px; font-weight: 600; font-family: var(--font-main);
-            padding: 12px 24px; border-radius: var(--rad-pill); cursor: pointer; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; gap: 8px; white-space: nowrap;
-        }
-        .nav-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
-        .nav-btn.active { background: rgba(255,255,255,0.1); color: var(--text-primary); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1); }
-        
-        .tab-content { display: none; opacity: 0; transform: translateY(20px); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .tab-content.active { display: block; opacity: 1; transform: translateY(0); }
+    /* =========================================================
+       03. APP SHELL
+       ========================================================= */
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
 
-        /* ======================================================================
-           6. INPUT CONTROLS & FORMS (PREMIUM UI)
-           ====================================================================== */
-        .control-dashboard { padding: 25px; margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; }
-        .input-group { display: flex; flex-direction: column; gap: 10px; flex: 1; min-width: 200px; }
-        .input-group-sm { flex: 0 0 150px; }
-        .input-group label { font-size: 12px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 1px; margin-left: 5px; }
-        
-        .glass-input {
-            background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary);
-            padding: 14px 20px; border-radius: var(--rad-md); font-size: 15px; font-family: var(--font-main); transition: all 0.3s; width: 100%;
-        }
-        .glass-input:focus { border-color: var(--accent-cyan); background: rgba(0,240,255,0.02); outline: none; }
-        
-        select.glass-input {
-            appearance: none; cursor: pointer;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat; background-position: right 15px center; background-size: 16px;
-        }
-        select.glass-input option { background: var(--bg-base); color: var(--text-primary); }
+    .sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 50;
+      border-right: 1px solid var(--border);
+      background:
+        linear-gradient(180deg, rgba(13, 17, 30, 0.97), rgba(7, 9, 17, 0.98));
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      padding: 22px 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 30px 0 70px rgba(0, 0, 0, 0.18);
+    }
 
-        .btn-liquid {
-            position: relative; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border: none;
-            color: #fff; font-size: 15px; font-weight: 700; font-family: var(--font-main); padding: 14px 30px; border-radius: var(--rad-md);
-            cursor: pointer; overflow: hidden; transition: 0.3s; box-shadow: 0 10px 20px rgba(157, 78, 221, 0.2);
-            display: inline-flex; align-items: center; justify-content: center; gap: 10px; white-space: nowrap;
-        }
-        .btn-liquid::after {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transform: skewX(-20deg); transition: 0.5s;
-        }
-        .btn-liquid:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(157, 78, 221, 0.4); }
-        .btn-liquid:hover::after { left: 150%; }
-        .btn-liquid:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .main {
+      margin-left: var(--sidebar-width);
+      width: calc(100% - var(--sidebar-width));
+      min-width: 0;
+    }
 
-        .btn-outline {
-            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border-light);
-            color: var(--text-primary); padding: 12px 24px; border-radius: var(--rad-md);
-            font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.3s;
-        }
-        .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
+    /* =========================================================
+       04. BRAND
+       ========================================================= */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 8px 22px;
+    }
 
-        /* ======================================================================
-           7. CUSTOM TOAST NOTIFICATIONS
-           ====================================================================== */
-        #toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast {
-            background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-left: 4px solid var(--accent-cyan); border-radius: 8px; padding: 16px 24px;
-            color: #fff; font-size: 14px; font-weight: 500; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            display: flex; align-items: center; gap: 12px; min-width: 300px;
-            animation: toastSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        .toast.error { border-color: var(--accent-red); }
-        .toast.success { border-color: var(--accent-green); }
-        .toast.info { border-color: var(--accent-cyan); }
-        @keyframes toastSlideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes toastFadeOut { to { opacity: 0; transform: translateY(-20px); } }
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      color: white;
+      font-weight: 800;
+      font-size: 18px;
+      background:
+        linear-gradient(135deg, var(--primary), var(--primary-2));
+      box-shadow:
+        0 10px 35px rgba(124, 92, 255, 0.4),
+        inset 0 1px rgba(255, 255, 255, 0.25);
+    }
 
-        /* ======================================================================
-           8. DATA PRESENTATION (GRID & TABLE)
-           ====================================================================== */
-        .actions-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 15px 25px; display: none; }
-        .view-switcher { display: flex; background: rgba(0,0,0,0.3); padding: 5px; border-radius: var(--rad-md); border: 1px solid var(--glass-border); }
-        .view-btn { background: transparent; border: none; color: var(--text-secondary); padding: 8px 16px; border-radius: var(--rad-sm); cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.3s; }
-        .view-btn.active { background: rgba(255,255,255,0.1); color: var(--text-primary); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+    .brand-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
 
-        /* SKELETON LOADER */
-        .skeleton-wrapper { display: none; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
-        .skeleton-wrapper.active { display: grid; }
-        .skeleton-card { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .skeleton-thumb { width: 100%; padding-top: 56.25%; background: rgba(255,255,255,0.05); border-radius: var(--rad-md); animation: pulse 1.5s infinite; }
-        .skeleton-line { height: 16px; background: rgba(255,255,255,0.05); border-radius: 4px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 0.8; } 100% { opacity: 0.4; } }
+    .brand-sub {
+      margin-top: 2px;
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-weight: 700;
+    }
 
-        /* GRID LAYOUT */
-        .data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; display: none; }
-        .data-grid.active { display: grid; }
-        .video-card { background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: var(--rad-lg); overflow: hidden; transition: 0.4s; position: relative; display: flex; flex-direction: column; }
-        .video-card:hover { transform: translateY(-8px); background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-        .thumb-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; overflow: hidden; }
-        .thumb-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .video-card:hover .thumb-wrapper img { transform: scale(1.05); }
+    /* =========================================================
+       05. SIDEBAR NAV
+       ========================================================= */
+    .nav-label {
+      margin: 16px 10px 8px;
+      color: var(--muted-2);
+      text-transform: uppercase;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+    }
 
-        .vph-badge { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); color: var(--accent-cyan); font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 6px 12px; border-radius: var(--rad-pill); box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 2; }
-        .card-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
-        .card-title { font-size: 16px; font-weight: 600; color: var(--text-primary); line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-decoration: none; }
-        .card-title:hover { color: var(--accent-cyan); }
-        .card-channel { font-size: 13px; color: var(--text-tertiary); display: flex; align-items: center; gap: 6px; margin-bottom: 20px; }
-        .card-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; padding: 15px 0; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); }
-        .stat-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .stat-val { font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--text-primary); }
-        .stat-val.highlight { color: var(--accent-green); }
-        .stat-lbl { font-size: 10px; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 1px; margin-top: 4px; }
-        .ratio-pill { display: inline-block; padding: 2px 8px; border-radius: var(--rad-pill); font-family: var(--font-mono); font-size: 13px; font-weight: 700; }
-        .ratio-insane { background: rgba(255,0,127,0.2); color: var(--accent-pink); border: 1px solid rgba(255,0,127,0.4); box-shadow: 0 0 15px rgba(255,0,127,0.2); }
-        .ratio-high { background: rgba(0,255,136,0.2); color: var(--accent-green); border: 1px solid rgba(0,255,136,0.4); }
-        .ratio-normal { background: rgba(255,255,255,0.05); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.1); }
-        .card-actions { display: flex; gap: 10px; margin-top: auto; }
-        .card-btn { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); color: var(--text-secondary); padding: 10px; border-radius: var(--rad-sm); font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; }
-        .card-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
-        .btn-spy:hover { background: rgba(157, 78, 221, 0.2); color: var(--accent-purple); border-color: rgba(157, 78, 221, 0.5); }
-        .btn-save.saved { background: rgba(255,0,127,0.2); color: var(--accent-pink); border-color: rgba(255,0,127,0.5); }
-        .btn-save:hover { background: rgba(255,0,127,0.1); color: var(--accent-pink); }
+    .nav {
+      display: grid;
+      gap: 6px;
+    }
 
-        /* TABLE LAYOUT */
-        .data-table-wrap { width: 100%; overflow-x: auto; display: none; }
-        .data-table-wrap.active { display: block; }
-        .glass-table { width: 100%; border-collapse: collapse; min-width: 900px; }
-        .glass-table th { background: rgba(0,0,0,0.4); color: var(--text-tertiary); text-transform: uppercase; font-size: 11px; letter-spacing: 1px; padding: 15px 20px; text-align: left; border-bottom: 1px solid var(--glass-border); }
-        .glass-table td { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.02); vertical-align: middle; transition: 0.2s; }
-        .glass-table tr:hover td { background: rgba(255,255,255,0.02); }
-        .tbl-thumb { width: 120px; height: 68px; object-fit: cover; border-radius: var(--rad-sm); }
+    .nav-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 12px 12px;
+      border-radius: 12px;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid transparent;
+      text-align: left;
+      transition: var(--transition);
+    }
 
-        /* Keywords Tag Cloud */
-        .kw-container { display: flex; flex-direction: column; gap: 30px; margin-top: 30px; display: none; }
-        .kw-section-title { font-size: 16px; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .kw-cloud { display: flex; flex-wrap: wrap; gap: 10px; }
-        .kw-pill { background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.2); color: var(--accent-cyan); padding: 10px 18px; border-radius: var(--rad-pill); font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
-        .kw-pill:hover { background: var(--accent-cyan); color: #000; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 240, 255, 0.3); }
-        .kw-pill.secondary { background: rgba(255,255,255,0.03); border-color: var(--glass-border); color: var(--text-secondary); }
-        .kw-pill.secondary:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
+    .nav-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--border);
+      transform: translateX(2px);
+    }
 
-        /* Hidden Niches Grid */
-        .niche-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; margin-top: 30px; }
-        .niche-card { overflow: hidden; padding: 0; }
-        .niche-header { background: rgba(0,0,0,0.3); padding: 20px; border-bottom: 1px solid var(--glass-border); font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 12px; }
-        .niche-list { list-style: none; }
-        .niche-item { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
-        .niche-item:hover { background: rgba(255,255,255,0.02); }
-        .niche-text { font-size: 14px; color: var(--text-secondary); font-weight: 500; }
-        .niche-item:hover .niche-text { color: var(--text-primary); }
-        .btn-hunt { background: rgba(0, 255, 136, 0.1); color: var(--accent-green); border: 1px solid rgba(0, 255, 136, 0.3); padding: 6px 12px; border-radius: var(--rad-pill); font-size: 11px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
-        .btn-hunt:hover { background: var(--accent-green); color: #000; box-shadow: 0 0 10px rgba(0, 255, 136, 0.4); }
+    .nav-btn.active {
+      color: white;
+      border-color: rgba(124, 92, 255, 0.22);
+      background:
+        linear-gradient(
+          90deg,
+          rgba(124, 92, 255, 0.2),
+          rgba(78, 140, 255, 0.06)
+        );
+      box-shadow: inset 3px 0 0 var(--primary);
+    }
 
-        /* Competitor List */
-        .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin: 20px 0 30px; }
-        .comp-card { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
-        .comp-id { font-family: var(--font-mono); font-size: 13px; color: var(--text-primary); }
-        .btn-del { background: rgba(255, 51, 102, 0.1); color: var(--accent-red); border: none; padding: 6px 12px; border-radius: var(--rad-sm); font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .btn-del:hover { background: var(--accent-red); color: #fff; }
+    .nav-icon {
+      width: 20px;
+      min-width: 20px;
+      text-align: center;
+      font-size: 15px;
+    }
 
-        /* SPY MODAL */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; }
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
-        .modal-content { background: #0f1115; border: 1px solid var(--glass-border-light); border-radius: var(--rad-lg); width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; position: relative; transform: translateY(30px); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        .modal-overlay.active .modal-content { transform: translateY(0); }
-        .modal-header { padding: 30px; border-bottom: 1px solid var(--glass-border); position: relative; }
-        .modal-close { position: absolute; top: 30px; right: 30px; background: rgba(255,255,255,0.05); border: none; color: var(--text-secondary); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
-        .modal-close:hover { background: var(--accent-red); color: #fff; transform: rotate(90deg); }
-        .modal-title { font-size: 22px; font-weight: 700; color: #fff; padding-right: 50px; line-height: 1.3; margin-bottom: 8px; }
-        .modal-body { padding: 30px; }
-        .spy-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .spy-stat-card { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 20px; border-radius: var(--rad-md); text-align: center; }
-        .spy-label { font-size: 11px; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 1px; margin-bottom: 8px; }
-        .spy-val { font-size: 18px; font-weight: 700; color: #fff; font-family: var(--font-mono); }
-        .spy-section-title { font-size: 14px; font-weight: 700; color: var(--text-secondary); margin-bottom: 15px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; }
-        .desc-box { background: #000; border: 1px solid var(--glass-border); padding: 20px; border-radius: var(--rad-md); font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary); line-height: 1.6; max-height: 300px; overflow-y: auto; white-space: pre-wrap; margin-bottom: 30px;}
+    .nav-text {
+      font-size: 13px;
+      font-weight: 600;
+    }
 
-        /* Empty State */
-        .empty-state { text-align: center; padding: 80px 20px; color: var(--text-tertiary); }
-        .empty-state svg { width: 64px; height: 64px; margin-bottom: 20px; opacity: 0.3; }
-        .empty-state h3 { font-size: 20px; color: var(--text-secondary); margin-bottom: 10px; }
-        .empty-state p { font-size: 14px; max-width: 400px; margin: 0 auto; }
+    .nav-count {
+      margin-left: auto;
+      padding: 2px 7px;
+      font-size: 10px;
+      border-radius: 999px;
+      background: rgba(124, 92, 255, 0.12);
+      color: #c8c0ff;
+      display: none;
+    }
 
-        @media (max-width: 768px) {
-            .header-layout { flex-direction: column; }
-            .api-box { width: 100%; }
-            .nav-btn { padding: 10px 16px; font-size: 13px; }
-            .control-dashboard { flex-direction: column; align-items: stretch; }
-        }
-    </style>
+    .sidebar-spacer {
+      flex: 1;
+    }
+
+    /* =========================================================
+       06. API PANEL
+       ========================================================= */
+    .api-panel {
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .api-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .api-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .api-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .api-status.red {
+      color: #ff8da2;
+      background: rgba(255, 85, 119, 0.1);
+      border: 1px solid rgba(255, 85, 119, 0.18);
+    }
+
+    .api-status.green {
+      color: #80ffc0;
+      background: rgba(63, 226, 143, 0.1);
+      border: 1px solid rgba(63, 226, 143, 0.18);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .api-input-wrap {
+      position: relative;
+    }
+
+    .api-input {
+      width: 100%;
+      padding: 10px 11px;
+      padding-right: 36px;
+      color: var(--text);
+      background: #080b14;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: 0;
+      font-size: 11px;
+    }
+
+    .api-input:focus {
+      border-color: rgba(124, 92, 255, 0.5);
+      box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.08);
+    }
+
+    .api-help {
+      margin-top: 8px;
+      color: var(--muted-2);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    /* =========================================================
+       07. MOBILE HEADER
+       ========================================================= */
+    .mobile-header {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(5, 7, 17, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .mobile-header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .mobile-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mobile-toggle {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: white;
+    }
+
+    /* =========================================================
+       08. MAIN CONTENT
+       ========================================================= */
+    .content {
+      padding: 28px 30px 50px;
+      max-width: 1750px;
+      margin: 0 auto;
+    }
+
+    .page-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #a99dff;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-weight: 800;
+      margin-bottom: 9px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 18px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--primary), transparent);
+    }
+
+    .page-title {
+      font-size: clamp(25px, 3vw, 42px);
+      line-height: 1.04;
+      letter-spacing: -0.045em;
+      font-weight: 800;
+    }
+
+    .page-desc {
+      max-width: 750px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .head-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    /* =========================================================
+       09. TOP STATUS STRIP
+       ========================================================= */
+    .status-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-box {
+      min-height: 91px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.015));
+      padding: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-box::after {
+      content: "";
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      top: -70px;
+      right: -50px;
+      background: radial-gradient(circle, rgba(124, 92, 255, 0.14), transparent 66%);
+      pointer-events: none;
+    }
+
+    .stat-label {
+      color: var(--muted-2);
+      text-transform: uppercase;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      font-weight: 800;
+    }
+
+    .stat-value {
+      margin-top: 7px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 21px;
+      font-weight: 700;
+    }
+
+    .stat-meta {
+      margin-top: 4px;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* =========================================================
+       10. CARD / PANEL
+       ========================================================= */
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(16, 21, 34, 0.82), rgba(8, 11, 20, 0.86));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+    }
+
+    .panel-subtitle {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .panel-body {
+      padding: 20px;
+    }
+
+    /* =========================================================
+       11. FORM CONTROLS
+       ========================================================= */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1.9fr 1fr 0.9fr 1fr auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .field-label {
+      margin-bottom: 7px;
+      display: block;
+      color: var(--muted-2);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 800;
+    }
+
+    .control,
+    .search-control {
+      width: 100%;
+      min-height: 42px;
+      padding: 10px 12px;
+      color: var(--text);
+      background: #090c15;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      outline: 0;
+      font-size: 12px;
+      transition: var(--transition);
+    }
+
+    .control:focus,
+    .search-control:focus {
+      border-color: rgba(124, 92, 255, 0.5);
+      box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.08);
+    }
+
+    select.control {
+      cursor: pointer;
+      appearance: auto;
+    }
+
+    .button {
+      min-height: 42px;
+      padding: 10px 14px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .button:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.075);
+    }
+
+    .button:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .button-primary {
+      color: white;
+      border-color: rgba(124, 92, 255, 0.34);
+      background:
+        linear-gradient(135deg, rgba(124, 92, 255, 0.88), rgba(78, 140, 255, 0.82));
+      box-shadow: 0 12px 28px rgba(91, 78, 255, 0.22);
+    }
+
+    .button-primary:hover {
+      box-shadow: 0 15px 32px rgba(91, 78, 255, 0.3);
+    }
+
+    .button-success {
+      color: #b9ffdc;
+      border-color: rgba(63, 226, 143, 0.24);
+      background: rgba(63, 226, 143, 0.08);
+    }
+
+    .button-danger {
+      color: #ffb7c6;
+      border-color: rgba(255, 85, 119, 0.24);
+      background: rgba(255, 85, 119, 0.08);
+    }
+
+    .button-ghost {
+      background: transparent;
+    }
+
+    /* =========================================================
+       12. RESULTS TOOLBAR
+       ========================================================= */
+    .results-toolbar {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .results-info {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .results-info strong {
+      color: var(--text);
+    }
+
+    .toolbar-right {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .view-switcher {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .view-btn {
+      min-height: 34px;
+      min-width: 42px;
+      color: var(--muted);
+      background: #080b14;
+      font-size: 13px;
+      transition: var(--transition);
+    }
+
+    .view-btn + .view-btn {
+      border-left: 1px solid var(--border);
+    }
+
+    .view-btn.active {
+      color: white;
+      background: rgba(124, 92, 255, 0.16);
+    }
+
+    /* =========================================================
+       13. VIDEO GRID
+       ========================================================= */
+    .results-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .video-card {
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(18, 23, 40, 0.84), rgba(9, 12, 20, 0.95));
+      transition: var(--transition);
+      min-width: 0;
+    }
+
+    .video-card:hover {
+      border-color: rgba(124, 92, 255, 0.28);
+      transform: translateY(-2px);
+      box-shadow: 0 17px 45px rgba(0,0,0,0.26);
+    }
+
+    .thumb-wrap {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: #070910;
+    }
+
+    .thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 450ms ease;
+    }
+
+    .video-card:hover .thumb-wrap img {
+      transform: scale(1.025);
+    }
+
+    .thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, transparent 44%, rgba(0,0,0,0.78));
+    }
+
+    .duration-pill {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      color: white;
+      background: rgba(0,0,0,0.73);
+      font-size: 10px;
+      font-weight: 700;
+      backdrop-filter: blur(7px);
+    }
+
+    .outlier-pill {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      color: white;
+      font-size: 9px;
+      font-weight: 800;
+      background: linear-gradient(135deg, rgba(124, 92, 255, 0.9), rgba(252, 99, 186, 0.85));
+      box-shadow: 0 8px 18px rgba(124, 92, 255, 0.3);
+    }
+
+    .card-body {
+      padding: 13px;
+    }
+
+    .video-title {
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 700;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .channel-name {
+      margin-top: 8px;
+      color: #b8c1d8;
+      font-size: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .metric {
+      padding: 8px;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      min-width: 0;
+    }
+
+    .metric-label {
+      color: var(--muted-2);
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+    }
+
+    .metric-value {
+      margin-top: 4px;
+      color: white;
+      font-size: 10px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .metric-value.hot {
+      color: #b8f7d3;
+    }
+
+    .metric-value.warn {
+      color: #ffe09d;
+    }
+
+    .card-actions {
+      margin-top: 11px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .card-actions .button {
+      flex: 1;
+      min-height: 35px;
+      padding: 7px 8px;
+      font-size: 9px;
+    }
+
+    /* =========================================================
+       14. TABLE VIEW
+       ========================================================= */
+    .table-wrap {
+      display: none;
+      margin-top: 14px;
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: rgba(10, 13, 22, 0.72);
+    }
+
+    .table-wrap.active {
+      display: block;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 980px;
+    }
+
+    .data-table th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      text-align: left;
+      color: var(--muted-2);
+      background: #0b0f19;
+      border-bottom: 1px solid var(--border);
+      padding: 11px 12px;
+      text-transform: uppercase;
+      font-size: 8px;
+      letter-spacing: 0.1em;
+      font-weight: 800;
+    }
+
+    .data-table td {
+      padding: 11px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: #dbe1f2;
+      font-size: 10px;
+      vertical-align: middle;
+    }
+
+    .data-table tr:hover td {
+      background: rgba(255,255,255,0.018);
+    }
+
+    .table-video {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 290px;
+    }
+
+    .table-thumb {
+      width: 90px;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-radius: 7px;
+      flex: 0 0 auto;
+    }
+
+    .table-title {
+      max-width: 250px;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+    .table-sub {
+      margin-top: 4px;
+      color: var(--muted-2);
+      font-size: 9px;
+    }
+
+    /* =========================================================
+       15. EMPTY STATE
+       ========================================================= */
+    .empty-state {
+      margin-top: 14px;
+      min-height: 260px;
+      display: none;
+      place-items: center;
+      border: 1px dashed rgba(255,255,255,0.09);
+      border-radius: 15px;
+      padding: 30px;
+      text-align: center;
+      background: rgba(255,255,255,0.018);
+    }
+
+    .empty-state.active {
+      display: grid;
+    }
+
+    .empty-icon {
+      width: 62px;
+      height: 62px;
+      margin: 0 auto 14px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: rgba(124,92,255,0.1);
+      border: 1px solid rgba(124,92,255,0.17);
+      font-size: 26px;
+    }
+
+    .empty-title {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .empty-text {
+      max-width: 490px;
+      margin: 7px auto 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    /* =========================================================
+       16. SKELETON
+       ========================================================= */
+    .skeleton-grid {
+      display: none;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .skeleton-grid.active {
+      display: grid;
+    }
+
+    .skeleton-card {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: rgba(255,255,255,0.025);
+    }
+
+    .skeleton {
+      background:
+        linear-gradient(
+          90deg,
+          rgba(255,255,255,0.03) 25%,
+          rgba(255,255,255,0.065) 40%,
+          rgba(255,255,255,0.03) 55%
+        );
+      background-size: 250% 100%;
+      animation: shimmer 1.5s linear infinite;
+    }
+
+    .skeleton-thumb {
+      aspect-ratio: 16 / 9;
+    }
+
+    .skeleton-line {
+      height: 9px;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+
+    .skeleton-body {
+      padding: 14px;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 250% 0;
+      }
+      100% {
+        background-position: -250% 0;
+      }
+    }
+
+    /* =========================================================
+       17. TREND / SPECIAL VIEWS
+       ========================================================= */
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      align-items: end;
+      flex-wrap: wrap;
+    }
+
+    .filter-row .field {
+      min-width: 180px;
+    }
+
+    .trends-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    .trend-controls {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    .pill.green {
+      color: #9fffc7;
+      border-color: rgba(63, 226, 143, 0.18);
+      background: rgba(63, 226, 143, 0.06);
+    }
+
+    .pill.purple {
+      color: #cbc1ff;
+      border-color: rgba(124, 92, 255, 0.18);
+      background: rgba(124, 92, 255, 0.06);
+    }
+
+    /* =========================================================
+       18. KEYWORD SOUP
+       ========================================================= */
+    .keyword-wrap {
+      margin-top: 18px;
+    }
+
+    .keyword-stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .keyword-cloud {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .keyword-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(124,92,255,0.15);
+      background: rgba(124,92,255,0.055);
+      color: #d9d2ff;
+      font-size: 10px;
+      line-height: 1;
+      transition: var(--transition);
+    }
+
+    .keyword-chip:hover {
+      transform: translateY(-1px);
+      color: white;
+      border-color: rgba(124,92,255,0.3);
+      background: rgba(124,92,255,0.11);
+    }
+
+    .keyword-chip small {
+      color: var(--muted-2);
+      font-size: 8px;
+    }
+
+    /* =========================================================
+       19. HIDDEN NICHES
+       ========================================================= */
+    .niche-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .niche-card {
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 16px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+    }
+
+    .niche-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .niche-name {
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .niche-description {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.55;
+    }
+
+    .topic-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .topic-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.018);
+    }
+
+    .topic-text {
+      flex: 1;
+      font-size: 10px;
+      line-height: 1.45;
+      color: #dce2f2;
+    }
+
+    .topic-hunt {
+      min-height: 30px;
+      padding: 7px 9px;
+      font-size: 9px;
+      flex: 0 0 auto;
+    }
+
+    /* =========================================================
+       20. WATCHLIST
+       ========================================================= */
+    .watch-input-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+
+    .watch-list {
+      margin-top: 13px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .watch-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: rgba(255,255,255,0.025);
+    }
+
+    .watch-id {
+      flex: 1;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      color: #d3d9e8;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* =========================================================
+       21. CALENDAR
+       ========================================================= */
+    .saved-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .saved-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    /* =========================================================
+       22. TOASTS
+       ========================================================= */
+    .toast-container {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 200;
+      display: grid;
+      gap: 8px;
+      width: min(360px, calc(100vw - 36px));
+    }
+
+    .toast {
+      padding: 12px 13px;
+      border-radius: 13px;
+      border: 1px solid var(--border);
+      background: rgba(12, 16, 28, 0.94);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.38);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      animation: toastIn 220ms ease both;
+    }
+
+    .toast.success {
+      border-color: rgba(63, 226, 143, 0.22);
+    }
+
+    .toast.error {
+      border-color: rgba(255, 85, 119, 0.22);
+    }
+
+    .toast.info {
+      border-color: rgba(39, 217, 255, 0.22);
+    }
+
+    .toast-icon {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      background: rgba(255,255,255,0.05);
+      flex: 0 0 auto;
+      font-size: 12px;
+    }
+
+    .toast-title {
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .toast-message {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.45;
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* =========================================================
+       23. MODAL
+       ========================================================= */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      padding: 30px;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal {
+      width: min(860px, 100%);
+      max-height: min(90vh, 880px);
+      overflow: auto;
+      border-radius: 20px;
+      border: 1px solid var(--border-strong);
+      background:
+        linear-gradient(180deg, rgba(17, 22, 37, 0.98), rgba(8, 11, 20, 0.99));
+      box-shadow: 0 40px 100px rgba(0,0,0,0.55);
+    }
+
+    .modal-head {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 17px 19px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10, 14, 24, 0.94);
+      backdrop-filter: blur(12px);
+    }
+
+    .modal-title {
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+    }
+
+    .modal-body {
+      padding: 19px;
+    }
+
+    .spy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .spy-field {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.022);
+    }
+
+    .spy-field.full {
+      grid-column: 1 / -1;
+    }
+
+    .spy-label {
+      color: var(--muted-2);
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 800;
+    }
+
+    .spy-value {
+      margin-top: 7px;
+      color: #dfe4f1;
+      font-size: 10px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .tags {
+      margin-top: 8px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(39,217,255,0.15);
+      color: #9deeff;
+      background: rgba(39,217,255,0.05);
+      font-size: 9px;
+    }
+
+    /* =========================================================
+       24. PAGES
+       ========================================================= */
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .section-gap {
+      margin-top: 18px;
+    }
+
+    /* =========================================================
+       25. MOBILE RESPONSIVE
+       ========================================================= */
+    @media (max-width: 1180px) {
+      .form-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .form-grid .keyword-field {
+        grid-column: 1 / -1;
+      }
+
+      .results-grid,
+      .saved-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .status-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        transform: translateX(-105%);
+        transition: transform 220ms ease;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .mobile-header {
+        display: block;
+      }
+
+      .content {
+        padding: 20px 15px 40px;
+      }
+
+      .niche-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .skeleton-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .page-head {
+        flex-direction: column;
+      }
+
+      .head-actions {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid .keyword-field {
+        grid-column: auto;
+      }
+
+      .results-grid,
+      .saved-grid,
+      .skeleton-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .status-strip {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .spy-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .spy-field.full {
+        grid-column: auto;
+      }
+
+      .modal-backdrop {
+        padding: 10px;
+      }
+
+      .page-title {
+        font-size: 29px;
+      }
+    }
+  </style>
 </head>
+
 <body>
+  <!-- =========================================================
+       APP
+       ========================================================= -->
+  <div class="app">
 
-    <!-- Animated Mesh Background -->
-    <div class="animated-bg">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-    </div>
-
-    <!-- Toast Notification Container -->
-    <div id="toast-container"></div>
-
-    <!-- X-Ray Spy Modal (Glassmorphism) -->
-    <div id="spyModal" class="modal-overlay">
-        <div class="modal-content">
-            <button class="modal-close" onclick="ui.closeModal()">✖</button>
-            <div class="modal-header">
-                <h2 id="spyTitle" class="modal-title">Analyzing Video Metadata...</h2>
-                <div style="color: var(--accent-cyan); font-size: 14px;" id="spyChannel">📺 Channel Name</div>
-            </div>
-            <div class="modal-body">
-                <div class="spy-stats-grid">
-                    <div class="spy-stat-card">
-                        <div class="spy-label">Velocity (VPH)</div>
-                        <div class="spy-val" id="spyVPH" style="color: var(--accent-cyan);">0</div>
-                    </div>
-                    <div class="spy-stat-card">
-                        <div class="spy-label">Published On</div>
-                        <div class="spy-val" id="spyDate" style="font-size: 14px;">-</div>
-                    </div>
-                    <div class="spy-stat-card">
-                        <div class="spy-label">Duration</div>
-                        <div class="spy-val" id="spyDuration">-</div>
-                    </div>
-                </div>
-
-                <div class="spy-section-title">🏷️ Hidden SEO Tags (<span id="spyTagCount">0</span>)</div>
-                <div id="spyTags" class="kw-cloud" style="margin-bottom: 30px;"></div>
-
-                <div class="spy-section-title">📝 Original Description Snippet</div>
-                <div id="spyDesc" class="desc-box"></div>
-            </div>
+    <!-- =======================================================
+         SIDEBAR
+         ======================================================= -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-logo">VH</div>
+        <div>
+          <div class="brand-title">Viral Hunt Pro</div>
+          <div class="brand-sub">Enterprise Edition</div>
         </div>
-    </div>
+      </div>
 
-    <!-- MAIN APP WRAPPER -->
-    <div class="app-container">
-        
-        <!-- HEADER & API CONFIGURATION -->
-        <header class="header-layout">
-            <div classclass="brand-box glass-panel">
-                <h1 class="brand-title">
-                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                    Viral Hunt Pro
-                </h1>
-                <p class="brand-subtitle">Liquid Glass Edition • Enterprise SaaS Tool</p>
-                <div style="margin-top: 15px;"><span class="version-tag">GOD MODE v9.0</span></div>
-            </div>
-            
-            <div class="api-box glass-panel">
-                <div class="api-box-title">System Authorization</div>
-                <div class="api-input-wrapper">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
-                    <input type="password" id="apiInput" placeholder="Paste YouTube API v3 Key...">
-                </div>
-                <!-- Status updates LIVE when typing -->
-                <div class="status-container" style="margin-top: 15px;" id="apiStatusContainer">
-                    <span class="status-dot red"></span><span class="status-text unverified">Unverified</span>
-                </div>
-            </div>
-        </header>
+      <div class="nav-label">Research</div>
 
-        <!-- FLOATING PILL NAVIGATION -->
-        <div class="nav-wrapper">
-            <nav class="nav-pill">
-                <button class="nav-btn active" data-tab="tabSearch">🔍 Search Outliers</button>
-                <button class="nav-btn" data-tab="tabTrend">🔥 Top Trends</button>
-                <button class="nav-btn" data-tab="tabSmallTrend">🌱 Small Trends</button>
-                <button class="nav-btn" data-tab="tabKeyword">📈 Alphabet Soup</button>
-                <button class="nav-btn" data-tab="tabNiche">🕵️ Hidden Niches</button>
-                <button class="nav-btn" data-tab="tabComp">👁️ Competitors</button>
-                <button class="nav-btn" data-tab="tabSaved" style="color: var(--accent-pink);">📌 Saved</button>
-            </nav>
+      <nav class="nav">
+        <button class="nav-btn active" data-page="outlier">
+          <span class="nav-icon">⌕</span>
+          <span class="nav-text">Outlier Search</span>
+        </button>
+
+        <button class="nav-btn" data-page="trends">
+          <span class="nav-icon">◈</span>
+          <span class="nav-text">Top Trends</span>
+        </button>
+
+        <button class="nav-btn" data-page="keywords">
+          <span class="nav-icon">⌁</span>
+          <span class="nav-text">Keyword Soup</span>
+        </button>
+
+        <button class="nav-btn" data-page="niches">
+          <span class="nav-icon">✦</span>
+          <span class="nav-text">Hidden Niches</span>
+        </button>
+      </nav>
+
+      <div class="nav-label">Monitor</div>
+
+      <nav class="nav">
+        <button class="nav-btn" data-page="watchlist">
+          <span class="nav-icon">◎</span>
+          <span class="nav-text">Competitor Watch</span>
+        </button>
+
+        <button class="nav-btn" data-page="calendar">
+          <span class="nav-icon">▣</span>
+          <span class="nav-text">Content Calendar</span>
+          <span class="nav-count" id="savedCountBadge">0</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-spacer"></div>
+
+      <div class="api-panel">
+        <div class="api-title-row">
+          <div class="api-title">YouTube API</div>
+
+          <div class="api-status red" id="apiStatusBadge">
+            <span class="status-dot"></span>
+            <span id="apiStatusText">Unverified</span>
+          </div>
         </div>
 
-        <!-- GLOBAL ACTIONS BAR (Export & Views) -->
-        <div class="glass-panel actions-bar" id="actionBar">
-            <button class="btn-outline" onclick="core.exportCSV()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px; vertical-align: middle;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Export Data to CSV
-            </button>
-            <div class="view-switcher">
-                <button class="view-btn" id="viewTblBtn" onclick="ui.switchView('table')">Table View</button>
-                <button class="view-btn active" id="viewGrdBtn" onclick="ui.switchView('grid')">Visual Grid</button>
-            </div>
+        <div class="api-input-wrap">
+          <input
+            id="apiKeyInput"
+            class="api-input mono"
+            type="password"
+            placeholder="Paste YouTube Data API v3 key"
+            autocomplete="off"
+            spellcheck="false"
+          />
         </div>
 
-        <main>
-            <!-- TAB 1: SEARCH OUTLIERS -->
-            <section id="tabSearch" class="tab-content active">
-                <div class="glass-panel control-dashboard">
-                    <div class="input-group" style="flex: 2;">
-                        <label>Target Topic / Keyword</label>
-                        <input type="text" class="glass-input" id="inpQuery" placeholder="e.g. faceless channel, scary stories...">
-                    </div>
-                    
-                    <!-- THE BUG FIX: TIME FILTER -->
-                    <div class="input-group input-group-sm">
-                        <label>Date Filter</label>
-                        <select class="glass-input" id="inpDateFilter">
-                            <option value="24h">Last 24 Hours</option>
-                            <option value="7d" selected>Last 7 Days</option>
-                            <option value="30d">Last 30 Days</option>
-                            <option value="all">Any Time</option>
-                        </select>
-                    </div>
+        <div class="api-help">
+          Your key is stored locally in this browser via localStorage.
+          The green badge means a key is present; API requests still require a valid
+          YouTube Data API v3 key with quota available.
+        </div>
+      </div>
+    </aside>
 
-                    <div class="input-group">
-                        <label>Category Filter</label>
-                        <select class="glass-input" id="inpCat">
-                            <option value="">Global (All Categories)</option>
-                            <option value="20">🎮 Gaming</option>
-                            <option value="28">💻 Science & Tech</option>
-                            <option value="27">📚 Education</option>
-                            <option value="1">🎬 Animation & Anime</option>
-                            <option value="24">🍿 Entertainment</option>
-                        </select>
-                    </div>
+    <!-- =======================================================
+         MAIN AREA
+         ======================================================= -->
+    <main class="main">
 
-                    <div class="input-group input-group-sm">
-                        <label>Max Subs Limit</label>
-                        <input type="number" class="glass-input" id="inpSubs" value="5000">
-                    </div>
+      <!-- Mobile Header -->
+      <header class="mobile-header">
+        <div class="mobile-header-inner">
+          <div class="mobile-brand">
+            <button class="mobile-toggle" id="mobileMenuBtn">☰</button>
+            <div>
+              <div class="brand-title">Viral Hunt Pro</div>
+              <div class="brand-sub">Enterprise Edition</div>
+            </div>
+          </div>
 
-                    <button class="btn-liquid" id="btnSearch" onclick="engine.runSearch()">Scan Matrix 🚀</button>
+          <div class="api-status red" id="mobileApiBadge">
+            <span class="status-dot"></span>
+            <span>Unverified</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+
+        <!-- ===================================================
+             PAGE: OUTLIER SEARCH
+             =================================================== -->
+        <section class="page active" id="page-outlier">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">Data-driven viral discovery</div>
+              <h1 class="page-title">Hunt the outliers.</h1>
+              <p class="page-desc">
+                Find videos pulling massive views from channels with surprisingly
+                small audiences. The goal is simple: uncover content demand before
+                everyone else notices it.
+              </p>
+            </div>
+
+            <div class="head-actions">
+              <span class="pill purple">YouTube Data API v3</span>
+              <span class="pill green">Shorts Filtered</span>
+            </div>
+          </div>
+
+          <div class="status-strip">
+            <div class="stat-box">
+              <div class="stat-label">Videos analyzed</div>
+              <div class="stat-value" id="statVideos">0</div>
+              <div class="stat-meta">Current research session</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-label">Average outlier</div>
+              <div class="stat-value" id="statOutlier">0x</div>
+              <div class="stat-meta">Views ÷ subscribers</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-label">Highest VPH</div>
+              <div class="stat-value" id="statVph">0</div>
+              <div class="stat-meta">Views per hour</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-label">Best engagement</div>
+              <div class="stat-value" id="statEngagement">0%</div>
+              <div class="stat-meta">Likes + comments ÷ views</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Outlier Search Engine</div>
+                <div class="panel-subtitle">
+                  Default window is 7 days to reduce empty searches on niche queries.
                 </div>
-                
-                <div class="skeleton-wrapper" id="skelSearch"></div>
-                <div id="gridSearch" class="data-grid"></div>
-                <div id="tableSearch" class="data-table-wrap"></div>
-            </section>
+              </div>
+            </div>
 
-            <!-- TAB 2: GENERAL TRENDING -->
-            <section id="tabTrend" class="tab-content">
-                <div class="glass-panel control-dashboard">
-                    <div class="input-group" style="flex: 2;">
-                        <label>Trending Category</label>
-                        <select class="glass-input" id="inpTrendCat">
-                            <option value="20" selected>🎮 Gaming (Recommended)</option>
-                            <option value="">🌍 All Categories</option>
-                            <option value="28">💻 Technology</option>
-                        </select>
-                    </div>
-                    <button class="btn-liquid" id="btnTrend" onclick="engine.runTrending(false)">Fetch Top Trends 🔥</button>
+            <div class="panel-body">
+              <div class="form-grid">
+                <div class="field keyword-field">
+                  <label class="field-label">Seed Keyword</label>
+                  <input
+                    id="outlierKeyword"
+                    class="control"
+                    placeholder="e.g. offline games, AI tools, minecraft mods"
+                    autocomplete="off"
+                  />
                 </div>
-                <div class="skeleton-wrapper" id="skelTrend"></div>
-                <div id="gridTrend" class="data-grid"></div>
-                <div id="tableTrend" class="data-table-wrap"></div>
-            </section>
 
-            <!-- TAB 3: SMALL TRENDS -->
-            <section id="tabSmallTrend" class="tab-content">
-                <div class="glass-panel control-dashboard">
-                    <div class="input-group" style="flex: 2;">
-                        <label>Trending Category</label>
-                        <select class="glass-input" id="inpSmTrendCat">
-                            <option value="20" selected>🎮 Gaming</option>
-                            <option value="">🌍 All Categories</option>
-                        </select>
-                    </div>
-                    <div class="input-group input-group-sm">
-                        <label>Max Subs Limit</label>
-                        <input type="number" class="glass-input" id="inpSmTrendSubs" value="50000">
-                    </div>
-                    <button class="btn-liquid" id="btnSmTrend" onclick="engine.runTrending(true)">Hunt Small Channels 🎯</button>
+                <div class="field">
+                  <label class="field-label">Category</label>
+                  <select id="outlierCategory" class="control">
+                    <option value="">All Categories</option>
+                    <option value="20">Gaming</option>
+                    <option value="28">Science & Technology</option>
+                    <option value="27">Education</option>
+                    <option value="26">Howto & Style</option>
+                    <option value="17">Sports</option>
+                    <option value="23">Comedy</option>
+                    <option value="24">Entertainment</option>
+                    <option value="22">People & Blogs</option>
+                  </select>
                 </div>
-                <div class="skeleton-wrapper" id="skelSmTrend"></div>
-                <div id="gridSmTrend" class="data-grid"></div>
-                <div id="tableSmTrend" class="data-table-wrap"></div>
-            </section>
 
-            <!-- TAB 4: KEYWORDS ALPHABET SOUP -->
-            <section id="tabKeyword" class="tab-content">
-                <div class="glass-panel control-dashboard">
-                    <div class="input-group" style="flex: 2;">
-                        <label>Seed Keyword</label>
-                        <input type="text" class="glass-input" id="inpKw" placeholder="e.g. offline games android...">
-                    </div>
-                    <button class="btn-liquid" style="background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));" id="btnKw" onclick="engine.runKeywords()">Generate Alphabet Soup 🧠</button>
+                <div class="field">
+                  <label class="field-label">Max Subscribers</label>
+                  <input
+                    id="maxSubs"
+                    class="control"
+                    type="number"
+                    min="0"
+                    step="1"
+                    value="50000"
+                  />
                 </div>
-                <div id="kwWrap" class="kw-container glass-panel" style="padding: 30px;">
-                    <div>
-                        <div class="kw-section-title">🔥 High Volume Autocomplete</div>
-                        <div id="kwPrimary" class="kw-cloud"></div>
-                    </div>
-                    <div style="margin-top: 10px;">
-                        <div class="kw-section-title" style="color: var(--text-secondary);">✨ Long-Tail Discoveries (Hidden Gold)</div>
-                        <div id="kwLongTail" class="kw-cloud"></div>
-                    </div>
-                </div>
-            </section>
 
-            <!-- TAB 5: HIDDEN NICHES DB -->
-            <section id="tabNiche" class="tab-content">
-                <div class="glass-panel" style="padding: 25px; margin-bottom: 10px; background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2);">
-                    <h3 style="color: var(--accent-cyan); font-size: 20px; margin-bottom: 8px;">The Secret Niche Database</h3>
-                    <p style="color: var(--text-secondary); font-size: 14px;">A hardcoded list of low-competition, high-reward micro-niches. Click "Auto-Hunt" to scan the matrix instantly.</p>
+                <div class="field">
+                  <label class="field-label">Date Filter</label>
+                  <select id="dateFilter" class="control">
+                    <option value="24h">Last 24 Hours</option>
+                    <option value="7d" selected>Last 7 Days</option>
+                    <option value="30d">Last 30 Days</option>
+                    <option value="all">All Time</option>
+                  </select>
                 </div>
-                <div id="nicheWrap" class="niche-grid"></div>
-            </section>
 
-            <!-- TAB 6: COMPETITOR WATCH -->
-            <section id="tabComp" class="tab-content">
-                <div class="glass-panel control-dashboard">
-                    <div class="input-group" style="flex: 2;">
-                        <label>Add Target Channel ID</label>
-                        <input type="text" class="glass-input" id="inpComp" placeholder="e.g. UCX6OQ3DkcsbYNE6H8uQQuQA">
+                <button class="button button-primary" id="outlierSearchBtn">
+                  <span>⚡</span>
+                  <span>Search Outliers</span>
+                </button>
+              </div>
+
+              <div class="results-toolbar">
+                <div class="results-info" id="outlierResultsInfo">
+                  Enter a topic to begin your hunt.
+                </div>
+
+                <div class="toolbar-right">
+                  <button class="button button-ghost" id="sortOutlierBtn">
+                    Sort: Outlier
+                  </button>
+
+                  <div class="view-switcher">
+                    <button class="view-btn active" id="gridViewBtn" title="Grid view">▦</button>
+                    <button class="view-btn" id="tableViewBtn" title="Table view">☷</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="skeleton-grid" id="outlierSkeleton">
+                <div class="skeleton-card">
+                  <div class="skeleton skeleton-thumb"></div>
+                  <div class="skeleton-body">
+                    <div class="skeleton skeleton-line"></div>
+                    <div class="skeleton skeleton-line" style="width:65%"></div>
+                    <div class="skeleton skeleton-line" style="width:40%"></div>
+                  </div>
+                </div>
+                <div class="skeleton-card">
+                  <div class="skeleton skeleton-thumb"></div>
+                  <div class="skeleton-body">
+                    <div class="skeleton skeleton-line"></div>
+                    <div class="skeleton skeleton-line" style="width:75%"></div>
+                    <div class="skeleton skeleton-line" style="width:44%"></div>
+                  </div>
+                </div>
+                <div class="skeleton-card">
+                  <div class="skeleton skeleton-thumb"></div>
+                  <div class="skeleton-body">
+                    <div class="skeleton skeleton-line"></div>
+                    <div class="skeleton skeleton-line" style="width:68%"></div>
+                    <div class="skeleton skeleton-line" style="width:38%"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="results-grid" id="outlierGrid"></div>
+
+              <div class="table-wrap" id="outlierTableWrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Video</th>
+                      <th>Views</th>
+                      <th>Subs</th>
+                      <th>Outlier</th>
+                      <th>VPH</th>
+                      <th>Engagement</th>
+                      <th>Published</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="outlierTableBody"></tbody>
+                </table>
+              </div>
+
+              <div class="empty-state active" id="outlierEmpty">
+                <div>
+                  <div class="empty-icon">⌕</div>
+                  <div class="empty-title">No results yet</div>
+                  <div class="empty-text">
+                    Search a keyword to discover videos with strong demand relative
+                    to channel size. Hidden subscriber channels are automatically
+                    excluded from outlier calculations.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================
+             PAGE: TRENDS
+             =================================================== -->
+        <section class="page" id="page-trends">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">India market pulse</div>
+              <h1 class="page-title">Top Trends & Small Trends.</h1>
+              <p class="page-desc">
+                Scan India's most-popular feed, then isolate smaller creators to
+                identify emerging demand before channels become saturated.
+              </p>
+            </div>
+
+            <div class="head-actions">
+              <span class="pill purple">Region: IN</span>
+              <span class="pill">Max 50 videos / request</span>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Trending Discovery</div>
+                <div class="panel-subtitle">
+                  Pulls YouTube <span class="mono">mostPopular</span> for India.
+                </div>
+              </div>
+
+              <button class="button button-primary" id="loadTrendsBtn">
+                <span>◈</span>
+                <span>Fetch Trends</span>
+              </button>
+            </div>
+
+            <div class="panel-body">
+              <div class="trend-controls">
+                <div class="field">
+                  <label class="field-label">Category Filter</label>
+                  <select id="trendCategory" class="control">
+                    <option value="all">All Categories</option>
+                    <option value="excludeMusicMovies">Block Music + Movies</option>
+                    <option value="20">Gaming</option>
+                    <option value="28">Science & Technology</option>
+                    <option value="27">Education</option>
+                    <option value="26">Howto & Style</option>
+                    <option value="17">Sports</option>
+                    <option value="23">Comedy</option>
+                    <option value="24">Entertainment</option>
+                    <option value="22">People & Blogs</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label class="field-label">Small Trend Limit</label>
+                  <input
+                    id="smallTrendSubs"
+                    class="control"
+                    type="number"
+                    min="0"
+                    value="50000"
+                  />
+                </div>
+
+                <button class="button" id="generalTrendsBtn">
+                  General Trends
+                </button>
+
+                <button class="button button-success" id="smallTrendsBtn">
+                  Small Trends
+                </button>
+              </div>
+
+              <div class="results-toolbar">
+                <div class="results-info" id="trendInfo">
+                  Fetch the latest India trending list.
+                </div>
+
+                <div class="toolbar-right">
+                  <span class="pill green">Small Trends = low-subscriber creators</span>
+                </div>
+              </div>
+
+              <div class="results-grid" id="trendsGrid"></div>
+
+              <div class="empty-state active" id="trendsEmpty">
+                <div>
+                  <div class="empty-icon">◈</div>
+                  <div class="empty-title">No trend data loaded</div>
+                  <div class="empty-text">
+                    Click “Fetch Trends” to load India's current most-popular videos.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================
+             PAGE: KEYWORDS
+             =================================================== -->
+        <section class="page" id="page-keywords">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">Long-tail discovery</div>
+              <h1 class="page-title">Keyword Alphabet Soup.</h1>
+              <p class="page-desc">
+                Expand a seed keyword through YouTube/Google autocomplete using
+                alphabet modifiers and intent modifiers such as “tutorial” and
+                “in 2024”.
+              </p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Mass Keyword Generator</div>
+                <div class="panel-subtitle">
+                  JSONP autocomplete requests run client-side and do not require your YouTube API key.
+                </div>
+              </div>
+            </div>
+
+            <div class="panel-body">
+              <div class="form-grid" style="grid-template-columns: 1fr auto;">
+                <div class="field">
+                  <label class="field-label">Seed Keyword</label>
+                  <input
+                    id="seedKeyword"
+                    class="control"
+                    placeholder="e.g. offline games"
+                    autocomplete="off"
+                  />
+                </div>
+
+                <button class="button button-primary" id="generateKeywordsBtn">
+                  <span>⌁</span>
+                  <span>Generate Keywords</span>
+                </button>
+              </div>
+
+              <div class="keyword-wrap">
+                <div class="keyword-stats">
+                  <span class="pill purple" id="keywordCountPill">0 keywords</span>
+                  <span class="pill" id="keywordSourcePill">Sources: YouTube autocomplete</span>
+                </div>
+
+                <div class="keyword-cloud" id="keywordCloud"></div>
+
+                <div class="empty-state active" id="keywordEmpty">
+                  <div>
+                    <div class="empty-icon">⌁</div>
+                    <div class="empty-title">Enter a seed keyword</div>
+                    <div class="empty-text">
+                      The tool will generate alphabet combinations plus selected
+                      intent modifiers and deduplicate the resulting phrases.
                     </div>
-                    <button class="btn-outline" onclick="engine.addComp()">+ Add Target</button>
-                    <button class="btn-liquid" style="background: linear-gradient(135deg, var(--accent-orange), var(--accent-red));" id="btnComp" onclick="engine.scanComps()">Initiate Deep Scan 👁️</button>
+                  </div>
                 </div>
-                <div id="compListWrap" class="comp-grid"></div>
-                <div class="skeleton-wrapper" id="skelComp"></div>
-                <div id="gridComp" class="data-grid"></div>
-                <div id="tableComp" class="data-table-wrap"></div>
-            </section>
+              </div>
+            </div>
+          </div>
+        </section>
 
-            <!-- TAB 7: SAVED IDEAS -->
-            <section id="tabSaved" class="tab-content">
-                <div class="glass-panel" style="padding: 25px; margin-bottom: 20px; background: rgba(255, 0, 127, 0.05); border-color: rgba(255, 0, 127, 0.2);">
-                    <h3 style="color: var(--accent-pink); font-size: 20px; margin-bottom: 8px;">Content Calendar (Bookmarks)</h3>
-                    <p style="color: var(--text-secondary); font-size: 14px;">Videos saved during your research sessions are securely stored in your browser's local cache.</p>
+        <!-- ===================================================
+             PAGE: NICHES
+             =================================================== -->
+        <section class="page" id="page-niches">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">Opportunity database</div>
+              <h1 class="page-title">Hidden Niches.</h1>
+              <p class="page-desc">
+                A hand-built opportunity database containing specific long-tail ideas.
+                Auto-Hunt immediately launches an outlier search for the selected topic.
+              </p>
+            </div>
+          </div>
+
+          <div class="niche-grid" id="nicheGrid"></div>
+        </section>
+
+        <!-- ===================================================
+             PAGE: WATCHLIST
+             =================================================== -->
+        <section class="page" id="page-watchlist">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">Competitor intelligence</div>
+              <h1 class="page-title">Competitor Watchlist.</h1>
+              <p class="page-desc">
+                Track channel IDs locally, then perform a deep scan of each
+                competitor's latest 3 long-form videos and rank them by velocity.
+              </p>
+            </div>
+
+            <div class="head-actions">
+              <span class="pill">Stored locally</span>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Tracked Channels</div>
+                <div class="panel-subtitle">
+                  Add the channel ID such as <span class="mono">UCxxxxxxxxxxxx</span>.
                 </div>
-                <div id="gridSaved" class="data-grid"></div>
-                <div id="tableSaved" class="data-table-wrap"></div>
-            </section>
-        </main>
+              </div>
+
+              <button class="button button-primary" id="deepScanBtn">
+                <span>◎</span>
+                <span>Deep Scan</span>
+              </button>
+            </div>
+
+            <div class="panel-body">
+              <div class="watch-input-row">
+                <input
+                  id="watchChannelInput"
+                  class="control"
+                  placeholder="UCxxxxxxxxxxxxxxxxxxxxxxxx"
+                  autocomplete="off"
+                  spellcheck="false"
+                />
+                <button class="button" id="addWatchBtn">Add Channel</button>
+              </div>
+
+              <div class="watch-list" id="watchList"></div>
+
+              <div class="results-toolbar">
+                <div class="results-info" id="watchInfo">
+                  No scan performed yet.
+                </div>
+              </div>
+
+              <div class="results-grid" id="watchGrid"></div>
+
+              <div class="empty-state active" id="watchEmpty">
+                <div>
+                  <div class="empty-icon">◎</div>
+                  <div class="empty-title">No competitor scan yet</div>
+                  <div class="empty-text">
+                    Add one or more channel IDs and click Deep Scan.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================
+             PAGE: CALENDAR
+             =================================================== -->
+        <section class="page" id="page-calendar">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">Research library</div>
+              <h1 class="page-title">Content Calendar.</h1>
+              <p class="page-desc">
+                Save promising videos from any research screen. Bookmarks persist
+                in localStorage and can be exported to CSV for your content workflow.
+              </p>
+            </div>
+
+            <div class="head-actions saved-actions">
+              <button class="button button-primary" id="exportCsvBtn">
+                Export to CSV
+              </button>
+              <button class="button button-danger" id="clearSavedBtn">
+                Clear All
+              </button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Saved Opportunities</div>
+                <div class="panel-subtitle" id="savedInfo">
+                  0 saved videos.
+                </div>
+              </div>
+            </div>
+
+            <div class="panel-body">
+              <div class="saved-grid" id="savedGrid"></div>
+
+              <div class="empty-state active" id="savedEmpty">
+                <div>
+                  <div class="empty-icon">▣</div>
+                  <div class="empty-title">Your calendar is empty</div>
+                  <div class="empty-text">
+                    Use the Save button on any video to build your own research library.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- =========================================================
+       TOAST CONTAINER
+       ========================================================= -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- =========================================================
+       METADATA SPY MODAL
+       ========================================================= -->
+  <div class="modal-backdrop" id="spyModalBackdrop">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="modal-title">Metadata Spy</div>
+        <button class="modal-close" id="closeSpyModal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="spy-grid">
+          <div class="spy-field full">
+            <div class="spy-label">Video Title</div>
+            <div class="spy-value" id="spyTitle"></div>
+          </div>
+
+          <div class="spy-field">
+            <div class="spy-label">Exact Publish Date</div>
+            <div class="spy-value mono" id="spyDate"></div>
+          </div>
+
+          <div class="spy-field">
+            <div class="spy-label">Duration</div>
+            <div class="spy-value mono" id="spyDuration"></div>
+          </div>
+
+          <div class="spy-field full">
+            <div class="spy-label">Description</div>
+            <div class="spy-value" id="spyDescription"></div>
+          </div>
+
+          <div class="spy-field full">
+            <div class="spy-label">Hidden SEO Tags</div>
+            <div class="tags" id="spyTags"></div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- 
-      ========================================================================
-      MASTER JAVASCRIPT ENGINE (FULLY EXPANDED & COMMENTED)
-      ========================================================================
-    -->
-    <script>
-        /**
-         * 1. SYSTEM CONFIGURATION & DATABASE
-         * Contains API endpoints, storage keys, and the massive hidden niches DB.
-         */
-        const CONFIG = {
-            API_URL: 'https://www.googleapis.com/youtube/v3',
-            KEY_API: 'VHP_LIQUID_API_V9',
-            KEY_SAVED: 'VHP_LIQUID_SAVED_V9',
-            KEY_COMP: 'VHP_LIQUID_COMP_V9'
+  <script>
+    /* =========================================================
+       VIRAL HUNT PRO — ENTERPRISE EDITION
+       ---------------------------------------------------------
+       Single-file application.
+
+       IMPORTANT:
+       - This app uses the YouTube Data API v3 directly from the browser.
+       - The API key is stored only in localStorage.
+       - Never deploy sensitive server-side credentials in public HTML.
+       - For production SaaS, route requests through your own backend.
+       ========================================================= */
+
+    "use strict";
+
+    /* =========================================================
+       01. STORAGE KEYS
+       ========================================================= */
+    const STORAGE = {
+      apiKey: "vhp_api_key",
+      savedVideos: "vhp_saved_videos",
+      watchlist: "vhp_watchlist",
+      viewMode: "vhp_view_mode"
+    };
+
+    /* =========================================================
+       02. CONSTANTS
+       ========================================================= */
+    const API_BASE = "https://www.googleapis.com/youtube/v3";
+    const SUGGEST_BASE = "https://suggestqueries.google.com/complete/search";
+
+    const state = {
+      outlierResults: [],
+      trendResults: [],
+      watchResults: [],
+      savedVideos: readJSON(STORAGE.savedVideos, []),
+      watchlist: readJSON(STORAGE.watchlist, []),
+      viewMode: localStorage.getItem(STORAGE.viewMode) || "grid",
+      trendRaw: [],
+      outlierSort: "outlier"
+    };
+
+    const CATEGORY_NAMES = {
+      "1": "Film & Animation",
+      "2": "Autos & Vehicles",
+      "10": "Music",
+      "15": "Pets & Animals",
+      "17": "Sports",
+      "18": "Short Movies",
+      "19": "Travel & Events",
+      "20": "Gaming",
+      "21": "Videoblogging",
+      "22": "People & Blogs",
+      "23": "Comedy",
+      "24": "Entertainment",
+      "25": "News & Politics",
+      "26": "Howto & Style",
+      "27": "Education",
+      "28": "Science & Technology",
+      "29": "Nonprofits & Activism",
+      "30": "Movies",
+      "43": "Shows",
+      "44": "Trailers"
+    };
+
+    /* =========================================================
+       03. HIDDEN NICHES DATABASE
+       ========================================================= */
+    const hiddenNiches = [
+      {
+        name: "Micro-Gaming",
+        description: "Small but searchable gaming subtopics with strong long-tail intent.",
+        topics: [
+          "offline Android games under 100MB",
+          "best offline games for low end phones",
+          "hidden indie games with controller support",
+          "offline games like GTA for Android",
+          "best story games without internet Android"
+        ]
+      },
+      {
+        name: "Faceless Anime",
+        description: "High-curiosity anime topics suited for narration, captions and B-roll.",
+        topics: [
+          "anime characters who became stronger after losing everything",
+          "most underrated anime villains explained",
+          "anime power systems that actually make sense",
+          "dark anime endings you probably missed",
+          "best short anime under 12 episodes"
+        ]
+      },
+      {
+        name: "AI Trends",
+        description: "Fast-moving AI topics where search behavior changes quickly.",
+        topics: [
+          "free AI tools that feel illegal to use",
+          "best AI tools for students in 2026",
+          "AI video generators for faceless YouTube",
+          "AI websites that save hours every week",
+          "hidden AI tools nobody is talking about"
+        ]
+      },
+      {
+        name: "Wealth & Money",
+        description: "Educational finance angles built around specific problems and tools.",
+        topics: [
+          "best side hustles with zero investment",
+          "how to build a faceless content business",
+          "small online businesses with low competition",
+          "best digital products for beginners",
+          "AI side hustles for complete beginners"
+        ]
+      },
+      {
+        name: "Tech Utility",
+        description: "Practical device and software queries with strong problem-solving intent.",
+        topics: [
+          "best lightweight Android apps for old phones",
+          "Windows tools that make an old PC faster",
+          "best free apps for phone storage cleanup",
+          "Android settings that improve battery life",
+          "best browser for low RAM Android phones"
+        ]
+      },
+      {
+        name: "Curiosity Docs",
+        description: "Documentary-style topics driven by unusual real-world questions.",
+        topics: [
+          "people who survived impossible disasters",
+          "strange places humans are not allowed to visit",
+          "historical events that sound completely fake",
+          "the most isolated places on Earth explained",
+          "real mysteries that still have no answer"
+        ]
+      }
+    ];
+
+    /* =========================================================
+       04. DOM HELPERS
+       ========================================================= */
+    const $ = (selector) => document.querySelector(selector);
+    const $$ = (selector) => [...document.querySelectorAll(selector)];
+
+    /* =========================================================
+       05. GENERIC HELPERS
+       ========================================================= */
+
+    function readJSON(key, fallback) {
+      try {
+        const value = localStorage.getItem(key);
+        return value ? JSON.parse(value) : fallback;
+      } catch (error) {
+        console.warn("Storage parse error:", error);
+        return fallback;
+      }
+    }
+
+    function saveJSON(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function formatNumber(value) {
+      const n = Number(value) || 0;
+
+      if (n >= 1_000_000_000) {
+        return `${(n / 1_000_000_000).toFixed(1).replace(".0", "")}B`;
+      }
+
+      if (n >= 1_000_000) {
+        return `${(n / 1_000_000).toFixed(1).replace(".0", "")}M`;
+      }
+
+      if (n >= 1_000) {
+        return `${(n / 1_000).toFixed(1).replace(".0", "")}K`;
+      }
+
+      return String(n);
+    }
+
+    function formatExactNumber(value) {
+      return new Intl.NumberFormat("en-IN").format(Number(value) || 0);
+    }
+
+    function formatDate(isoDate) {
+      if (!isoDate) return "Unknown";
+
+      try {
+        return new Intl.DateTimeFormat("en-IN", {
+          dateStyle: "medium",
+          timeStyle: "short"
+        }).format(new Date(isoDate));
+      } catch {
+        return isoDate;
+      }
+    }
+
+    function hoursSince(isoDate) {
+      const date = new Date(isoDate);
+      const ms = Date.now() - date.getTime();
+      return Math.max(ms / 3600000, 0.01);
+    }
+
+    function calculateVPH(views, publishedAt) {
+      return Number(views || 0) / hoursSince(publishedAt);
+    }
+
+    function calculateOutlier(views, subs) {
+      const v = Number(views || 0);
+      const s = Number(subs || 0);
+
+      if (s <= 0) {
+        return v > 0 ? Infinity : 0;
+      }
+
+      return v / s;
+    }
+
+    function calculateEngagement(likes, comments, views) {
+      const v = Number(views || 0);
+
+      if (v <= 0) return 0;
+
+      return ((Number(likes || 0) + Number(comments || 0)) / v) * 100;
+    }
+
+    function formatMultiplier(value) {
+      if (value === Infinity) return "∞x";
+      if (!Number.isFinite(value)) return "0x";
+
+      if (value >= 1000) return `${(value / 1000).toFixed(1)}Kx`;
+      if (value >= 100) return `${value.toFixed(0)}x`;
+      if (value >= 10) return `${value.toFixed(1)}x`;
+
+      return `${value.toFixed(2)}x`;
+    }
+
+    function formatVPH(vph) {
+      if (!Number.isFinite(vph)) return "0";
+
+      if (vph >= 1_000_000) {
+        return `${(vph / 1_000_000).toFixed(1)}M`;
+      }
+
+      if (vph >= 1_000) {
+        return `${(vph / 1_000).toFixed(1)}K`;
+      }
+
+      return Math.round(vph).toLocaleString("en-IN");
+    }
+
+    function formatPercent(value) {
+      return `${Number(value || 0).toFixed(2)}%`;
+    }
+
+    function getPublishedAfter(filter) {
+      const now = Date.now();
+
+      if (filter === "24h") {
+        return new Date(now - 24 * 3600000).toISOString();
+      }
+
+      if (filter === "7d") {
+        return new Date(now - 7 * 24 * 3600000).toISOString();
+      }
+
+      if (filter === "30d") {
+        return new Date(now - 30 * 24 * 3600000).toISOString();
+      }
+
+      return null;
+    }
+
+    function parseDuration(isoDuration) {
+      if (!isoDuration) return "Unknown";
+
+      const match = isoDuration.match(
+        /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/
+      );
+
+      if (!match) return isoDuration;
+
+      const hours = Number(match[1] || 0);
+      const mins = Number(match[2] || 0);
+      const secs = Number(match[3] || 0);
+
+      if (hours > 0) {
+        return `${hours}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+      }
+
+      return `${mins}:${String(secs).padStart(2, "0")}`;
+    }
+
+    function normalizedChannelId(id) {
+      return String(id || "").trim();
+    }
+
+    function isValidChannelId(id) {
+      return /^UC[a-zA-Z0-9_-]{22,}$/.test(normalizedChannelId(id));
+    }
+
+    function showToast(type, title, message) {
+      const container = $("#toastContainer");
+
+      const toast = document.createElement("div");
+      toast.className = `toast ${type}`;
+
+      const icon = type === "success"
+        ? "✓"
+        : type === "error"
+        ? "!"
+        : "i";
+
+      toast.innerHTML = `
+        <div class="toast-icon">${icon}</div>
+        <div>
+          <div class="toast-title">${escapeHTML(title)}</div>
+          <div class="toast-message">${escapeHTML(message)}</div>
+        </div>
+      `;
+
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(6px)";
+        setTimeout(() => toast.remove(), 220);
+      }, 4200);
+    }
+
+    function requireApiKey() {
+      const key = getApiKey();
+
+      if (!key) {
+        showToast(
+          "error",
+          "API key required",
+          "Paste your YouTube Data API v3 key in the sidebar first."
+        );
+
+        return null;
+      }
+
+      return key;
+    }
+
+    function getApiKey() {
+      return localStorage.getItem(STORAGE.apiKey) || "";
+    }
+
+    function updateApiBadge() {
+      const key = getApiKey();
+
+      const badge = $("#apiStatusBadge");
+      const text = $("#apiStatusText");
+      const mobileBadge = $("#mobileApiBadge");
+
+      if (key) {
+        badge.className = "api-status green";
+        text.textContent = "Verified";
+
+        mobileBadge.className = "api-status green";
+        mobileBadge.innerHTML = `
+          <span class="status-dot"></span>
+          <span>Verified</span>
+        `;
+      } else {
+        badge.className = "api-status red";
+        text.textContent = "Unverified";
+
+        mobileBadge.className = "api-status red";
+        mobileBadge.innerHTML = `
+          <span class="status-dot"></span>
+          <span>Unverified</span>
+        `;
+      }
+    }
+
+    /* =========================================================
+       06. YOUTUBE API CORE
+       ========================================================= */
+
+    async function ytRequest(endpoint, params = {}) {
+      const apiKey = requireApiKey();
+
+      if (!apiKey) {
+        throw new Error("Missing API key.");
+      }
+
+      const url = new URL(`${API_BASE}/${endpoint}`);
+
+      Object.entries({
+        ...params,
+        key: apiKey
+      }).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          url.searchParams.set(key, value);
+        }
+      });
+
+      const response = await fetch(url.toString());
+
+      let data = {};
+
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error("YouTube API returned an unreadable response.");
+      }
+
+      if (!response.ok || data.error) {
+        const reason =
+          data?.error?.errors?.[0]?.reason ||
+          data?.error?.message ||
+          `HTTP ${response.status}`;
+
+        throw new Error(reason);
+      }
+
+      return data;
+    }
+
+    async function getChannelsByIds(channelIds) {
+      const uniqueIds = [...new Set(channelIds.filter(Boolean))];
+
+      if (!uniqueIds.length) return [];
+
+      const chunks = [];
+
+      for (let i = 0; i < uniqueIds.length; i += 50) {
+        chunks.push(uniqueIds.slice(i, i + 50));
+      }
+
+      const all = [];
+
+      for (const chunk of chunks) {
+        const data = await ytRequest("channels", {
+          part: "snippet,statistics",
+          id: chunk.join(","),
+          maxResults: 50
+        });
+
+        all.push(...(data.items || []));
+      }
+
+      return all;
+    }
+
+    async function getVideosByIds(videoIds) {
+      const uniqueIds = [...new Set(videoIds.filter(Boolean))];
+
+      if (!uniqueIds.length) return [];
+
+      const chunks = [];
+
+      for (let i = 0; i < uniqueIds.length; i += 50) {
+        chunks.push(uniqueIds.slice(i, i + 50));
+      }
+
+      const all = [];
+
+      for (const chunk of chunks) {
+        const data = await ytRequest("videos", {
+          part: "snippet,statistics,contentDetails",
+          id: chunk.join(","),
+          maxResults: 50
+        });
+
+        all.push(...(data.items || []));
+      }
+
+      return all;
+    }
+
+    function createEnrichedVideo(video, channelMap) {
+      const stats = video.statistics || {};
+      const snippet = video.snippet || {};
+      const details = video.contentDetails || {};
+
+      const channel = channelMap[snippet.channelId];
+
+      /*
+        Hidden subscriber rule:
+        If hiddenSubscriberCount === true, exclude from outlier calculations.
+      */
+      const hiddenSubs = Boolean(channel?.statistics?.hiddenSubscriberCount);
+
+      const subscriberCount = hiddenSubs
+        ? null
+        : Number(channel?.statistics?.subscriberCount || 0);
+
+      const views = Number(stats.viewCount || 0);
+      const likes = Number(stats.likeCount || 0);
+      const comments = Number(stats.commentCount || 0);
+
+      const vph = calculateVPH(views, snippet.publishedAt);
+      const outlier = hiddenSubs
+        ? null
+        : calculateOutlier(views, subscriberCount);
+
+      const engagement = calculateEngagement(likes, comments, views);
+
+      return {
+        id: video.id,
+
+        title: snippet.title || "Untitled",
+        description: snippet.description || "",
+        channelId: snippet.channelId || "",
+        channelTitle: snippet.channelTitle || channel?.snippet?.title || "Unknown Channel",
+
+        publishedAt: snippet.publishedAt || "",
+        durationRaw: details.duration || "",
+        duration: parseDuration(details.duration || ""),
+        categoryId: snippet.categoryId || "",
+        categoryName: CATEGORY_NAMES[snippet.categoryId] || "Unknown",
+
+        thumbnail:
+          snippet.thumbnails?.high?.url ||
+          snippet.thumbnails?.medium?.url ||
+          snippet.thumbnails?.default?.url ||
+          "",
+
+        views,
+        likes,
+        comments,
+
+        subscriberCount,
+        hiddenSubscriberCount: hiddenSubs,
+
+        vph,
+        outlier,
+        engagement,
+
+        tags: Array.isArray(snippet.tags) ? snippet.tags : [],
+
+        url: `https://www.youtube.com/watch?v=${video.id}`
+      };
+    }
+
+    async function searchYoutubeVideos({
+      keyword,
+      categoryId = "",
+      dateFilter = "7d"
+    }) {
+      const params = {
+        part: "snippet",
+        type: "video",
+        q: keyword,
+        maxResults: 50,
+        order: "relevance",
+
+        /*
+          MANDATORY SHORTS BUG FIX:
+          Explicitly filter to long-form videos.
+        */
+        videoDuration: "long"
+      };
+
+      if (categoryId) {
+        params.videoCategoryId = categoryId;
+      }
+
+      const publishedAfter = getPublishedAfter(dateFilter);
+
+      if (publishedAfter) {
+        params.publishedAfter = publishedAfter;
+      }
+
+      const searchData = await ytRequest("search", params);
+
+      const searchItems = searchData.items || [];
+
+      if (!searchItems.length) {
+        return [];
+      }
+
+      const videoIds = searchItems
+        .map(item => item?.id?.videoId)
+        .filter(Boolean);
+
+      const details = await getVideosByIds(videoIds);
+
+      const channelIds = details
+        .map(video => video?.snippet?.channelId)
+        .filter(Boolean);
+
+      const channels = await getChannelsByIds(channelIds);
+
+      const channelMap = Object.fromEntries(
+        channels.map(channel => [channel.id, channel])
+      );
+
+      return details
+        .map(video => createEnrichedVideo(video, channelMap))
+        .filter(video => !video.hiddenSubscriberCount);
+    }
+
+    /* =========================================================
+       07. OUTLIER SEARCH
+       ========================================================= */
+
+    async function runOutlierSearch(keywordOverride = null) {
+      const keyword =
+        keywordOverride !== null
+          ? keywordOverride
+          : $("#outlierKeyword").value.trim();
+
+      const categoryId = $("#outlierCategory").value;
+      const dateFilter = $("#dateFilter").value;
+
+      /*
+        IMPORTANT:
+        Do not use:
+          maxSubs || 5000
+        because 0 is a valid user input.
+      */
+      const rawMaxSubs = $("#maxSubs").value.trim();
+      const parsedMaxSubs = Number(rawMaxSubs);
+
+      const maxSubs = Number.isNaN(parsedMaxSubs)
+        ? 50000
+        : Math.max(0, parsedMaxSubs);
+
+      if (!keyword) {
+        showToast(
+          "error",
+          "Keyword missing",
+          "Enter a keyword or use Auto-Hunt from the Hidden Niches database."
+        );
+        return;
+      }
+
+      $("#outlierKeyword").value = keyword;
+
+      setOutlierLoading(true);
+
+      try {
+        const videos = await searchYoutubeVideos({
+          keyword,
+          categoryId,
+          dateFilter
+        });
+
+        /*
+          Explicit 0 handling:
+          maxSubs = 0 means only channels with 0 public subscribers qualify.
+        */
+        state.outlierResults = videos.filter(video => {
+          if (video.hiddenSubscriberCount) return false;
+
+          const subs = Number(video.subscriberCount);
+
+          return subs <= maxSubs;
+        });
+
+        sortOutlierResults();
+
+        renderOutlierResults();
+
+        if (!state.outlierResults.length) {
+          showToast(
+            "info",
+            "No matching outliers",
+            "Try a broader keyword, increase Max Subscribers, or change the date window."
+          );
+        } else {
+          showToast(
+            "success",
+            "Hunt complete",
+            `Found ${state.outlierResults.length} candidate outliers.`
+          );
+        }
+      } catch (error) {
+        console.error(error);
+
+        state.outlierResults = [];
+        renderOutlierResults();
+
+        showToast(
+          "error",
+          "YouTube API error",
+          formatApiError(error)
+        );
+      } finally {
+        setOutlierLoading(false);
+      }
+    }
+
+    function sortOutlierResults() {
+      if (state.outlierSort === "vph") {
+        state.outlierResults.sort((a, b) => (b.vph || 0) - (a.vph || 0));
+        return;
+      }
+
+      if (state.outlierSort === "engagement") {
+        state.outlierResults.sort(
+          (a, b) => (b.engagement || 0) - (a.engagement || 0)
+        );
+        return;
+      }
+
+      if (state.outlierSort === "views") {
+        state.outlierResults.sort(
+          (a, b) => (b.views || 0) - (a.views || 0)
+        );
+        return;
+      }
+
+      state.outlierResults.sort((a, b) => {
+        const aScore = a.outlier === null ? -1 : a.outlier;
+        const bScore = b.outlier === null ? -1 : b.outlier;
+
+        return bScore - aScore;
+      });
+    }
+
+    function setOutlierLoading(isLoading) {
+      const skeleton = $("#outlierSkeleton");
+      const grid = $("#outlierGrid");
+      const table = $("#outlierTableWrap");
+      const empty = $("#outlierEmpty");
+      const button = $("#outlierSearchBtn");
+
+      if (isLoading) {
+        skeleton.classList.add("active");
+        grid.innerHTML = "";
+        table.classList.remove("active");
+        empty.classList.remove("active");
+        button.disabled = true;
+        button.innerHTML = `
+          <span>◌</span>
+          <span>Hunting...</span>
+        `;
+      } else {
+        skeleton.classList.remove("active");
+        button.disabled = false;
+        button.innerHTML = `
+          <span>⚡</span>
+          <span>Search Outliers</span>
+        `;
+      }
+    }
+
+    function renderOutlierResults() {
+      const results = state.outlierResults;
+
+      $("#outlierResultsInfo").innerHTML = results.length
+        ? `Found <strong>${results.length}</strong> candidate(s). Sorted by <strong>${escapeHTML(state.outlierSort)}</strong>.`
+        : `No matching videos found.`;
+
+      renderSessionStats(results);
+
+      if (!results.length) {
+        $("#outlierGrid").innerHTML = "";
+        $("#outlierTableBody").innerHTML = "";
+        $("#outlierEmpty").classList.add("active");
+
+        updateGridTableVisibility();
+        return;
+      }
+
+      $("#outlierEmpty").classList.remove("active");
+
+      $("#outlierGrid").innerHTML = results.map(videoCardHTML).join("");
+
+      $("#outlierTableBody").innerHTML =
+        results.map(videoTableRowHTML).join("");
+
+      bindVideoActions(results);
+
+      updateGridTableVisibility();
+    }
+
+    function renderSessionStats(results) {
+      $("#statVideos").textContent = results.length;
+
+      if (!results.length) {
+        $("#statOutlier").textContent = "0x";
+        $("#statVph").textContent = "0";
+        $("#statEngagement").textContent = "0%";
+        return;
+      }
+
+      const outlierScores = results
+        .map(v => v.outlier)
+        .filter(v => Number.isFinite(v));
+
+      const avgOutlier =
+        outlierScores.length
+          ? outlierScores.reduce((a, b) => a + b, 0) / outlierScores.length
+          : 0;
+
+      const maxVph = Math.max(...results.map(v => v.vph || 0));
+
+      const maxEngagement = Math.max(
+        ...results.map(v => v.engagement || 0)
+      );
+
+      $("#statOutlier").textContent = formatMultiplier(avgOutlier);
+      $("#statVph").textContent = formatVPH(maxVph);
+      $("#statEngagement").textContent = formatPercent(maxEngagement);
+    }
+
+    /* =========================================================
+       08. TRENDS
+       ========================================================= */
+
+    async function fetchTrendingIndia() {
+      const data = await ytRequest("videos", {
+        part: "snippet,statistics,contentDetails",
+        chart: "mostPopular",
+        regionCode: "IN",
+        maxResults: 50
+      });
+
+      const videos = data.items || [];
+
+      const channels = await getChannelsByIds(
+        videos
+          .map(video => video?.snippet?.channelId)
+          .filter(Boolean)
+      );
+
+      const channelMap = Object.fromEntries(
+        channels.map(channel => [channel.id, channel])
+      );
+
+      return videos
+        .map(video => createEnrichedVideo(video, channelMap))
+        .filter(video => !video.hiddenSubscriberCount);
+    }
+
+    function filterTrendResults(mode) {
+      const category = $("#trendCategory").value;
+      let items = [...state.trendRaw];
+
+      if (category === "excludeMusicMovies") {
+        items = items.filter(video => {
+          return !["10", "30", "1"].includes(video.categoryId);
+        });
+      } else if (category !== "all") {
+        items = items.filter(video => video.categoryId === category);
+      }
+
+      if (mode === "small") {
+        /*
+          Also explicitly support 0 here.
+        */
+        const rawLimit = $("#smallTrendSubs").value.trim();
+        const parsedLimit = Number(rawLimit);
+
+        const limit = Number.isNaN(parsedLimit)
+          ? 50000
+          : Math.max(0, parsedLimit);
+
+        items = items.filter(video => {
+          if (video.hiddenSubscriberCount) return false;
+
+          const subs = Number(video.subscriberCount);
+
+          return subs < limit;
+        });
+      }
+
+      return items;
+    }
+
+    async function loadTrends() {
+      const button = $("#loadTrendsBtn");
+
+      button.disabled = true;
+      button.innerHTML = `<span>◌</span><span>Loading...</span>`;
+
+      try {
+        state.trendRaw = await fetchTrendingIndia();
+
+        renderTrends(filterTrendResults("general"));
+
+        $("#trendInfo").textContent =
+          `Fetched ${state.trendRaw.length} public-subscriber trending videos from India.`;
+
+        showToast(
+          "success",
+          "Trends loaded",
+          "India trending feed is ready."
+        );
+      } catch (error) {
+        console.error(error);
+
+        state.trendRaw = [];
+        renderTrends([]);
+
+        showToast(
+          "error",
+          "Trend fetch failed",
+          formatApiError(error)
+        );
+      } finally {
+        button.disabled = false;
+        button.innerHTML = `<span>◈</span><span>Fetch Trends</span>`;
+      }
+    }
+
+    function renderTrends(results) {
+      $("#trendsGrid").innerHTML = results.length
+        ? results.map(videoCardHTML).join("")
+        : "";
+
+      $("#trendsEmpty").classList.toggle("active", !results.length);
+
+      bindVideoActions(results);
+    }
+
+    /* =========================================================
+       09. VIDEO CARD HTML
+       ========================================================= */
+
+    function videoCardHTML(video) {
+      const saved = state.savedVideos.some(item => item.id === video.id);
+
+      const outlierText =
+        video.outlier === null
+          ? "NO SUB DATA"
+          : formatMultiplier(video.outlier);
+
+      const outlierClass =
+        video.outlier !== null && video.outlier >= 10
+          ? "hot"
+          : "";
+
+      return `
+        <article class="video-card">
+          <div class="thumb-wrap">
+            <img
+              src="${escapeHTML(video.thumbnail)}"
+              alt="${escapeHTML(video.title)}"
+              loading="lazy"
+              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22450%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23080b14%22/%3E%3C/svg%3E';"
+            />
+
+            <div class="thumb-overlay"></div>
+
+            <div class="outlier-pill">
+              ${escapeHTML(outlierText)}
+            </div>
+
+            <div class="duration-pill">
+              ${escapeHTML(video.duration)}
+            </div>
+          </div>
+
+          <div class="card-body">
+            <a
+              class="video-title"
+              href="${escapeHTML(video.url)}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ${escapeHTML(video.title)}
+            </a>
+
+            <div class="channel-name">
+              ${escapeHTML(video.channelTitle)}
+              · ${formatNumber(video.subscriberCount || 0)} subs
+            </div>
+
+            <div class="metric-row">
+              <div class="metric">
+                <div class="metric-label">Views</div>
+                <div class="metric-value">${formatNumber(video.views)}</div>
+              </div>
+
+              <div class="metric">
+                <div class="metric-label">VPH</div>
+                <div class="metric-value ${video.vph >= 5000 ? "hot" : ""}">
+                  ${formatVPH(video.vph)}
+                </div>
+              </div>
+
+              <div class="metric">
+                <div class="metric-label">Engage</div>
+                <div class="metric-value ${video.engagement >= 5 ? "hot" : ""}">
+                  ${formatPercent(video.engagement)}
+                </div>
+              </div>
+            </div>
+
+            <div class="card-actions">
+              <button
+                class="button button-ghost action-spy"
+                data-id="${escapeHTML(video.id)}"
+              >
+                Spy
+              </button>
+
+              <button
+                class="button ${saved ? "button-success" : ""} action-save"
+                data-id="${escapeHTML(video.id)}"
+              >
+                ${saved ? "Saved ✓" : "Save"}
+              </button>
+
+              <a
+                class="button button-ghost"
+                href="${escapeHTML(video.url)}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open
+              </a>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function videoTableRowHTML(video) {
+      const saved = state.savedVideos.some(item => item.id === video.id);
+
+      return `
+        <tr>
+          <td>
+            <div class="table-video">
+              <img
+                class="table-thumb"
+                src="${escapeHTML(video.thumbnail)}"
+                alt=""
+                loading="lazy"
+              />
+
+              <div>
+                <div class="table-title">
+                  ${escapeHTML(video.title)}
+                </div>
+
+                <div class="table-sub">
+                  ${escapeHTML(video.channelTitle)}
+                </div>
+              </div>
+            </div>
+          </td>
+
+          <td class="mono">${formatExactNumber(video.views)}</td>
+          <td class="mono">${formatExactNumber(video.subscriberCount || 0)}</td>
+          <td class="mono">${escapeHTML(formatMultiplier(video.outlier))}</td>
+          <td class="mono">${formatVPH(video.vph)}</td>
+          <td class="mono">${formatPercent(video.engagement)}</td>
+          <td>${escapeHTML(formatDate(video.publishedAt))}</td>
+
+          <td>
+            <div style="display:flex;gap:6px;">
+              <button
+                class="button action-spy"
+                data-id="${escapeHTML(video.id)}"
+                style="min-height:30px;padding:6px 8px;font-size:9px;"
+              >
+                Spy
+              </button>
+
+              <button
+                class="button ${saved ? "button-success" : ""} action-save"
+                data-id="${escapeHTML(video.id)}"
+                style="min-height:30px;padding:6px 8px;font-size:9px;"
+              >
+                ${saved ? "Saved" : "Save"}
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function bindVideoActions(videos) {
+      $$(".action-spy").forEach(button => {
+        button.onclick = () => {
+          const video = videos.find(item => item.id === button.dataset.id);
+
+          if (video) {
+            openSpyModal(video);
+          }
+        };
+      });
+
+      $$(".action-save").forEach(button => {
+        button.onclick = () => {
+          const video = videos.find(item => item.id === button.dataset.id);
+
+          if (video) {
+            toggleSavedVideo(video);
+          }
+        };
+      });
+    }
+
+    /* =========================================================
+       10. VIEW SWITCHING
+       ========================================================= */
+
+    function updateGridTableVisibility() {
+      const isGrid = state.viewMode === "grid";
+
+      $("#gridViewBtn").classList.toggle("active", isGrid);
+      $("#tableViewBtn").classList.toggle("active", !isGrid);
+
+      $("#outlierGrid").style.display = isGrid ? "grid" : "none";
+      $("#outlierTableWrap").classList.toggle("active", !isGrid);
+    }
+
+    function setViewMode(mode) {
+      state.viewMode = mode;
+
+      localStorage.setItem(STORAGE.viewMode, mode);
+
+      updateGridTableVisibility();
+    }
+
+    /* =========================================================
+       11. SAVE / BOOKMARK SYSTEM
+       ========================================================= */
+
+    function toggleSavedVideo(video) {
+      const index = state.savedVideos.findIndex(
+        item => item.id === video.id
+      );
+
+      if (index >= 0) {
+        state.savedVideos.splice(index, 1);
+
+        showToast(
+          "info",
+          "Removed from calendar",
+          "The video has been removed from your saved research."
+        );
+      } else {
+        state.savedVideos.unshift({
+          ...video,
+          savedAt: new Date().toISOString()
+        });
+
+        showToast(
+          "success",
+          "Saved to calendar",
+          "Video added to your research library."
+        );
+      }
+
+      saveJSON(STORAGE.savedVideos, state.savedVideos);
+
+      updateSavedCount();
+      renderOutlierResults();
+
+      if (state.trendRaw.length) {
+        const mode = $("#smallTrendsBtn").dataset.active === "true"
+          ? "small"
+          : "general";
+
+        renderTrends(filterTrendResults(mode));
+      }
+
+      renderSavedVideos();
+    }
+
+    function updateSavedCount() {
+      const count = state.savedVideos.length;
+      const badge = $("#savedCountBadge");
+
+      badge.textContent = count;
+      badge.style.display = count ? "inline-flex" : "none";
+    }
+
+    function renderSavedVideos() {
+      const results = state.savedVideos;
+
+      $("#savedInfo").textContent =
+        `${results.length} saved video${results.length === 1 ? "" : "s"}.`;
+
+      $("#savedGrid").innerHTML = results.length
+        ? results.map(videoCardHTML).join("")
+        : "";
+
+      $("#savedEmpty").classList.toggle("active", !results.length);
+
+      bindVideoActions(results);
+    }
+
+    function exportSavedCSV() {
+      if (!state.savedVideos.length) {
+        showToast(
+          "info",
+          "Nothing to export",
+          "Save at least one video before exporting."
+        );
+
+        return;
+      }
+
+      const headers = [
+        "Title",
+        "Video URL",
+        "Channel",
+        "Channel ID",
+        "Views",
+        "Subscribers",
+        "Outlier Score",
+        "Views Per Hour",
+        "Engagement Rate",
+        "Likes",
+        "Comments",
+        "Category",
+        "Published At",
+        "Duration",
+        "Saved At"
+      ];
+
+      const rows = state.savedVideos.map(video => [
+        video.title,
+        video.url,
+        video.channelTitle,
+        video.channelId,
+        video.views,
+        video.subscriberCount ?? "",
+        video.outlier === null ? "" : video.outlier,
+        video.vph,
+        video.engagement,
+        video.likes,
+        video.comments,
+        video.categoryName,
+        video.publishedAt,
+        video.duration,
+        video.savedAt
+      ]);
+
+      const csv = [
+        headers,
+        ...rows
+      ]
+        .map(row =>
+          row
+            .map(csvEscape)
+            .join(",")
+        )
+        .join("\r\n");
+
+      const blob = new Blob(
+        [csv],
+        { type: "text/csv;charset=utf-8;" }
+      );
+
+      const url = URL.createObjectURL(blob);
+
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `viral-hunt-pro-calendar-${new Date().toISOString().slice(0,10)}.csv`;
+
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+
+      URL.revokeObjectURL(url);
+
+      showToast(
+        "success",
+        "CSV exported",
+        "Your saved research library has been downloaded."
+      );
+    }
+
+    function csvEscape(value) {
+      const text = String(value ?? "");
+      return `"${text.replaceAll('"', '""')}"`;
+    }
+
+    /* =========================================================
+       12. METADATA SPY
+       ========================================================= */
+
+    function openSpyModal(video) {
+      $("#spyTitle").textContent = video.title;
+      $("#spyDate").textContent = formatDate(video.publishedAt);
+      $("#spyDuration").textContent = video.duration;
+      $("#spyDescription").textContent =
+        video.description || "No public description.";
+
+      const tagsEl = $("#spyTags");
+
+      if (video.tags?.length) {
+        tagsEl.innerHTML = video.tags
+          .map(tag => `<span class="tag">${escapeHTML(tag)}</span>`)
+          .join("");
+      } else {
+        tagsEl.innerHTML =
+          `<span class="pill">No public SEO tags returned by API</span>`;
+      }
+
+      $("#spyModalBackdrop").classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeSpyModal() {
+      $("#spyModalBackdrop").classList.remove("active");
+      document.body.style.overflow = "";
+    }
+
+    /* =========================================================
+       13. KEYWORD ALPHABET SOUP / JSONP
+       ========================================================= */
+
+    function jsonpRequest(url) {
+      return new Promise((resolve, reject) => {
+        const callbackName =
+          `vhpJsonp_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
+
+        const script = document.createElement("script");
+        let timeoutId = null;
+
+        window[callbackName] = function(data) {
+          cleanup();
+          resolve(data);
         };
 
-        const NICHE_DB = [
-            {
-                icon: "🎮", title: "Micro-Gaming & Emulation", cat: "20",
-                items: [
-                    "offline android games under 100mb", "ps2 emulation on android setup", "roblox scary horror maps multiplayer", 
-                    "co-op mobile games with friends local wifi", "ppsspp highly compressed games download", "indie horror games itch.io gameplay"
-                ]
-            },
-            {
-                icon: "🎌", title: "Anime & Manga (Faceless)", cat: "1",
-                items: [
-                    "manhwa recaps in hindi full story", "underrated isekai anime you missed", "anime iceberg explained lowest tier", 
-                    "one piece theories confirmed hindi", "top 10 overpowered main character anime", "solo leveling light novel ending explained"
-                ]
-            },
-            {
-                icon: "🤖", title: "AI & Automation Trends", cat: "28",
-                items: [
-                    "ai historical documentaries faceless", "reddit scary stories tts short form", "chatgpt advanced prompts for students", 
-                    "free ai video generators 2024 no watermark", "stoicism quotes ai voice generator", "automate youtube shorts python script"
-                ]
-            },
-            {
-                icon: "💻", title: "Tech, Privacy & Software", cat: "28",
-                items: [
-                    "open source software alternatives to adobe", "vs code extensions for web developers", "windows 11 debloat script guide", 
-                    "linux desktop customization rice", "free useful websites you didn't know", "degoogle your life privacy guide"
-                ]
-            },
-            {
-                icon: "💰", title: "High CPM Finance & Wealth", cat: "27",
-                items: [
-                    "dark psychology principles for manipulation", "side hustles for teens 2024 no money", "trading psychology in hindi banknifty", 
-                    "frugal living tips to save money fast", "dividend investing portfolio for beginners", "credit card churning travel hacks"
-                ]
-            },
-            {
-                icon: "🕵️", title: "Mysteries & True Crime", cat: "24",
-                items: [
-                    "unsolved internet mysteries iceberg", "creepy lost media found footage", "backrooms lore explained in order", 
-                    "scp foundation files reading", "abandoned places exploration history", "deep web iceberg explained"
-                ]
-            }
+        function cleanup() {
+          clearTimeout(timeoutId);
+
+          try {
+            delete window[callbackName];
+          } catch {}
+
+          script.remove();
+        }
+
+        script.onerror = function() {
+          cleanup();
+          reject(new Error("Autocomplete request failed."));
+        };
+
+        const finalUrl =
+          `${url}&callback=${encodeURIComponent(callbackName)}`;
+
+        script.src = finalUrl;
+
+        timeoutId = setTimeout(() => {
+          cleanup();
+          reject(new Error("Autocomplete request timed out."));
+        }, 9000);
+
+        document.body.appendChild(script);
+      });
+    }
+
+    async function fetchAutocomplete(query) {
+      const url =
+        `${SUGGEST_BASE}?client=youtube&q=${encodeURIComponent(query)}`;
+
+      const data = await jsonpRequest(url);
+
+      /*
+        Typical YouTube autocomplete structure:
+        [query, [suggestion1, suggestion2, ...]]
+      */
+
+      if (!Array.isArray(data)) return [];
+
+      const suggestions = Array.isArray(data[1]) ? data[1] : [];
+
+      return suggestions
+        .map(item => {
+          if (typeof item === "string") return item;
+          if (Array.isArray(item)) return item[0];
+          if (item && typeof item === "object") {
+            return item.suggestion || item.q || "";
+          }
+          return "";
+        })
+        .filter(Boolean)
+        .map(value => String(value).trim());
+    }
+
+    async function generateKeywordSoup() {
+      const seed = $("#seedKeyword").value.trim();
+
+      if (!seed) {
+        showToast(
+          "error",
+          "Seed missing",
+          "Enter a seed keyword first."
+        );
+
+        return;
+      }
+
+      const button = $("#generateKeywordsBtn");
+
+      button.disabled = true;
+      button.innerHTML = `<span>◌</span><span>Expanding...</span>`;
+
+      $("#keywordEmpty").classList.remove("active");
+      $("#keywordCloud").innerHTML = "";
+
+      try {
+        const letters = "abcdefghijklmnopqrstuvwxyz".split("");
+
+        const modifiers = [
+          "in 2024",
+          "in 2025",
+          "in 2026",
+          "tutorial",
+          "for beginners",
+          "best",
+          "review",
+          "explained",
+          "tips",
+          "without internet"
         ];
 
-        /**
-         * 2. GLOBAL STATE MANAGEMENT
-         */
-        const state = {
-            activeTab: 'tabSearch', viewMode: 'grid', dataset: [], datasetType: ''
-        };
+        const queries = [
+          seed,
+          ...letters.map(letter => `${seed} ${letter}`),
+          ...modifiers.map(modifier => `${seed} ${modifier}`)
+        ];
 
-        /**
-         * 3. CUSTOM TOAST NOTIFICATION SYSTEM
-         */
-        const Toast = {
-            show: (message, type = 'info') => {
-                const container = document.getElementById('toast-container');
-                const toastElement = document.createElement('div');
-                toastElement.className = `toast ${type}`;
-                let iconSymbol = 'ℹ️';
-                if (type === 'success') iconSymbol = '✅';
-                else if (type === 'error') iconSymbol = '⚠️';
+        const results = new Set();
 
-                toastElement.innerHTML = `<span>${iconSymbol}</span> <div>${message}</div>`;
-                container.appendChild(toastElement);
+        /*
+          Use a modest concurrency so the browser does not create a huge
+          number of simultaneous JSONP scripts.
+        */
+        const batchSize = 8;
 
-                setTimeout(() => {
-                    toastElement.style.animation = 'toastFadeOut 0.4s forwards';
-                    setTimeout(() => { if (container.contains(toastElement)) container.removeChild(toastElement); }, 400);
-                }, 3500);
+        for (let i = 0; i < queries.length; i += batchSize) {
+          const batch = queries.slice(i, i + batchSize);
+
+          const output = await Promise.all(
+            batch.map(query =>
+              fetchAutocomplete(query).catch(() => [])
+            )
+          );
+
+          output.flat().forEach(value => {
+            const normalized = value.trim();
+
+            if (
+              normalized &&
+              normalized.toLowerCase() !== seed.toLowerCase()
+            ) {
+              results.add(normalized);
             }
-        };
+          });
+        }
 
-        /**
-         * 4. UTILITIES & MATHEMATICAL FUNCTIONS
-         */
-        const utils = {
-            formatNum: (num) => {
-                if (!num || isNaN(num)) return '0';
-                if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
-                if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
-                if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
-                return String(num);
-            },
-            calcVPH: (views, pubDate) => {
-                if (!pubDate || !views) return 0;
-                const hoursPassed = Math.max((Date.now() - new Date(pubDate).getTime()) / (1000 * 60 * 60), 1);
-                return Math.round(views / hoursPassed);
-            },
-            getRatio: (views, subs) => (views && subs) ? views / Math.max(subs, 1) : 0,
-            formatRatio: (r) => r >= 10 ? Math.round(r) + 'x' : (Math.round(r * 10) / 10) + 'x',
-            getTier: (r) => r >= 50 ? 'ratio-insane' : (r >= 10 ? 'ratio-high' : 'ratio-normal'),
-            escape: (s) => { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; },
-            parseSubs: (v) => { const n = Number(String(v).trim()); return (isNaN(n) || n < 0) ? 5000 : Math.floor(n); },
-            chunkArray: (arr, size) => { const res = []; for (let i = 0; i < arr.length; i += size) res.push(arr.slice(i, i + size)); return res; },
-            formatDuration: (str) => str ? str.replace('PT', '').replace('H', 'h ').replace('M', 'm ').replace('S', 's') : 'Unknown'
-        };
+        const keywords = [...results]
+          .sort((a, b) => a.localeCompare(b))
+          .slice(0, 300);
 
-        /**
-         * 5. USER INTERFACE MANAGER
-         */
-        const ui = {
-            updateApiStatus: (isVerified) => {
-                const el = document.getElementById('apiStatusContainer');
-                el.innerHTML = isVerified ? 
-                    `<span class="status-dot green"></span><span class="status-text verified">Verified & Active</span>` : 
-                    `<span class="status-dot red"></span><span class="status-text unverified">Unverified</span>`;
-            },
-            setLoading: (btnId, isLoading, defaultText, skeletonId) => {
-                const btn = document.getElementById(btnId);
-                if (btn) {
-                    btn.disabled = isLoading;
-                    btn.innerHTML = isLoading ? `<span class="spinner" style="margin-right:8px;"></span> Scanning Matrix...` : defaultText;
-                }
-                if (skeletonId) {
-                    const skelWrap = document.getElementById(skeletonId);
-                    if (isLoading) {
-                        skelWrap.innerHTML = Array(6).fill(0).map(() => `
-                            <div class="glass-panel skeleton-card">
-                                <div class="skeleton-thumb"></div>
-                                <div class="skeleton-line" style="width: 90%;"></div>
-                                <div class="skeleton-line" style="width: 60%;"></div>
-                                <div class="skeleton-line" style="width: 100%; margin-top: 15px;"></div>
-                            </div>
-                        `).join('');
-                        skelWrap.classList.add('active');
-                        ui.hideDataWraps(skeletonId.replace('skel', ''));
-                    } else {
-                        skelWrap.classList.remove('active'); skelWrap.innerHTML = '';
-                    }
-                }
-            },
-            hideDataWraps: (suffix) => {
-                document.getElementById('grid' + suffix).classList.remove('active');
-                document.getElementById('table' + suffix).classList.remove('active');
-            },
-            switchView: (viewMode) => {
-                state.viewMode = viewMode;
-                document.getElementById('viewTblBtn').className = viewMode === 'table' ? 'view-btn active' : 'view-btn';
-                document.getElementById('viewGrdBtn').className = viewMode === 'grid' ? 'view-btn active' : 'view-btn';
-                core.renderActiveTab();
-            },
-            toggleActions: (shouldShow) => document.getElementById('actionBar').style.display = shouldShow ? 'flex' : 'none',
-            generateEmptyStateHtml: (msg) => `
-                <div class="empty-state">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                    <h3>Scan Completed</h3><p>${msg}</p>
-                </div>`,
-            closeModal: () => document.getElementById('spyModal').classList.remove('active')
-        };
+        $("#keywordCountPill").textContent =
+          `${keywords.length} keywords`;
 
-        /**
-         * 6. API COMMUNICATION LAYER
-         */
-        const api = {
-            getKey: () => {
-                const k = document.getElementById('apiInput').value.trim();
-                if (!k) { Toast.show('API Authorization Required: Please paste your YouTube API Key.', 'error'); return null; }
-                return k;
-            },
-            fetchEndpoint: async (url) => {
-                const res = await fetch(url);
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error?.message || `HTTP Error ${res.status}`);
-                return data;
-            },
-            getVideoDetailsBatched: async (ids, key) => {
-                if (ids.length === 0) return {}; 
-                const map = {};
-                for (const chunk of utils.chunkArray(ids, 50)) {
-                    const data = await api.fetchEndpoint(`${CONFIG.API_URL}/videos?part=statistics,snippet,contentDetails&id=${chunk.join(',')}&key=${key}`);
-                    (data.items || []).forEach(v => {
-                        map[v.id] = { views: parseInt(v.statistics?.viewCount || '0'), publishedAt: v.snippet.publishedAt, tags: v.snippet.tags || [], description: v.snippet.description || '', duration: v.contentDetails?.duration || '' };
-                    });
-                }
-                return map;
-            },
-            getChannelStatsBatched: async (ids, key) => {
-                if (ids.length === 0) return {}; 
-                const map = {};
-                for (const chunk of utils.chunkArray(ids, 50)) {
-                    const data = await api.fetchEndpoint(`${CONFIG.API_URL}/channels?part=statistics&id=${chunk.join(',')}&key=${key}`);
-                    (data.items || []).forEach(c => {
-                        map[c.id] = { subs: c.statistics?.hiddenSubscriberCount ? null : parseInt(c.statistics?.subscriberCount || '0'), hidden: !!c.statistics?.hiddenSubscriberCount };
-                    });
-                }
-                return map;
-            }
-        };
+        $("#keywordCloud").innerHTML = keywords.length
+          ? keywords
+              .map(keyword => `
+                <button
+                  class="keyword-chip"
+                  data-keyword="${escapeHTML(keyword)}"
+                  title="Run Outlier Search"
+                >
+                  ${escapeHTML(keyword)}
+                  <small>↗</small>
+                </button>
+              `)
+              .join("")
+          : "";
 
-        /**
-         * 7. CORE LOGIC ENGINE
-         */
-        const engine = {
-            processAndRenderData: async (rawItems, apiKey, maxSubsLimit, shouldEnforceSubFilter, datasetType, tabSuffix) => {
-                const videoIds = rawItems.map(item => item.id.videoId);
-                const channelIds = [...new Set(rawItems.map(item => item.snippet.channelId))];
-                
-                const [videoStatsMap, channelStatsMap] = await Promise.all([
-                    api.getVideoDetailsBatched(videoIds, apiKey),
-                    api.getChannelStatsBatched(channelIds, apiKey)
-                ]);
+        $$(".keyword-chip").forEach(button => {
+          button.onclick = () => {
+            const keyword = button.dataset.keyword;
 
-                state.dataset = rawItems.map(item => {
-                    const vid = item.id.videoId, cid = item.snippet.channelId;
-                    const vDetails = videoStatsMap[vid] || {}, cDetails = channelStatsMap[cid] || {};
-                    const views = vDetails.views || 0, subs = cDetails.subs || 0;
-                    
-                    return {
-                        id: vid, title: item.snippet.title, channel: item.snippet.channelTitle,
-                        thumb: item.snippet.thumbnails?.maxres?.url || item.snippet.thumbnails?.medium?.url || '',
-                        views, subs, vph: utils.calcVPH(views, vDetails.publishedAt), ratio: utils.getRatio(views, subs), 
-                        pubAt: vDetails.publishedAt, tags: vDetails.tags, desc: vDetails.description, dur: vDetails.duration, hidden: cDetails.hidden || false
-                    };
-                });
+            switchPage("outlier");
 
-                if (shouldEnforceSubFilter) {
-                    state.dataset = state.dataset.filter(r => !r.hidden && r.subs !== null && r.subs <= maxSubsLimit);
-                }
-                
-                state.dataset.sort((a, b) => b.ratio - a.ratio || b.vph - a.vph);
-                state.datasetType = datasetType;
+            setTimeout(() => {
+              runOutlierSearch(keyword);
+            }, 80);
+          };
+        });
 
-                const gridId = 'grid' + tabSuffix, tableId = 'table' + tabSuffix;
-                
-                if (state.dataset.length === 0) {
-                    document.getElementById(gridId).innerHTML = '';
-                    document.getElementById(tableId).innerHTML = ui.generateEmptyStateHtml(`0 channels matched your criteria (under ${maxSubsLimit} subscribers). Try increasing your Max Subs Limit or Date Filter.`);
-                    document.getElementById(tableId).classList.add('active');
-                    ui.toggleActions(false);
-                    Toast.show('No outliers found matching your limit.', 'info');
-                } else {
-                    ui.toggleActions(true);
-                    Toast.show(`Successfully isolated ${state.dataset.length} high-signal videos!`, 'success');
-                    core.renderView(gridId, tableId, state.dataset);
-                }
-            },
+        $("#keywordEmpty").classList.toggle("active", !keywords.length);
 
-            // --- TAB 1: Outlier Search (With Date Filter Fix) ---
-            runSearch: async () => {
-                const apiKey = api.getKey(); if (!apiKey) return;
-                const searchQuery = document.getElementById('inpQuery').value.trim();
-                const categoryId = document.getElementById('inpCat').value;
-                const maxSubsLimit = utils.parseSubs(document.getElementById('inpSubs').value);
-                const dateFilterValue = document.getElementById('inpDateFilter').value;
-                
-                if (!searchQuery) { Toast.show('Search Operation Halted: Keyword cannot be empty.', 'error'); return; }
-                
-                ui.setLoading('btnSearch', true, 'Scan Matrix 🚀', 'skelSearch');
-                ui.toggleActions(false);
+        showToast(
+          keywords.length ? "success" : "info",
+          keywords.length ? "Keyword expansion complete" : "No suggestions",
+          keywords.length
+            ? `Generated ${keywords.length} unique long-tail keywords.`
+            : "Autocomplete returned no suggestions for this seed."
+        );
+      } catch (error) {
+        console.error(error);
 
-                try {
-                    let publishedAfterString = '';
-                    const rightNow = Date.now();
-                    
-                    if (dateFilterValue === '24h') publishedAfterString = new Date(rightNow - (24 * 3600 * 1000)).toISOString();
-                    else if (dateFilterValue === '7d') publishedAfterString = new Date(rightNow - (7 * 24 * 3600 * 1000)).toISOString();
-                    else if (dateFilterValue === '30d') publishedAfterString = new Date(rightNow - (30 * 24 * 3600 * 1000)).toISOString();
+        $("#keywordEmpty").classList.add("active");
 
-                    let fetchUrl = `${CONFIG.API_URL}/search?part=snippet&type=video&order=viewCount&videoDuration=long&maxResults=50&q=${encodeURIComponent(searchQuery)}&key=${apiKey}`;
-                    if (categoryId) fetchUrl += `&videoCategoryId=${categoryId}`;
-                    if (publishedAfterString) fetchUrl += `&publishedAfter=${encodeURIComponent(publishedAfterString)}`;
+        showToast(
+          "error",
+          "Keyword generation failed",
+          error.message || "Autocomplete request failed."
+        );
+      } finally {
+        button.disabled = false;
+        button.innerHTML = `<span>⌁</span><span>Generate Keywords</span>`;
+      }
+    }
 
-                    const responseData = await api.fetchEndpoint(fetchUrl);
-                    const rawItems = (responseData.items || []).filter(item => item.id?.videoId);
-                    
-                    if (rawItems.length === 0) { 
-                        document.getElementById('tableSearch').innerHTML = ui.generateEmptyStateHtml(`No long-form videos found. Try changing the Date Filter to "Any Time".`);
-                        document.getElementById('tableSearch').classList.add('active');
-                        Toast.show('No results found. Expand Date Filter.', 'info');
-                        return;
-                    }
-                    await engine.processAndRenderData(rawItems, apiKey, maxSubsLimit, true, 'search', 'Search');
-                } catch (error) { Toast.show(error.message, 'error'); } 
-                finally { ui.setLoading('btnSearch', false, 'Scan Matrix 🚀', 'skelSearch'); }
-            },
+    /* =========================================================
+       14. HIDDEN NICHES RENDERER
+       ========================================================= */
 
-            // --- TAB 2 & 3: Trending Engines ---
-            runTrending: async (isSmallTrendsMode) => {
-                const apiKey = api.getKey(); if (!apiKey) return;
-                const tabSuffix = isSmallTrendsMode ? 'SmTrend' : 'Trend';
-                const categoryId = document.getElementById('inp' + tabSuffix + 'Cat').value;
-                const maxSubsLimit = isSmallTrendsMode ? utils.parseSubs(document.getElementById('inpSmTrendSubs').value) : null;
-                const buttonId = isSmallTrendsMode ? 'btnSmTrend' : 'btnTrend';
-                const buttonLabel = isSmallTrendsMode ? 'Hunt Small Channels 🎯' : 'Fetch Top Trends 🔥';
-                
-                ui.setLoading(buttonId, true, buttonLabel, 'skel' + tabSuffix);
-                ui.toggleActions(false);
+    function renderHiddenNiches() {
+      $("#nicheGrid").innerHTML = hiddenNiches.map((niche, index) => `
+        <article class="niche-card">
+          <div class="niche-head">
+            <div>
+              <div class="niche-name">
+                ${escapeHTML(niche.name)}
+              </div>
 
-                try {
-                    let fetchUrl = `${CONFIG.API_URL}/videos?part=snippet,statistics&chart=mostPopular&regionCode=IN&maxResults=50&key=${apiKey}`;
-                    if (categoryId) fetchUrl += `&videoCategoryId=${categoryId}`;
+              <div class="niche-description">
+                ${escapeHTML(niche.description)}
+              </div>
+            </div>
 
-                    const responseData = await api.fetchEndpoint(fetchUrl);
-                    if (!responseData.items || responseData.items.length === 0) { 
-                        document.getElementById('table' + tabSuffix).innerHTML = ui.generateEmptyStateHtml('YouTube Trending API is empty for this category.');
-                        document.getElementById('table' + tabSuffix).classList.add('active'); return; 
-                    }
-                    
-                    let mappedItems = responseData.items.map(item => ({ id: { videoId: item.id }, snippet: item.snippet }));
-                    await engine.processAndRenderData(mappedItems, apiKey, maxSubsLimit, isSmallTrendsMode, isSmallTrendsMode ? 'smalltrend' : 'trend', tabSuffix);
-                } catch(error) { Toast.show(error.message, 'error'); } 
-                finally { ui.setLoading(buttonId, false, buttonLabel, 'skel' + tabSuffix); }
-            },
+            <span class="pill purple">#${String(index + 1).padStart(2, "0")}</span>
+          </div>
 
-            // --- TAB 4: Alphabet Soup JSONP Engine ---
-            fetchJSONP: (queryString) => {
-                return new Promise(resolve => {
-                    const callbackName = 'yt_jsonp_' + Math.random().toString(36).substring(2, 11);
-                    window[callbackName] = (responseData) => { resolve(responseData[1] || []); delete window[callbackName]; document.body.removeChild(scriptNode); };
-                    const scriptNode = document.createElement('script');
-                    scriptNode.src = `https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=${encodeURIComponent(queryString)}&jsonp=${callbackName}`;
-                    document.body.appendChild(scriptNode);
-                });
-            },
-            runKeywords: async () => {
-                const seedKeyword = document.getElementById('inpKw').value.trim();
-                if (!seedKeyword) { Toast.show('Please enter a seed keyword first.', 'error'); return; }
-                
-                const runButton = document.getElementById('btnKw'); 
-                runButton.innerHTML = '<span class="spinner" style="margin-right:8px;"></span> Analyzing Search Trees...'; 
-                runButton.disabled = true; document.getElementById('kwWrap').style.display = 'none';
-
-                try {
-                    const primaryKeywords = await engine.fetchJSONP(seedKeyword);
-                    const appendSuffixes = [' a', ' b', ' c', ' d', ' e', ' f', ' g', ' in hindi', ' 2024', ' vs', ' review', ' tutorial'];
-                    const longTailSet = new Set();
-                    
-                    const promiseArray = appendSuffixes.map(suffix => engine.fetchJSONP(seedKeyword + suffix));
-                    const resolvedArrays = await Promise.all(promiseArray);
-                    
-                    resolvedArrays.forEach(keywordArray => {
-                        keywordArray.forEach(kwData => {
-                            let word = typeof kwData === 'string' ? kwData : kwData[0];
-                            if (word && !primaryKeywords.includes(word) && word.length > seedKeyword.length) longTailSet.add(word);
-                        });
-                    });
-
-                    if (primaryKeywords.length === 0 && longTailSet.size === 0) { Toast.show('Algorithm yielded zero keywords.', 'info'); return; }
-
-                    document.getElementById('kwPrimary').innerHTML = primaryKeywords.map(keyword => `<div class="kw-pill" onclick="core.triggerAutoHunt('${utils.escape(keyword)}')">🔍 ${utils.escape(keyword)}</div>`).join('') || '<span style="color:var(--text-muted)">No exact matches.</span>';
-                    document.getElementById('kwLongTail').innerHTML = Array.from(longTailSet).slice(0, 45).map(keyword => `<div class="kw-pill secondary" onclick="core.triggerAutoHunt('${utils.escape(keyword)}')">✨ ${utils.escape(keyword)}</div>`).join('');
-                    
-                    document.getElementById('kwWrap').style.display = 'block';
-                    Toast.show('Alphabet Soup Extraction Successful!', 'success');
-                } catch(error) { Toast.show('Algorithm block detected. Try again later.', 'error'); } 
-                finally { runButton.innerHTML = 'Generate Alphabet Soup 🧠'; runButton.disabled = false; }
-            },
-
-            // --- TAB 6: Competitor Engine ---
-            addComp: () => {
-                let channelId = document.getElementById('inpComp').value.trim();
-                if (!channelId || !channelId.startsWith('UC')) { Toast.show('Channel ID must start with "UC"', 'error'); return; }
-                let trackedChannels = core.getCompList(); 
-                if (!trackedChannels.includes(channelId)) { 
-                    trackedChannels.push(channelId); localStorage.setItem(CONFIG.KEY_COMP, JSON.stringify(trackedChannels)); 
-                    document.getElementById('inpComp').value = ''; core.renderCompList(); Toast.show('Target Acquired!', 'success'); 
-                } else { Toast.show('Target is already being tracked.', 'info'); }
-            },
-            scanComps: async () => {
-                const apiKey = api.getKey(); if (!apiKey) return;
-                const trackedChannels = core.getCompList(); 
-                if (trackedChannels.length === 0) { Toast.show('Your target list is empty.', 'error'); return; }
-
-                ui.setLoading('btnComp', true, 'Initiate Deep Scan 👁️', 'skelComp');
-                ui.toggleActions(false);
-
-                try {
-                    let collectedItems = [];
-                    const promiseArray = trackedChannels.map(id => api.fetchEndpoint(`${CONFIG.API_URL}/search?part=snippet&type=video&order=date&maxResults=3&channelId=${id}&key=${apiKey}`).catch(() => ({items:[]})));
-                    const resolvedResponses = await Promise.all(promiseArray);
-                    resolvedResponses.forEach(response => { if (response.items) collectedItems.push(...response.items); });
-
-                    if (collectedItems.length === 0) { 
-                        document.getElementById('tableComp').innerHTML = ui.generateEmptyStateHtml('No recent uploads detected from targeted channels.'); 
-                        document.getElementById('tableComp').classList.add('active'); return; 
-                    }
-                    await engine.processAndRenderData(collectedItems, apiKey, 99999999, false, 'comp', 'Comp');
-                } catch(error) { Toast.show(`Scan Disrupted: ${error.message}`, 'error'); } 
-                finally { ui.setLoading('btnComp', false, 'Initiate Deep Scan 👁️', 'skelComp'); }
-            }
-        };
-
-        /**
-         * 8. CORE APPLICATION MANAGER & DOM BUILDERS
-         */
-        const core = {
-            boot: () => {
-                // Live Input Binding for API Key Verification Indicator
-                const storedKey = localStorage.getItem(CONFIG.KEY_API);
-                if (storedKey) { document.getElementById('apiInput').value = storedKey; ui.updateApiStatus(true); }
-                
-                document.getElementById('apiInput').addEventListener('input', (event) => {
-                    const inputValue = event.target.value.trim();
-                    if (inputValue) { localStorage.setItem(CONFIG.KEY_API, inputValue); ui.updateApiStatus(true); } 
-                    else { localStorage.removeItem(CONFIG.KEY_API); ui.updateApiStatus(false); }
-                });
-
-                // Inject Hidden Niches
-                document.getElementById('nicheWrap').innerHTML = NICHE_DB.map(nicheObj => `
-                    <div class="glass-panel niche-card">
-                        <div class="niche-header"><span>${nicheObj.icon}</span> ${utils.escape(nicheObj.title)}</div>
-                        <ul class="niche-list">
-                            ${nicheObj.items.map(topicString => `
-                                <li class="niche-item">
-                                    <span class="niche-text">${utils.escape(topicString)}</span>
-                                    <button class="btn-hunt" onclick="core.triggerAutoHunt('${utils.escape(topicString)}', '${nicheObj.cat}')">Auto-Hunt</button>
-                                </li>
-                            `).join('')}
-                        </ul>
-                    </div>
-                `).join('');
-
-                core.renderCompList();
-
-                // Tab Routing
-                document.querySelectorAll('.nav-btn').forEach(navButton => {
-                    navButton.addEventListener('click', () => {
-                        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-                        document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-                        navButton.classList.add('active');
-                        
-                        const targetTabId = navButton.getAttribute('data-tab');
-                        document.getElementById(targetTabId).classList.add('active');
-                        state.activeTab = targetTabId;
-
-                        const dataTabs = ['tabSearch', 'tabTrend', 'tabSmallTrend', 'tabComp'];
-                        if (dataTabs.includes(targetTabId)) {
-                            const typeMapping = { 'tabSearch': 'search', 'tabTrend': 'trend', 'tabSmallTrend': 'smalltrend', 'tabComp': 'comp' };
-                            ui.toggleActions(state.datasetType === typeMapping[targetTabId] && state.dataset.length > 0);
-                        } else if (targetTabId === 'tabSaved') {
-                            core.renderSavedTab(); ui.toggleActions(true);
-                        } else { ui.toggleActions(false); }
-                    });
-                });
-            },
-
-            renderView: (gridContainerId, tableContainerId, dataArray) => {
-                const gridWrapper = document.getElementById(gridContainerId);
-                const tableWrapper = document.getElementById(tableContainerId);
-                if (state.viewMode === 'grid') {
-                    tableWrapper.classList.remove('active'); gridWrapper.classList.add('active');
-                    gridWrapper.innerHTML = core.buildGridHtml(dataArray);
-                } else {
-                    gridWrapper.classList.remove('active'); tableWrapper.classList.add('active');
-                    tableWrapper.innerHTML = core.buildTableHtml(dataArray);
-                }
-            },
-
-            renderActiveTab: () => {
-                let suffixMap = { 'tabSearch': 'Search', 'tabTrend': 'Trend', 'tabSmallTrend': 'SmTrend', 'tabComp': 'Comp' };
-                if (state.activeTab === 'tabSaved') { core.renderSavedTab(); return; }
-                let currentSuffix = suffixMap[state.activeTab];
-                if (currentSuffix && state.dataset.length > 0) core.renderView('grid' + currentSuffix, 'table' + currentSuffix, state.dataset);
-            },
-
-            buildGridHtml: (arrayData) => arrayData.map(record => `
-                <div class="video-card">
-                    <div class="thumb-wrapper">
-                        <img src="${utils.escape(record.thumb)}" loading="lazy" alt="Thumbnail">
-                        <div class="vph-badge">🔥 ${utils.formatNum(record.vph)} VPH</div>
-                    </div>
-                    <div class="card-content">
-                        <a href="https://youtube.com/watch?v=${record.id}" target="_blank" class="card-title">${utils.escape(record.title)}</a>
-                        <div class="card-channel">📺 ${utils.escape(record.channel)}</div>
-                        <div class="card-stats">
-                            <div class="stat-item"><div class="stat-val">${utils.formatNum(record.views)}</div><div class="stat-lbl">Views</div></div>
-                            <div class="stat-item"><div class="stat-val highlight">${utils.formatNum(record.subs)}</div><div class="stat-lbl">Subs</div></div>
-                            <div class="stat-item"><div class="ratio-pill ${utils.getTier(record.ratio)}">${utils.formatRatio(record.ratio)}</div><div class="stat-lbl">Outlier</div></div>
-                        </div>
-                        <div class="card-actions">
-                            <button class="card-btn btn-spy" onclick="core.openSpyModal('${record.id}')">🕵️ Spy Data</button>
-                            <button class="card-btn btn-save ${core.isRecordSaved(record.id)?'saved':''}" onclick="core.toggleSaveAction('${record.id}')">${core.isRecordSaved(record.id)?'📌 Saved':'❤️ Save'}</button>
-                        </div>
-                    </div>
+          <div class="topic-list">
+            ${niche.topics.map((topic, topicIndex) => `
+              <div class="topic-row">
+                <div class="topic-text">
+                  ${escapeHTML(topic)}
                 </div>
-            `).join(''),
 
-            buildTableHtml: (arrayData) => {
-                let rowsHtml = arrayData.map(record => `
-                    <tr>
-                        <td><img src="${utils.escape(record.thumb)}" class="tbl-thumb" loading="lazy" alt="Thumbnail"></td>
-                        <td>
-                            <a href="https://youtube.com/watch?v=${record.id}" target="_blank" class="card-title" style="font-size:14px; margin-bottom:4px;">${utils.escape(record.title)}</a>
-                            <div class="card-channel" style="margin:0;">📺 ${utils.escape(record.channel)}</div>
-                            <div style="color:var(--accent-cyan); font-size:11px; font-weight:700; margin-top:4px;">🔥 ${utils.formatNum(record.vph)} VPH (Velocity)</div>
-                        </td>
-                        <td><div style="font-size:14px; font-weight:700;">${utils.formatNum(record.views)}</div><div style="font-size:11px; color:var(--text-tertiary);">Views</div></td>
-                        <td><div style="font-size:14px; font-weight:700; color:var(--accent-green);">${utils.formatNum(record.subs)}</div><div style="font-size:11px; color:var(--text-tertiary);">Subs</div></td>
-                        <td><div class="ratio-pill ${utils.getTier(record.ratio)}">${utils.formatRatio(record.ratio)}</div></td>
-                        <td>
-                            <div style="display:flex; flex-direction:column; gap:6px;">
-                                <button class="card-btn btn-spy" style="padding:6px; font-size:11px;" onclick="core.openSpyModal('${record.id}')">🕵️ Spy</button>
-                                <button class="card-btn btn-save ${core.isRecordSaved(record.id)?'saved':''}" style="padding:6px; font-size:11px;" onclick="core.toggleSaveAction('${record.id}')">${core.isRecordSaved(record.id)?'Saved':'Save'}</button>
-                            </div>
-                        </td>
-                    </tr>
-                `).join('');
-                return `<div style="overflow-x:auto;"><table class="glass-table"><thead><tr><th>Thumb</th><th>Video Details</th><th>Views</th><th>Subs</th><th>Outlier</th><th>Actions</th></tr></thead><tbody>${rowsHtml}</tbody></table></div>`;
-            },
+                <button
+                  class="button button-primary topic-hunt"
+                  data-topic="${escapeHTML(topic)}"
+                >
+                  Auto-Hunt
+                </button>
+              </div>
+            `).join("")}
+          </div>
+        </article>
+      `).join("");
 
-            triggerAutoHunt: (keywordString, categoryId = "") => {
-                document.querySelector('[data-tab="tabSearch"]').click();
-                document.getElementById('inpQuery').value = keywordString;
-                document.getElementById('inpCat').value = categoryId;
-                window.scrollTo({top: 0, behavior: 'smooth'});
-                engine.runSearch();
-            },
+      $$(".topic-hunt").forEach(button => {
+        button.onclick = () => {
+          const topic = button.dataset.topic;
 
-            getCompList: () => JSON.parse(localStorage.getItem(CONFIG.KEY_COMP) || '[]'),
-            renderCompList: () => {
-                const arr = core.getCompList(); const wrapper = document.getElementById('compListWrap');
-                if (arr.length === 0) { wrapper.innerHTML = `<div style="color:var(--text-tertiary); font-size:13px;">No competitors tracked. Add Channel ID above.</div>`; return; }
-                wrapper.innerHTML = arr.map(id => `<div class="glass-panel comp-card"><span class="comp-id">📺 ${utils.escape(id)}</span><button class="btn-del" onclick="engine.removeCompetitor('${utils.escape(id)}')">Remove</button></div>`).join('');
-            },
+          switchPage("outlier");
 
-            getSavedDB: () => JSON.parse(localStorage.getItem(CONFIG.KEY_SAVED) || '[]'),
-            isRecordSaved: (videoId) => core.getSavedDB().some(record => record.id === videoId),
-            toggleSaveAction: (videoId) => {
-                let db = core.getSavedDB();
-                if (core.isRecordSaved(videoId)) { db = db.filter(r => r.id !== videoId); Toast.show('Removed from Calendar.', 'info'); } 
-                else { let tr = state.dataset.find(x => x.id === videoId) || db.find(x => x.id === videoId); if (tr) { db.push(tr); Toast.show('Successfully Bookmarked!', 'success'); } }
-                localStorage.setItem(CONFIG.KEY_SAVED, JSON.stringify(db));
-                if (state.activeTab === 'tabSaved') core.renderSavedTab(); else core.renderActiveTab();
-            },
-            renderSavedTab: () => {
-                const s = core.getSavedDB(); const gId = 'gridSaved'; const tId = 'tableSaved';
-                if (s.length === 0) { ui.clearWrap(tId, gId); document.getElementById(tId).innerHTML = ui.generateEmptyStateHtml('Your calendar is empty. Click the ❤️ Save button on videos to bookmark them.'); document.getElementById(tId).classList.add('active'); ui.toggleActions(false); return; }
-                s.sort((a, b) => b.vph - a.vph); ui.toggleActions(true); core.renderView(gId, tId, s);
-            },
-
-            openSpyModal: (videoId) => {
-                let record = state.dataset.find(x => x.id === videoId) || core.getSavedDB().find(x => x.id === videoId);
-                if (!record) return;
-                document.getElementById('spyTitle').innerText = record.title;
-                document.getElementById('spyChannel').innerText = '📺 ' + record.channel;
-                document.getElementById('spyVPH').innerText = utils.formatNum(record.vph);
-                document.getElementById('spyDate').innerText = new Date(record.pubAt).toLocaleString();
-                document.getElementById('spyDuration').innerText = utils.formatDuration(record.dur);
-                document.getElementById('spyTagCount').innerText = record.tags?.length || 0;
-                
-                const tWrap = document.getElementById('spyTags');
-                if (record.tags && record.tags.length > 0) tWrap.innerHTML = record.tags.map(t => `<span class="kw-pill secondary" style="padding:6px 12px; font-size:12px;">${utils.escape(t)}</span>`).join('');
-                else tWrap.innerHTML = '<span style="color:var(--text-tertiary)">No hidden tags injected by creator.</span>';
-                document.getElementById('spyDesc').innerText = record.desc || 'No description provided.';
-                document.getElementById('spyModal').classList.add('active');
-            },
-
-            exportCSV: () => {
-                let dataToExport = state.activeTab === 'tabSaved' ? core.getSavedDB() : state.dataset;
-                if (dataToExport.length === 0) { Toast.show('Data Error: Nothing to export.', 'error'); return; }
-                let csvContentString = "Video_Title,Channel_Name,Total_Views,Subscribers,Outlier_Ratio,Velocity_VPH,Published_Date,YouTube_Link\n";
-                dataToExport.forEach(record => {
-                    let sanitizedTitle = record.title.replace(/"/g, '""');
-                    csvContentString += `"${sanitizedTitle}","${record.channel}",${record.views},${record.subs},${record.ratio},${record.vph},"${record.pubAt}","https://youtube.com/watch?v=${record.id}"\n`;
-                });
-                const blobObject = new Blob([csvContentString], { type: 'text/csv;charset=utf-8;' });
-                const downloadLink = document.createElement("a");
-                downloadLink.href = URL.createObjectURL(blobObject);
-                downloadLink.download = `VHP_Export_Data_${Date.now()}.csv`;
-                downloadLink.click();
-                Toast.show('CSV Downloaded to your device!', 'success');
-            }
+          setTimeout(() => {
+            runOutlierSearch(topic);
+          }, 80);
         };
+      });
+    }
 
-        // Event Bindings
-        document.getElementById('inpQuery').addEventListener('keydown', event => { if (event.key === 'Enter') engine.runSearch(); });
-        document.getElementById('inpKw').addEventListener('keydown', event => { if (event.key === 'Enter') engine.runKeywords(); });
-        document.getElementById('spyModal').addEventListener('click', event => { if (event.target.id === 'spyModal') ui.closeModal(); });
-        engine.removeCompetitor = core.removeCompetitor;
+    /* =========================================================
+       15. WATCHLIST
+       ========================================================= */
 
-        // Boot system
-        core.boot();
-    </script>
+    function renderWatchlist() {
+      const list = $("#watchList");
+
+      if (!state.watchlist.length) {
+        list.innerHTML = `
+          <div class="empty-state active" style="margin-top:0;min-height:120px;">
+            <div>
+              <div class="empty-title">No tracked channels</div>
+              <div class="empty-text">
+                Add a YouTube channel ID to begin monitoring competitors.
+              </div>
+            </div>
+          </div>
+        `;
+
+        return;
+      }
+
+      list.innerHTML = state.watchlist.map(channelId => `
+        <div class="watch-item">
+          <span style="color:#7c5cff;">●</span>
+          <div class="watch-id">${escapeHTML(channelId)}</div>
+
+          <a
+            class="button button-ghost"
+            style="min-height:30px;padding:6px 8px;font-size:9px;"
+            href="https://www.youtube.com/channel/${encodeURIComponent(channelId)}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open
+          </a>
+
+          <button
+            class="button button-danger remove-watch"
+            style="min-height:30px;padding:6px 8px;font-size:9px;"
+            data-id="${escapeHTML(channelId)}"
+          >
+            Remove
+          </button>
+        </div>
+      `).join("");
+
+      $$(".remove-watch").forEach(button => {
+        button.onclick = () => removeWatchChannel(button.dataset.id);
+      });
+    }
+
+    function addWatchChannel() {
+      const input = $("#watchChannelInput");
+      const channelId = normalizedChannelId(input.value);
+
+      if (!isValidChannelId(channelId)) {
+        showToast(
+          "error",
+          "Invalid Channel ID",
+          "A channel ID should normally start with UC."
+        );
+        return;
+      }
+
+      if (state.watchlist.includes(channelId)) {
+        showToast(
+          "info",
+          "Already tracked",
+          "This channel is already in your watchlist."
+        );
+        return;
+      }
+
+      state.watchlist.push(channelId);
+
+      saveJSON(STORAGE.watchlist, state.watchlist);
+
+      input.value = "";
+
+      renderWatchlist();
+
+      showToast(
+        "success",
+        "Channel added",
+        "The competitor has been added to your local watchlist."
+      );
+    }
+
+    function removeWatchChannel(channelId) {
+      state.watchlist = state.watchlist.filter(
+        id => id !== channelId
+      );
+
+      saveJSON(STORAGE.watchlist, state.watchlist);
+
+      renderWatchlist();
+
+      showToast(
+        "info",
+        "Channel removed",
+        "The competitor was removed from the watchlist."
+      );
+    }
+
+    async function deepScanWatchlist() {
+      if (!state.watchlist.length) {
+        showToast(
+          "info",
+          "Watchlist empty",
+          "Add at least one channel ID before running Deep Scan."
+        );
+
+        return;
+      }
+
+      const apiKey = requireApiKey();
+
+      if (!apiKey) return;
+
+      const button = $("#deepScanBtn");
+
+      button.disabled = true;
+      button.innerHTML = `<span>◌</span><span>Scanning...</span>`;
+
+      $("#watchEmpty").classList.remove("active");
+      $("#watchGrid").innerHTML = "";
+
+      try {
+        /*
+          Fetch latest 3 videos per competitor.
+          Search is explicitly long-form to avoid Shorts.
+        */
+        const allVideoIds = [];
+        const ownerIds = [];
+
+        for (const channelId of state.watchlist) {
+          try {
+            const data = await ytRequest("search", {
+              part: "snippet",
+              channelId,
+              type: "video",
+              order: "date",
+              maxResults: 3,
+
+              /*
+                Mandatory Shorts bug fix.
+              */
+              videoDuration: "long"
+            });
+
+            (data.items || []).forEach(item => {
+              const videoId = item?.id?.videoId;
+
+              if (videoId) {
+                allVideoIds.push(videoId);
+                ownerIds.push(channelId);
+              }
+            });
+          } catch (error) {
+            console.warn(
+              `Watch scan failed for ${channelId}`,
+              error
+            );
+          }
+        }
+
+        if (!allVideoIds.length) {
+          state.watchResults = [];
+          renderWatchResults();
+
+          showToast(
+            "info",
+            "No videos found",
+            "No recent long-form videos were returned."
+          );
+
+          return;
+        }
+
+        const videos = await getVideosByIds(allVideoIds);
+
+        const channels = await getChannelsByIds(
+          videos
+            .map(video => video?.snippet?.channelId)
+            .filter(Boolean)
+        );
+
+        const channelMap = Object.fromEntries(
+          channels.map(channel => [channel.id, channel])
+        );
+
+        state.watchResults = videos
+          .map(video =>
+            createEnrichedVideo(video, channelMap)
+          )
+          .filter(video => !video.hiddenSubscriberCount)
+          .sort((a, b) => b.vph - a.vph);
+
+        renderWatchResults();
+
+        showToast(
+          "success",
+          "Deep scan complete",
+          `${state.watchResults.length} competitor videos ranked by velocity.`
+        );
+      } catch (error) {
+        console.error(error);
+
+        state.watchResults = [];
+        renderWatchResults();
+
+        showToast(
+          "error",
+          "Deep scan failed",
+          formatApiError(error)
+        );
+      } finally {
+        button.disabled = false;
+        button.innerHTML = `<span>◎</span><span>Deep Scan</span>`;
+      }
+    }
+
+    function renderWatchResults() {
+      const results = state.watchResults;
+
+      $("#watchInfo").innerHTML = results.length
+        ? `<strong>${results.length}</strong> videos, ranked by Views Per Hour.`
+        : `No scan data.`;
+
+      $("#watchGrid").innerHTML =
+        results.length
+          ? results.map(videoCardHTML).join("")
+          : "";
+
+      $("#watchEmpty").classList.toggle(
+        "active",
+        !results.length
+      );
+
+      bindVideoActions(results);
+    }
+
+    /* =========================================================
+       16. API ERROR NORMALIZATION
+       ========================================================= */
+
+    function formatApiError(error) {
+      const message = String(error?.message || error || "Unknown error");
+
+      const lower = message.toLowerCase();
+
+      if (lower.includes("quota")) {
+        return "YouTube API quota appears to be exhausted. Try again after quota resets or use another API project.";
+      }
+
+      if (lower.includes("keyinvalid") || lower.includes("api key not valid")) {
+        return "The API key is invalid. Check the key and that YouTube Data API v3 is enabled.";
+      }
+
+      if (lower.includes("accessnotconfigured")) {
+        return "YouTube Data API v3 is not enabled for this Google Cloud project.";
+      }
+
+      if (lower.includes("forbidden")) {
+        return "The API request was forbidden. Verify API restrictions and YouTube Data API v3 access.";
+      }
+
+      if (lower.includes("daily limit")) {
+        return "Your API project has reached its current daily request quota.";
+      }
+
+      return message;
+    }
+
+    /* =========================================================
+       17. NAVIGATION
+       ========================================================= */
+
+    function switchPage(pageName) {
+      $$(".nav-btn").forEach(btn => {
+        btn.classList.toggle(
+          "active",
+          btn.dataset.page === pageName
+        );
+      });
+
+      $$(".page").forEach(page => {
+        page.classList.toggle(
+          "active",
+          page.id === `page-${pageName}`
+        );
+      });
+
+      $("#sidebar").classList.remove("open");
+
+      if (pageName === "calendar") {
+        renderSavedVideos();
+      }
+
+      if (pageName === "watchlist") {
+        renderWatchlist();
+      }
+    }
+
+    /* =========================================================
+       18. INITIALIZATION
+       ========================================================= */
+
+    function init() {
+      /*
+        API KEY UI BUG FIX:
+        Immediately restore current key and reflect status.
+      */
+      const storedKey = getApiKey();
+
+      $("#apiKeyInput").value = storedKey;
+
+      updateApiBadge();
+
+      /*
+        IMPORTANT:
+        input event updates the badge immediately when a user pastes/types
+        a key and persists it to localStorage.
+      */
+      $("#apiKeyInput").addEventListener("input", event => {
+        const value = event.target.value.trim();
+
+        localStorage.setItem(STORAGE.apiKey, value);
+
+        updateApiBadge();
+      });
+
+      /*
+        Restore saved UI state.
+      */
+      updateSavedCount();
+      renderSavedVideos();
+      renderHiddenNiches();
+      renderWatchlist();
+      updateGridTableVisibility();
+
+      /*
+        Initial trend mode state.
+      */
+      $("#generalTrendsBtn").dataset.active = "true";
+      $("#smallTrendsBtn").dataset.active = "false";
+
+      /*
+        Search action.
+      */
+      $("#outlierSearchBtn").addEventListener(
+        "click",
+        () => runOutlierSearch()
+      );
+
+      $("#outlierKeyword").addEventListener(
+        "keydown",
+        event => {
+          if (event.key === "Enter") {
+            runOutlierSearch();
+          }
+        }
+      );
+
+      /*
+        Sorting.
+      */
+      $("#sortOutlierBtn").addEventListener(
+        "click",
+        () => {
+          const sequence = [
+            "outlier",
+            "vph",
+            "engagement",
+            "views"
+          ];
+
+          const currentIndex =
+            sequence.indexOf(state.outlierSort);
+
+          state.outlierSort =
+            sequence[
+              (currentIndex + 1) % sequence.length
+            ];
+
+          $("#sortOutlierBtn").textContent =
+            `Sort: ${state.outlierSort}`;
+
+          sortOutlierResults();
+          renderOutlierResults();
+        }
+      );
+
+      /*
+        View toggle.
+      */
+      $("#gridViewBtn").addEventListener(
+        "click",
+        () => setViewMode("grid")
+      );
+
+      $("#tableViewBtn").addEventListener(
+        "click",
+        () => setViewMode("table")
+      );
+
+      /*
+        Navigation.
+      */
+      $$(".nav-btn").forEach(button => {
+        button.addEventListener(
+          "click",
+          () => switchPage(button.dataset.page)
+        );
+      });
+
+      /*
+        Mobile navigation.
+      */
+      $("#mobileMenuBtn").addEventListener(
+        "click",
+        () => $("#sidebar").classList.toggle("open")
+      );
+
+      /*
+        Trends.
+      */
+      $("#loadTrendsBtn").addEventListener(
+        "click",
+        loadTrends
+      );
+
+      $("#generalTrendsBtn").addEventListener(
+        "click",
+        () => {
+          $("#generalTrendsBtn").dataset.active = "true";
+          $("#smallTrendsBtn").dataset.active = "false";
+
+          renderTrends(filterTrendResults("general"));
+
+          $("#trendInfo").textContent =
+            `General Trends: ${filterTrendResults("general").length} videos.`;
+        }
+      );
+
+      $("#smallTrendsBtn").addEventListener(
+        "click",
+        () => {
+          $("#generalTrendsBtn").dataset.active = "false";
+          $("#smallTrendsBtn").dataset.active = "true";
+
+          const results = filterTrendResults("small");
+
+          renderTrends(results);
+
+          $("#trendInfo").textContent =
+            `Small Trends: ${results.length} channels under the selected subscriber limit.`;
+        }
+      );
+
+      $("#trendCategory").addEventListener(
+        "change",
+        () => {
+          const mode =
+            $("#smallTrendsBtn").dataset.active === "true"
+              ? "small"
+              : "general";
+
+          if (state.trendRaw.length) {
+            renderTrends(filterTrendResults(mode));
+          }
+        }
+      );
+
+      $("#smallTrendSubs").addEventListener(
+        "input",
+        () => {
+          if (!state.trendRaw.length) return;
+
+          if (
+            $("#smallTrendsBtn").dataset.active === "true"
+          ) {
+            renderTrends(
+              filterTrendResults("small")
+            );
+          }
+        }
+      );
+
+      /*
+        Keyword Soup.
+      */
+      $("#generateKeywordsBtn").addEventListener(
+        "click",
+        generateKeywordSoup
+      );
+
+      $("#seedKeyword").addEventListener(
+        "keydown",
+        event => {
+          if (event.key === "Enter") {
+            generateKeywordSoup();
+          }
+        }
+      );
+
+      /*
+        Watchlist.
+      */
+      $("#addWatchBtn").addEventListener(
+        "click",
+        addWatchChannel
+      );
+
+      $("#watchChannelInput").addEventListener(
+        "keydown",
+        event => {
+          if (event.key === "Enter") {
+            addWatchChannel();
+          }
+        }
+      );
+
+      $("#deepScanBtn").addEventListener(
+        "click",
+        deepScanWatchlist
+      );
+
+      /*
+        Calendar.
+      */
+      $("#exportCsvBtn").addEventListener(
+        "click",
+        exportSavedCSV
+      );
+
+      $("#clearSavedBtn").addEventListener(
+        "click",
+        () => {
+          if (!state.savedVideos.length) {
+            showToast(
+              "info",
+              "Calendar already empty",
+              "There are no saved videos to remove."
+            );
+
+            return;
+          }
+
+          state.savedVideos = [];
+
+          saveJSON(
+            STORAGE.savedVideos,
+            state.savedVideos
+          );
+
+          updateSavedCount();
+          renderSavedVideos();
+          renderOutlierResults();
+
+          if (state.trendRaw.length) {
+            const mode =
+              $("#smallTrendsBtn").dataset.active === "true"
+                ? "small"
+                : "general";
+
+            renderTrends(filterTrendResults(mode));
+          }
+
+          showToast(
+            "success",
+            "Calendar cleared",
+            "All saved videos have been removed."
+          );
+        }
+      );
+
+      /*
+        Modal.
+      */
+      $("#closeSpyModal").addEventListener(
+        "click",
+        closeSpyModal
+      );
+
+      $("#spyModalBackdrop").addEventListener(
+        "click",
+        event => {
+          if (event.target === $("#spyModalBackdrop")) {
+            closeSpyModal();
+          }
+        }
+      );
+
+      document.addEventListener(
+        "keydown",
+        event => {
+          if (event.key === "Escape") {
+            closeSpyModal();
+          }
+        }
+      );
+    }
+
+    /* =========================================================
+       19. BOOT APP
+       ========================================================= */
+    document.addEventListener("DOMContentLoaded", init);
+
+  </script>
 </body>
 </html>
