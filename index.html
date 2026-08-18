@@ -3,869 +3,496 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viral Hunt Pro | Ultimate Enterprise Edition</title>
+    <title>Viral Hunt Pro | Liquid Glass Edition</title>
     <!-- 
       ========================================================================
-      VIRAL HUNT PRO - ENTERPRISE EDITION
+      VIRAL HUNT PRO - LIQUID GLASS EDITION (ENTERPRISE)
       ========================================================================
-      Developer: PocketLists / ViralHunt Team
-      Description: The ultimate YouTube data aggregation and analysis tool.
-      Features: 
-      - VPH (Velocity) Tracking
-      - Outlier Ratio Math
-      - Competitor Watchlist
-      - Hidden Niches Database
-      - Keyword Alphabet Soup
-      - CSV Export & Grid/Table Views
+      UI/UX: Premium Glassmorphism, Animated Mesh Gradients, Blur Effects
+      Features: VPH Tracking, Outlier Math, Hidden Niches, Competitor Spy
+      Alerts: Custom Toast Notification System (No browser alerts)
       ========================================================================
     -->
     <style>
         /* ======================================================================
-           CSS VARIABLES & DESIGN TOKENS
+           PREMIUM DESIGN TOKENS & COLOR PALETTE
            ====================================================================== */
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
         :root {
-            --bg-void: #060709;
-            --bg-panel: #111318;
-            --bg-card: #181b21;
-            --border-light: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(255, 255, 255, 0.2);
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --text-faint: #6b7280;
+            /* Background Deep Colors */
+            --bg-base: #050505;
+            --bg-mesh-1: #4f149b; /* Deep Purple */
+            --bg-mesh-2: #0f4c81; /* Classic Blue */
+            --bg-mesh-3: #008774; /* Deep Teal */
             
-            /* Brand Colors */
-            --brand-primary: #00e676;
-            --brand-primary-dim: rgba(0, 230, 118, 0.15);
-            --brand-primary-hover: #00c853;
+            /* Glassmorphism Variables */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-bg-hover: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-border-light: rgba(255, 255, 255, 0.15);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            --glass-blur: blur(16px);
             
-            --accent-blue: #3b82f6;
-            --accent-blue-dim: rgba(59, 130, 246, 0.15);
+            /* Typography Colors */
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.65);
+            --text-tertiary: rgba(255, 255, 255, 0.4);
             
-            --accent-pink: #ec4899;
-            --accent-pink-dim: rgba(236, 72, 153, 0.15);
-            
-            --accent-amber: #f59e0b;
-            --accent-amber-dim: rgba(245, 158, 11, 0.15);
-            
-            --accent-red: #ef4444;
-            --accent-red-dim: rgba(239, 68, 68, 0.15);
+            /* Premium Accent Colors (Cyber/Neon feel but subtle) */
+            --accent-cyan: #00f0ff;
+            --accent-purple: #9d4edd;
+            --accent-pink: #ff007f;
+            --accent-green: #00ff88;
+            --accent-orange: #ff7300;
+            --accent-red: #ff3366;
 
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
-            --shadow-glow: 0 0 15px rgba(0, 230, 118, 0.3);
-            
-            --radius-sm: 6px;
-            --radius-md: 10px;
-            --radius-lg: 16px;
-            
-            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            /* Radii */
+            --rad-sm: 8px;
+            --rad-md: 16px;
+            --rad-lg: 24px;
+            --rad-pill: 9999px;
+
+            /* Fonts */
+            --font-main: 'Outfit', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
         }
 
         /* ======================================================================
-           GLOBAL RESET & TYPOGRAPHY
+           GLOBAL RESET & ANIMATED BACKGROUND
            ====================================================================== */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-color: var(--bg-void);
-            color: var(--text-main);
-            font-family: var(--font-sans);
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(0, 230, 118, 0.03), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.03), transparent 25%);
-            background-attachment: fixed;
-            overflow-x: hidden;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body, html {
             min-height: 100vh;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
-        /* Scrollbar Styling for Premium Feel */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-void); }
-        ::-webkit-scrollbar-thumb { background: #2d3748; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #4a5568; }
+        /* Animated Mesh Gradient Background */
+        .animated-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background: var(--bg-base);
+        }
 
-        .app-container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 40px 24px 100px;
+        .blob {
+            position: absolute;
+            filter: blur(90px);
+            opacity: 0.5;
+            border-radius: 50%;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--bg-mesh-1); animation-delay: 0s; }
+        .blob-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: var(--bg-mesh-2); animation-delay: -5s; }
+        .blob-3 { top: 40%; left: 40%; width: 40vw; height: 40vw; background: var(--bg-mesh-3); animation-delay: -10s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(5vw, 10vh) scale(1.1); }
+            66% { transform: translate(-10vw, 5vh) scale(0.9); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+        .app-container { max-width: 1350px; margin: 0 auto; padding: 40px 20px 100px; }
+
+        /* ======================================================================
+           GLASSMORPHISM UTILITIES
+           ====================================================================== */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--rad-lg);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .glass-panel-inner {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--rad-md);
         }
 
         /* ======================================================================
-           HEADER & API KEY SECTION
+           HEADER & API CONFIGURATION (LIQUID FIX)
            ====================================================================== */
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--border-light);
-            padding-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 20px;
+        .header-layout {
+            display: flex; justify-content: space-between; align-items: stretch;
+            margin-bottom: 40px; flex-wrap: wrap; gap: 20px;
         }
 
-        .brand-area h1 {
-            font-size: 32px;
-            font-weight: 900;
-            letter-spacing: -0.03em;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 8px;
+        .brand-box {
+            padding: 30px; display: flex; flex-direction: column; justify-content: center; flex: 1; min-width: 300px;
+            position: relative; overflow: hidden;
         }
         
-        .brand-area h1 .version-badge {
-            background: var(--brand-primary-dim);
-            color: var(--brand-primary);
-            font-size: 14px;
-            padding: 4px 10px;
-            border-radius: var(--radius-sm);
-            font-weight: 700;
-            letter-spacing: normal;
+        /* Glass Shine Effect on Brand Box */
+        .brand-box::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(to bottom right, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 100%);
+            transform: rotate(30deg); pointer-events: none;
         }
 
-        .brand-area .tagline {
-            color: var(--text-muted);
-            font-size: 15px;
-            font-weight: 500;
+        .brand-title { font-size: 42px; font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; display: flex; align-items: center; gap: 15px; }
+        .version-tag {
+            font-size: 14px; font-weight: 700; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; border: 1px solid rgba(157, 78, 221, 0.4);
+            padding: 4px 12px; border-radius: var(--rad-pill); letter-spacing: 1px;
         }
+        .brand-subtitle { color: var(--text-secondary); font-size: 16px; font-weight: 400; }
 
-        .api-config-box {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-light);
-            padding: 12px 20px;
-            border-radius: var(--radius-md);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            min-width: 300px;
-            box-shadow: var(--shadow-md);
+        .api-box {
+            padding: 25px 30px; display: flex; flex-direction: column; justify-content: center; width: 450px; flex-shrink: 0;
         }
-
-        .api-config-box label {
-            font-size: 11px;
-            text-transform: uppercase;
-            font-weight: 800;
-            letter-spacing: 0.1em;
-            color: var(--text-faint);
+        .api-box-title { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-tertiary); font-weight: 700; margin-bottom: 12px; }
+        
+        .api-input-wrapper { display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: var(--rad-md); padding: 5px 15px; transition: 0.3s; }
+        .api-input-wrapper:focus-within { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); }
+        .api-input-wrapper input {
+            flex: 1; background: transparent; border: none; color: var(--text-primary); padding: 12px 0; font-family: var(--font-mono); font-size: 14px; outline: none;
         }
-
-        .api-input-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .api-status-indicator {
-            font-family: var(--font-mono);
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--accent-red);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .api-status-indicator.active { color: var(--brand-primary); }
+        
+        /* Status Indicator Logic Fixed */
+        .status-container { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 6px 12px; border-radius: var(--rad-pill); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 8px currentColor; }
+        .status-dot.red { background: var(--accent-red); color: var(--accent-red); }
+        .status-dot.green { background: var(--accent-green); color: var(--accent-green); }
+        .status-text { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .status-text.unverified { color: var(--accent-red); }
+        .status-text.verified { color: var(--accent-green); }
 
         /* ======================================================================
-           INPUTS, BUTTONS & FORMS
+           FLOATING NAVIGATION (APPLE STYLE PILL)
            ====================================================================== */
-        input[type="text"], 
-        input[type="number"], 
-        input[type="password"], 
-        select {
-            background: var(--bg-void);
-            border: 1px solid var(--border-light);
-            color: var(--text-main);
-            padding: 12px 16px;
-            border-radius: var(--radius-md);
-            font-size: 14px;
-            font-family: var(--font-sans);
-            outline: none;
-            transition: all 0.2s ease;
-            width: 100%;
+        .nav-wrapper { display: flex; justify-content: center; margin-bottom: 40px; position: sticky; top: 20px; z-index: 100; }
+        .nav-pill {
+            display: inline-flex; background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border-light); border-radius: var(--rad-pill); padding: 6px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            overflow-x: auto; max-width: 100%; scrollbar-width: none;
         }
+        .nav-btn {
+            background: transparent; border: none; color: var(--text-secondary); font-size: 14px; font-weight: 600; font-family: var(--font-main);
+            padding: 12px 24px; border-radius: var(--rad-pill); cursor: pointer; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; gap: 8px; white-space: nowrap;
+        }
+        .nav-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+        .nav-btn.active { background: rgba(255,255,255,0.1); color: var(--text-primary); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1); }
+        
+        .tab-content { display: none; opacity: 0; transform: translateY(20px); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .tab-content.active { display: block; opacity: 1; transform: translateY(0); }
 
-        input:focus, select:focus {
-            border-color: var(--brand-primary);
-            box-shadow: 0 0 0 3px var(--brand-primary-dim);
+        /* ======================================================================
+           INPUT CONTROLS & FORMS (PREMIUM UI)
+           ====================================================================== */
+        .control-dashboard { padding: 25px; margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; }
+        
+        .input-group { display: flex; flex-direction: column; gap: 10px; flex: 1; min-width: 200px; }
+        .input-group-sm { flex: 0 0 150px; }
+        .input-group label { font-size: 12px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 1px; margin-left: 5px; }
+        
+        .glass-input {
+            background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary);
+            padding: 14px 20px; border-radius: var(--rad-md); font-size: 15px; font-family: var(--font-main);
+            transition: all 0.3s; width: 100%;
         }
+        .glass-input:focus { border-color: var(--accent-cyan); background: rgba(0,240,255,0.02); outline: none; }
+        
+        select.glass-input {
+            appearance: none; cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat; background-position: right 15px center; background-size: 16px;
+        }
+        select.glass-input option { background: var(--bg-base); color: var(--text-primary); }
 
-        select {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 16px;
-            padding-right: 40px;
+        /* Liquid Buttons */
+        .btn-liquid {
+            position: relative; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border: none;
+            color: #fff; font-size: 15px; font-weight: 700; font-family: var(--font-main); padding: 14px 30px; border-radius: var(--rad-md);
+            cursor: pointer; overflow: hidden; transition: 0.3s; box-shadow: 0 10px 20px rgba(157, 78, 221, 0.2);
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px; white-space: nowrap;
         }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 24px;
-            border-radius: var(--radius-md);
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: none;
-            font-family: var(--font-sans);
-            white-space: nowrap;
+        .btn-liquid::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: skewX(-20deg); transition: 0.5s;
         }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
-        }
-
-        .btn-primary {
-            background: var(--brand-primary);
-            color: #000;
-            box-shadow: 0 4px 14px rgba(0, 230, 118, 0.25);
-        }
-        .btn-primary:hover:not(:disabled) {
-            background: var(--brand-primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4);
-        }
-
-        .btn-blue {
-            background: var(--accent-blue);
-            color: #fff;
-            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.25);
-        }
-        .btn-blue:hover:not(:disabled) {
-            background: #2563eb;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-        }
+        .btn-liquid:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(157, 78, 221, 0.4); }
+        .btn-liquid:hover::after { left: 150%; }
+        .btn-liquid:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
         .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border-light);
-            color: var(--text-main);
+            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border-light);
+            color: var(--text-primary); padding: 12px 24px; border-radius: var(--rad-md);
+            font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.3s;
         }
-        .btn-outline:hover:not(:disabled) {
-            background: var(--border-light);
-            border-color: var(--border-hover);
-        }
+        .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
 
         /* ======================================================================
-           NAVIGATION TABS
+           CUSTOM TOAST NOTIFICATIONS (NO BROWSER ALERTS)
            ====================================================================== */
-        .tabs-container {
-            display: flex;
-            gap: 4px;
-            border-bottom: 2px solid var(--border-light);
-            margin-bottom: 24px;
-            overflow-x: auto;
-            scrollbar-width: none;
+        #toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .toast {
+            background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-left: 4px solid var(--accent-cyan); border-radius: 8px; padding: 16px 24px;
+            color: #fff; font-size: 14px; font-weight: 500; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex; align-items: center; gap: 12px; min-width: 300px;
+            animation: toastSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
-
-        .tab-button {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 14px 20px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            border-bottom: 3px solid transparent;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            margin-bottom: -2px; /* Overlap border */
-        }
-
-        .tab-button:hover { color: var(--text-main); }
-        
-        .tab-button.active {
-            color: var(--brand-primary);
-            border-bottom-color: var(--brand-primary);
-            background: linear-gradient(to top, var(--brand-primary-dim) 0%, transparent 100%);
-        }
-
-        .tab-content { display: none; animation: slideUp 0.3s ease; }
-        .tab-content.active { display: block; }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .toast.error { border-color: var(--accent-red); }
+        .toast.success { border-color: var(--accent-green); }
+        .toast.info { border-color: var(--accent-cyan); }
+        @keyframes toastSlideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes toastFadeOut { to { opacity: 0; transform: translateY(-20px); } }
 
         /* ======================================================================
-           DASHBOARD CONTROLS & STATUS
+           DATA PRESENTATION (GRID & TABLE)
            ====================================================================== */
-        .dashboard-controls {
-            display: flex;
-            gap: 16px;
-            align-items: flex-end;
-            background: var(--bg-panel);
-            padding: 20px;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-light);
-            margin-bottom: 16px;
-            flex-wrap: wrap;
+        .actions-bar {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+            padding: 15px 25px; display: none; /* Hidden until data loads */
         }
+        .view-switcher { display: flex; background: rgba(0,0,0,0.3); padding: 5px; border-radius: var(--rad-md); border: 1px solid var(--glass-border); }
+        .view-btn { background: transparent; border: none; color: var(--text-secondary); padding: 8px 16px; border-radius: var(--rad-sm); cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.3s; }
+        .view-btn.active { background: rgba(255,255,255,0.1); color: var(--text-primary); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
 
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            flex: 1;
-            min-width: 200px;
+        /* SKELETON LOADER */
+        .skeleton-wrapper { display: none; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+        .skeleton-wrapper.active { display: grid; }
+        .skeleton-card { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .skeleton-thumb { width: 100%; padding-top: 56.25%; background: rgba(255,255,255,0.05); border-radius: var(--rad-md); animation: pulse 1.5s infinite; }
+        .skeleton-line { height: 16px; background: rgba(255,255,255,0.05); border-radius: 4px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 0.8; } 100% { opacity: 0.4; } }
+
+        /* GRID LAYOUT */
+        .data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; display: none; }
+        .data-grid.active { display: grid; }
+        .video-card {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: var(--rad-lg);
+            overflow: hidden; transition: 0.4s; position: relative; display: flex; flex-direction: column;
         }
+        .video-card:hover { transform: translateY(-8px); background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         
-        .input-group-small {
-            flex: 0 0 150px;
+        .thumb-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; overflow: hidden; }
+        .thumb-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .video-card:hover .thumb-wrapper img { transform: scale(1.05); }
+        
+        /* Premium VPH Badge */
+        .vph-badge {
+            position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1); color: var(--accent-cyan); font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 6px 12px; border-radius: var(--rad-pill); box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 2;
         }
 
-        .input-group label {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-faint);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
+        .card-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+        .card-title { font-size: 16px; font-weight: 600; color: var(--text-primary); line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-decoration: none; }
+        .card-title:hover { color: var(--accent-cyan); }
+        .card-channel { font-size: 13px; color: var(--text-tertiary); display: flex; align-items: center; gap: 6px; margin-bottom: 20px; }
+        
+        .card-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; padding: 15px 0; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); }
+        .stat-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .stat-val { font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--text-primary); }
+        .stat-val.highlight { color: var(--accent-green); }
+        .stat-lbl { font-size: 10px; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 1px; margin-top: 4px; }
+        
+        /* Outlier Ratios */
+        .ratio-pill { display: inline-block; padding: 2px 8px; border-radius: var(--rad-pill); font-family: var(--font-mono); font-size: 13px; font-weight: 700; }
+        .ratio-insane { background: rgba(255,0,127,0.2); color: var(--accent-pink); border: 1px solid rgba(255,0,127,0.4); box-shadow: 0 0 15px rgba(255,0,127,0.2); }
+        .ratio-high { background: rgba(0,255,136,0.2); color: var(--accent-green); border: 1px solid rgba(0,255,136,0.4); }
+        .ratio-normal { background: rgba(255,255,255,0.05); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.1); }
 
-        .action-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg-card);
-            padding: 12px 20px;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border-light);
-            margin-bottom: 20px;
-        }
+        .card-actions { display: flex; gap: 10px; margin-top: auto; }
+        .card-btn { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); color: var(--text-secondary); padding: 10px; border-radius: var(--rad-sm); font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .card-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
+        .btn-spy:hover { background: rgba(157, 78, 221, 0.2); color: var(--accent-purple); border-color: rgba(157, 78, 221, 0.5); }
+        .btn-save.saved { background: rgba(255,0,127,0.2); color: var(--accent-pink); border-color: rgba(255,0,127,0.5); }
+        .btn-save:hover { background: rgba(255,0,127,0.1); color: var(--accent-pink); }
 
-        .view-switcher {
-            display: flex;
-            background: var(--bg-void);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-sm);
-            padding: 4px;
-        }
-
-        .view-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 6px 12px;
-            font-size: 13px;
-            font-weight: 600;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .view-btn.active { background: var(--border-light); color: var(--text-main); }
-
-        .system-status {
-            font-size: 14px;
-            font-weight: 600;
-            margin: 16px 0;
-            padding: 12px;
-            border-radius: var(--radius-sm);
-            display: none; /* Hidden by default */
-        }
-        .system-status.active { display: block; }
-        .status-info { background: rgba(59, 130, 246, 0.1); color: var(--accent-blue); border-left: 4px solid var(--accent-blue); }
-        .status-success { background: rgba(0, 230, 118, 0.1); color: var(--brand-primary); border-left: 4px solid var(--brand-primary); }
-        .status-error { background: rgba(239, 68, 68, 0.1); color: var(--accent-red); border-left: 4px solid var(--accent-red); }
-
+        /* TABLE LAYOUT */
+        .data-table-wrap { width: 100%; overflow-x: auto; display: none; }
+        .data-table-wrap.active { display: block; }
+        .glass-table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        .glass-table th { background: rgba(0,0,0,0.4); color: var(--text-tertiary); text-transform: uppercase; font-size: 11px; letter-spacing: 1px; padding: 15px 20px; text-align: left; border-bottom: 1px solid var(--glass-border); }
+        .glass-table td { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.02); vertical-align: middle; transition: 0.2s; }
+        .glass-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .tbl-thumb { width: 120px; height: 68px; object-fit: cover; border-radius: var(--rad-sm); }
+        
         /* ======================================================================
-           DATA PRESENTATION: TABLE VIEW
+           SPECIFIC TABS: KEYWORDS & NICHES
            ====================================================================== */
-        .data-table-container {
-            width: 100%;
-            overflow-x: auto;
-            background: var(--bg-panel);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-lg);
+        /* Keywords Tag Cloud */
+        .kw-container { display: flex; flex-direction: column; gap: 30px; margin-top: 30px; display: none; }
+        .kw-section-title { font-size: 16px; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .kw-cloud { display: flex; flex-wrap: wrap; gap: 10px; }
+        .kw-pill {
+            background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.2); color: var(--accent-cyan);
+            padding: 10px 18px; border-radius: var(--rad-pill); font-size: 14px; font-weight: 500; cursor: pointer;
+            transition: 0.3s; display: inline-flex; align-items: center; gap: 8px;
         }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            min-width: 900px;
-        }
-
-        .data-table th {
-            padding: 16px 20px;
-            background: var(--bg-card);
-            color: var(--text-faint);
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            border-bottom: 1px solid var(--border-light);
-        }
-
-        .data-table td {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border-light);
-            vertical-align: middle;
-        }
-
-        .data-table tr:hover { background: rgba(255, 255, 255, 0.02); }
-        .data-table tr:last-child td { border-bottom: none; }
-
-        /* Complex Table Cells */
-        .td-video-info {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-        }
-
-        .video-thumbnail-wrapper {
-            position: relative;
-            width: 140px;
-            flex-shrink: 0;
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-            border: 1px solid var(--border-light);
-        }
-
-        .video-thumbnail-wrapper img {
-            width: 100%;
-            height: 78px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .vph-tag {
-            position: absolute;
-            top: 4px; left: 4px;
-            background: rgba(239, 68, 68, 0.9);
-            color: #fff;
-            font-size: 10px;
-            font-weight: 800;
-            padding: 2px 6px;
-            border-radius: 4px;
-            backdrop-filter: blur(4px);
-        }
-
-        .video-text-content {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .video-title-link {
-            color: var(--text-main);
-            font-size: 15px;
-            font-weight: 600;
-            text-decoration: none;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .video-title-link:hover { color: var(--brand-primary); }
-
-        .video-channel-name { color: var(--text-muted); font-size: 13px; display: flex; align-items: center; gap: 4px; }
-        .video-publish-date { color: var(--text-faint); font-size: 11px; }
-
-        /* Stats Blocks */
-        .stat-block { display: flex; flex-direction: column; gap: 4px; }
-        .stat-value { font-size: 15px; font-weight: 700; font-family: var(--font-mono); }
-        .stat-label { font-size: 11px; color: var(--text-faint); text-transform: uppercase; }
-        
-        .stat-highlight { color: var(--brand-primary); }
-        .stat-warning { color: var(--accent-amber); }
-
-        /* Outlier Ratio Badges */
-        .ratio-pill {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: 800;
-            font-size: 14px;
-            font-family: var(--font-mono);
-        }
-        .ratio-god { background: var(--accent-red); color: #fff; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
-        .ratio-high { background: var(--accent-amber); color: #000; }
-        .ratio-med { background: var(--border-light); color: var(--text-main); }
-
-        /* Action Buttons */
-        .td-actions { display: flex; flex-direction: column; gap: 8px; }
-        .action-btn-sm {
-            background: var(--bg-void);
-            border: 1px solid var(--border-light);
-            color: var(--text-main);
-            padding: 6px 12px;
-            border-radius: var(--radius-sm);
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            width: 100%;
-        }
-        .action-btn-sm:hover { background: var(--border-hover); }
-        .action-btn-sm.spy { color: var(--accent-amber); border-color: var(--accent-amber-dim); }
-        .action-btn-sm.spy:hover { background: var(--accent-amber-dim); }
-        .action-btn-sm.save { color: var(--accent-pink); border-color: var(--accent-pink-dim); }
-        .action-btn-sm.save:hover { background: var(--accent-pink-dim); }
-        .action-btn-sm.saved { background: var(--accent-pink); color: #fff; border-color: var(--accent-pink); }
-
-        /* ======================================================================
-           DATA PRESENTATION: GRID VIEW
-           ====================================================================== */
-        .data-grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            display: none; /* Hidden by default */
-        }
-        .data-grid-container.active { display: grid; }
-        .data-table-container.hidden { display: none; }
-
-        .grid-card {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
-        }
-        .grid-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--border-hover);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .grid-thumb-box {
-            position: relative;
-            width: 100%;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
-            background: #000;
-        }
-        .grid-thumb-box img {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
-        }
-        
-        .grid-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
-        .grid-title { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        
-        .grid-stats-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 15px 0;
-            padding: 15px 0;
-            border-top: 1px solid var(--border-light);
-            border-bottom: 1px solid var(--border-light);
-        }
-
-        .grid-stat-col { text-align: center; }
-        .grid-stat-val { font-size: 14px; font-weight: 800; font-family: var(--font-mono); }
-        .grid-stat-lbl { font-size: 10px; color: var(--text-faint); text-transform: uppercase; margin-top: 2px; }
-
-        .grid-actions-row { display: flex; gap: 8px; margin-top: auto; }
-
-        /* ======================================================================
-           SPECIFIC TAB STYLES (KEYWORDS & NICHES & COMPETITORS)
-           ====================================================================== */
-        
-        /* Keyword Tool */
-        .keyword-result-box {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            margin-top: 20px;
-        }
-        .kw-section-title {
-            font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 16px;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .kw-tag-cloud { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
-        .kw-tag {
-            background: var(--accent-blue-dim); border: 1px solid rgba(59, 130, 246, 0.3);
-            color: #93c5fd; padding: 8px 16px; border-radius: var(--radius-sm);
-            font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.2s;
-        }
-        .kw-tag:hover { background: var(--accent-blue); color: #fff; transform: translateY(-2px); }
-        .kw-tag.secondary { background: rgba(255,255,255,0.05); border-color: var(--border-light); color: var(--text-muted); }
-        .kw-tag.secondary:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .kw-pill:hover { background: var(--accent-cyan); color: #000; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 240, 255, 0.3); }
+        .kw-pill.secondary { background: rgba(255,255,255,0.03); border-color: var(--glass-border); color: var(--text-secondary); }
+        .kw-pill.secondary:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
 
         /* Hidden Niches Grid */
-        .niche-grid-layout {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
-            margin-top: 20px;
-        }
-        .niche-db-card {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-        }
-        .niche-db-header {
-            background: var(--bg-card);
-            padding: 16px 20px;
-            font-size: 16px;
-            font-weight: 800;
-            color: #fff;
-            border-bottom: 1px solid var(--border-light);
-            display: flex; align-items: center; gap: 10px;
-        }
-        .niche-db-list { list-style: none; }
-        .niche-db-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 14px 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-        }
-        .niche-db-item:hover { background: rgba(255,255,255,0.02); }
-        .niche-db-title { font-size: 14px; color: var(--text-main); font-weight: 500; }
-        .niche-db-btn {
-            background: var(--brand-primary-dim); color: var(--brand-primary);
-            border: 1px solid rgba(0, 230, 118, 0.3);
-            padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700;
-            cursor: pointer; transition: 0.2s; text-transform: uppercase;
-        }
-        .niche-db-btn:hover { background: var(--brand-primary); color: #000; }
+        .niche-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; margin-top: 30px; }
+        .niche-card { overflow: hidden; padding: 0; }
+        .niche-header { background: rgba(0,0,0,0.3); padding: 20px; border-bottom: 1px solid var(--glass-border); font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+        .niche-list { list-style: none; }
+        .niche-item { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .niche-item:hover { background: rgba(255,255,255,0.02); }
+        .niche-text { font-size: 14px; color: var(--text-secondary); font-weight: 500; }
+        .niche-item:hover .niche-text { color: var(--text-primary); }
+        .btn-hunt { background: rgba(0, 255, 136, 0.1); color: var(--accent-green); border: 1px solid rgba(0, 255, 136, 0.3); padding: 6px 12px; border-radius: var(--rad-pill); font-size: 11px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .btn-hunt:hover { background: var(--accent-green); color: #000; box-shadow: 0 0 10px rgba(0, 255, 136, 0.4); }
 
         /* Competitor List */
-        .comp-tracker-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 12px;
-            margin: 20px 0;
-        }
-        .comp-tracker-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            padding: 12px 16px;
-            border-radius: var(--radius-md);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .comp-tracker-name { font-weight: 600; font-size: 14px; color: var(--text-main); font-family: var(--font-mono); }
-        .comp-tracker-del {
-            background: var(--accent-red-dim); color: var(--accent-red); border: none;
-            padding: 4px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px;
-        }
-        .comp-tracker-del:hover { background: var(--accent-red); color: #fff; }
+        .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin: 20px 0 30px; }
+        .comp-card { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
+        .comp-id { font-family: var(--font-mono); font-size: 13px; color: var(--text-primary); }
+        .btn-del { background: rgba(255, 51, 102, 0.1); color: var(--accent-red); border: none; padding: 6px 12px; border-radius: var(--rad-sm); font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-del:hover { background: var(--accent-red); color: #fff; }
 
         /* ======================================================================
-           MODALS & OVERLAYS
+           SPY MODAL (COMPETITOR METADATA)
            ====================================================================== */
-        .modal-backdrop {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center;
-            backdrop-filter: blur(8px);
-        }
-        .modal-backdrop.active { display: flex; animation: fadeIn 0.2s ease; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-content { background: #0f1115; border: 1px solid var(--glass-border-light); border-radius: var(--rad-lg); width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; position: relative; transform: translateY(30px); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
         
-        .modal-window {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-lg);
-            width: 90%;
-            max-width: 700px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-        }
+        .modal-header { padding: 30px; border-bottom: 1px solid var(--glass-border); position: relative; }
+        .modal-close { position: absolute; top: 30px; right: 30px; background: rgba(255,255,255,0.05); border: none; color: var(--text-secondary); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .modal-close:hover { background: var(--accent-red); color: #fff; transform: rotate(90deg); }
+        .modal-title { font-size: 22px; font-weight: 700; color: #fff; padding-right: 50px; line-height: 1.3; margin-bottom: 8px; }
+        
+        .modal-body { padding: 30px; }
+        .spy-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .spy-stat-card { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 20px; border-radius: var(--rad-md); text-align: center; }
+        .spy-label { font-size: 11px; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 1px; margin-bottom: 8px; }
+        .spy-val { font-size: 18px; font-weight: 700; color: #fff; font-family: var(--font-mono); }
+        
+        .spy-section-title { font-size: 14px; font-weight: 700; color: var(--text-secondary); margin-bottom: 15px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; }
+        .desc-box { background: #000; border: 1px solid var(--glass-border); padding: 20px; border-radius: var(--rad-md); font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary); line-height: 1.6; max-height: 300px; overflow-y: auto; white-space: pre-wrap; margin-bottom: 30px;}
 
-        .modal-header {
-            padding: 24px;
-            border-bottom: 1px solid var(--border-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-        .modal-header h2 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 4px; padding-right: 40px;}
-        .modal-close-btn {
-            position: absolute; top: 24px; right: 24px; background: rgba(255,255,255,0.1);
-            border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;
-        }
-        .modal-close-btn:hover { background: var(--accent-red); transform: rotate(90deg); }
-
-        .modal-body { padding: 24px; }
-        
-        .spy-stats-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;
-        }
-        .spy-stat-card {
-            background: var(--bg-card); border: 1px solid var(--border-light);
-            padding: 16px; border-radius: var(--radius-md); text-align: center;
-        }
-        
-        .spy-section-title { font-size: 13px; font-weight: 800; text-transform: uppercase; color: var(--text-faint); margin-bottom: 12px; border-bottom: 1px solid var(--border-light); padding-bottom: 8px;}
-        
-        .spy-description-box {
-            background: #000; border: 1px solid var(--border-light); padding: 16px;
-            border-radius: var(--radius-md); font-size: 13px; color: var(--text-muted);
-            white-space: pre-wrap; max-height: 250px; overflow-y: auto; font-family: var(--font-mono);
-        }
-
-        /* Utilities */
-        .spinner {
-            width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: #fff; border-radius: 50%; display: inline-block;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .empty-placeholder { text-align: center; padding: 60px 20px; color: var(--text-faint); }
-        .empty-placeholder svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.5; }
-        .empty-placeholder h3 { font-size: 18px; color: var(--text-muted); margin-bottom: 8px; }
+        /* Empty State */
+        .empty-state { text-align: center; padding: 80px 20px; color: var(--text-tertiary); }
+        .empty-state svg { width: 64px; height: 64px; margin-bottom: 20px; opacity: 0.3; }
+        .empty-state h3 { font-size: 20px; color: var(--text-secondary); margin-bottom: 10px; }
 
         @media (max-width: 768px) {
-            .dashboard-controls { flex-direction: column; align-items: stretch; }
-            .action-bar { flex-direction: column; gap: 16px; align-items: stretch; }
-            .spy-stats-grid { grid-template-columns: 1fr; }
+            .header-layout { flex-direction: column; }
+            .api-box { width: 100%; }
+            .nav-btn { padding: 10px 16px; font-size: 13px; }
+            .control-dashboard { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ======================================================================
-         MODALS (HIDDEN BY DEFAULT)
-         ====================================================================== -->
-    <!-- X-Ray Metadata Spy Modal -->
-    <div id="modalSpy" class="modal-backdrop">
-        <div class="modal-window">
-            <button class="modal-close-btn" onclick="closeModal('modalSpy')">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
+    <!-- Animated Mesh Background -->
+    <div class="animated-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- X-Ray Spy Modal (Glassmorphism) -->
+    <div id="spyModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="ui.closeModal()">✖</button>
             <div class="modal-header">
-                <div>
-                    <h2 id="spyVidTitle">Analyzing Video Data...</h2>
-                    <div style="color: var(--brand-primary); font-family: var(--font-mono); font-size: 13px;" id="spyVidChannel">Channel Name</div>
-                </div>
+                <h2 id="spyTitle" class="modal-title">Analyzing Video...</h2>
+                <div style="color: var(--accent-cyan); font-size: 14px;" id="spyChannel">📺 Channel Name</div>
             </div>
             <div class="modal-body">
                 <div class="spy-stats-grid">
                     <div class="spy-stat-card">
-                        <div class="stat-label">Published Date</div>
-                        <div class="stat-value" id="spyPubDate" style="color: #fff; margin-top: 8px; font-size: 14px;">-</div>
-                    </div>
-                    <div class="spy-stat-card" style="border-color: var(--brand-primary-dim); background: rgba(0,230,118,0.05);">
-                        <div class="stat-label">Velocity (VPH)</div>
-                        <div class="stat-value" id="spyVPH" style="color: var(--brand-primary); margin-top: 8px; font-size: 18px;">-</div>
+                        <div class="spy-label">Velocity (VPH)</div>
+                        <div class="spy-val" id="spyVPH" style="color: var(--accent-cyan);">0</div>
                     </div>
                     <div class="spy-stat-card">
-                        <div class="stat-label">Duration</div>
-                        <div class="stat-value" id="spyDuration" style="color: #fff; margin-top: 8px; font-size: 14px;">-</div>
+                        <div class="spy-label">Published On</div>
+                        <div class="spy-val" id="spyDate" style="font-size: 14px;">-</div>
+                    </div>
+                    <div class="spy-stat-card">
+                        <div class="spy-label">Duration</div>
+                        <div class="spy-val" id="spyDuration">-</div>
                     </div>
                 </div>
 
                 <div class="spy-section-title">🏷️ Hidden SEO Tags (<span id="spyTagCount">0</span>)</div>
-                <div id="spyTagsContainer" class="kw-tag-cloud" style="margin-bottom: 24px;">
-                    <!-- Tags injected here -->
+                <div id="spyTags" class="kw-cloud" style="margin-bottom: 30px;">
+                    <!-- Tags will inject here -->
                 </div>
 
-                <div class="spy-section-title">📝 Original Description</div>
-                <div id="spyDescContainer" class="spy-description-box">
-                    <!-- Description injected here -->
+                <div class="spy-section-title">📝 Original Description Snippet</div>
+                <div id="spyDesc" class="desc-box">
+                    <!-- Description will inject here -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ======================================================================
-         MAIN APPLICATION UI
-         ====================================================================== -->
     <div class="app-container">
         
-        <!-- HEADER -->
-        <header class="app-header">
-            <div class="brand-area">
-                <h1>
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--brand-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
-                    Viral Hunt Pro 
-                    <span class="version-badge">GOD MODE v7.0</span>
+        <!-- HEADER & API CONFIG -->
+        <header class="header-layout">
+            <div class="brand-box glass-panel">
+                <h1 class="brand-title">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    Viral Hunt Pro
                 </h1>
-                <p class="tagline">Enterprise-grade YouTube Outlier Discovery & Metadata Extraction Engine.</p>
+                <p class="brand-subtitle">Liquid Glass Edition • Enterprise SaaS Tool</p>
+                <div style="margin-top: 15px;"><span class="version-tag">GOD MODE v8.0</span></div>
             </div>
             
-            <div class="api-config-box">
-                <label>System Core: YouTube Data API v3</label>
-                <div class="api-input-row">
-                    <input type="password" id="sysApiKey" placeholder="Paste API Key to authenticate..." autocomplete="off">
-                    <div id="sysApiStatus" class="api-status-indicator">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                        Unverified
-                    </div>
+            <div class="api-box glass-panel">
+                <div class="api-box-title">System Authorization</div>
+                <div class="api-input-wrapper">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+                    <input type="password" id="apiInput" placeholder="Paste YouTube API v3 Key...">
+                </div>
+                <div class="status-container" style="margin-top: 15px;" id="apiStatusContainer">
+                    <span class="status-dot red"></span><span class="status-text unverified">Unverified</span>
                 </div>
             </div>
         </header>
 
-        <!-- NAVIGATION TABS -->
-        <nav class="tabs-container" id="mainTabs">
-            <button class="tab-button active" data-target="tab-search">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                Search Outliers
-            </button>
-            <button class="tab-button" data-target="tab-trending">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
-                Top Trending
-            </button>
-            <button class="tab-button" data-target="tab-smalltrends">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22l5-5"></path><path d="M12 17l5-5"></path><path d="M22 12l-5-5"></path></svg>
-                Small Trends
-            </button>
-            <button class="tab-button" data-target="tab-keywords">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                Keyword Alphabet
-            </button>
-            <button class="tab-button" data-target="tab-niches" style="color: var(--accent-blue);">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2-9 4 18 2-9h6"></path></svg>
-                Hidden Niches
-            </button>
-            <button class="tab-button" data-target="tab-competitors" style="color: var(--accent-amber);">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                Competitor Watch
-            </button>
-            <button class="tab-button" data-target="tab-saved" style="color: var(--accent-pink);">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-                Saved Ideas
-            </button>
-        </nav>
+        <!-- FLOATING PILL NAVIGATION -->
+        <div class="nav-wrapper">
+            <nav class="nav-pill">
+                <button class="nav-btn active" data-tab="tabSearch">🔍 Search Outliers</button>
+                <button class="nav-btn" data-tab="tabTrend">🔥 Top Trends</button>
+                <button class="nav-btn" data-tab="tabSmallTrend">🌱 Small Trends</button>
+                <button class="nav-btn" data-tab="tabKeyword">📈 Alphabet Soup</button>
+                <button class="nav-btn" data-tab="tabNiche">🕵️ Hidden Niches</button>
+                <button class="nav-btn" data-tab="tabComp">👁️ Competitors</button>
+                <button class="nav-btn" data-tab="tabSaved" style="color: var(--accent-pink);">📌 Saved</button>
+            </nav>
+        </div>
 
-        <!-- GLOBAL ACTION BAR (Export & Views) -->
-        <div class="action-bar" id="globalActionBar" style="display: none;">
-            <button class="btn btn-outline" onclick="core.exportToCSV()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Export CSV Data
+        <!-- GLOBAL ACTIONS BAR (Glassmorphism) -->
+        <div class="glass-panel actions-bar" id="actionBar">
+            <button class="btn-outline" onclick="core.exportCSV()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px; vertical-align: middle;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export Data to CSV
             </button>
             <div class="view-switcher">
-                <button class="view-btn active" id="toggleViewTable" onclick="core.switchLayout('table')">Table Layout</button>
-                <button class="view-btn" id="toggleViewGrid" onclick="core.switchLayout('grid')">Visual Grid</button>
+                <button class="view-btn" id="viewTblBtn" onclick="ui.switchView('table')">Table View</button>
+                <button class="view-btn active" id="viewGrdBtn" onclick="ui.switchView('grid')">Visual Grid</button>
             </div>
         </div>
 
@@ -873,191 +500,162 @@
             <!-- =========================================================
                  TAB 1: SEARCH OUTLIERS
                  ========================================================= -->
-            <section id="tab-search" class="tab-content active">
-                <div class="dashboard-controls">
+            <section id="tabSearch" class="tab-content active">
+                <div class="glass-panel control-dashboard">
                     <div class="input-group" style="flex: 2;">
-                        <label>Target Keyword / Topic</label>
-                        <input type="text" id="inpSearchQuery" placeholder="e.g., ai automation, silent vlog, anime recap...">
+                        <label>Target Topic / Keyword</label>
+                        <input type="text" class="glass-input" id="inpQuery" placeholder="e.g. faceless channel, scary stories...">
                     </div>
                     <div class="input-group">
-                        <label>Category Strict Filter</label>
-                        <select id="inpSearchCat">
-                            <option value="">Global Search (Mixed)</option>
-                            <option value="20">🎮 Gaming & Walkthroughs</option>
-                            <option value="28">💻 Science, Tech & AI</option>
-                            <option value="27">📚 Education & Tutorials</option>
-                            <option value="1">🎬 Film, Animation & Anime</option>
-                            <option value="24">🍿 Entertainment & Gossip</option>
-                            <option value="22">👥 People, Vlogs & Blogs</option>
-                            <option value="26">👗 Howto, Style & Craft</option>
+                        <label>Category Filter</label>
+                        <select class="glass-input" id="inpCat">
+                            <option value="">Global (All Categories)</option>
+                            <option value="20">🎮 Gaming</option>
+                            <option value="28">💻 Science & Tech (AI)</option>
+                            <option value="27">📚 Education</option>
+                            <option value="1">🎬 Film & Animation (Anime)</option>
+                            <option value="24">🍿 Entertainment</option>
+                            <option value="22">👥 People & Blogs</option>
                         </select>
                     </div>
-                    <div class="input-group input-group-small">
-                        <label>Max Sub Limit</label>
-                        <input type="number" id="inpSearchSubs" value="5000" min="0">
+                    <div class="input-group input-group-sm">
+                        <label>Max Subs Limit</label>
+                        <input type="number" class="glass-input" id="inpSubs" value="5000">
                     </div>
-                    <button class="btn btn-primary" id="btnRunSearch" onclick="features.runOutlierSearch()">
-                        Scan Outliers
+                    <button class="btn-liquid" id="btnSearch" onclick="engine.runSearch()">
+                        Scan Matrix 🚀
                     </button>
                 </div>
                 
-                <div id="statSearch" class="system-status"></div>
-                
+                <!-- Dynamic Skeleton Loader -->
+                <div class="skeleton-wrapper" id="skelSearch"></div>
                 <!-- Results Wrappers -->
-                <div id="wrapTableSearch" class="data-table-container"></div>
-                <div id="wrapGridSearch" class="data-grid-container"></div>
+                <div id="gridSearch" class="data-grid"></div>
+                <div id="tableSearch" class="data-table-wrap"></div>
             </section>
 
             <!-- =========================================================
                  TAB 2: GENERAL TRENDING
                  ========================================================= -->
-            <section id="tab-trending" class="tab-content">
-                <div class="dashboard-controls">
+            <section id="tabTrend" class="tab-content">
+                <div class="glass-panel control-dashboard">
                     <div class="input-group" style="flex: 2;">
                         <label>Trending Category (To block music/movies)</label>
-                        <select id="inpTrendCat">
-                            <option value="20" selected>🎮 Gaming (Recommended to find gameplay trends)</option>
-                            <option value="">🌍 All Categories (Default YT India Trends)</option>
-                            <option value="28">💻 Technology & Automobiles</option>
-                            <option value="24">🍿 General Entertainment</option>
-                            <option value="27">📚 Educational Content</option>
+                        <select class="glass-input" id="inpTrendCat">
+                            <option value="20" selected>🎮 Gaming (Highly Recommended)</option>
+                            <option value="">🌍 All Categories</option>
+                            <option value="28">💻 Technology</option>
+                            <option value="24">🍿 Entertainment</option>
                         </select>
                     </div>
-                    <button class="btn btn-primary" id="btnRunTrend" onclick="features.runTrending(false)">
-                        Fetch Top Trends
+                    <button class="btn-liquid" id="btnTrend" onclick="engine.runTrending(false)">
+                        Fetch Top Trends 🔥
                     </button>
                 </div>
-                
-                <div id="statTrend" class="system-status"></div>
-                
-                <div id="wrapTableTrend" class="data-table-container"></div>
-                <div id="wrapGridTrend" class="data-grid-container"></div>
+                <div class="skeleton-wrapper" id="skelTrend"></div>
+                <div id="gridTrend" class="data-grid"></div>
+                <div id="tableTrend" class="data-table-wrap"></div>
             </section>
 
             <!-- =========================================================
-                 TAB 3: SMALL TRENDS (Trending + Sub Filter)
+                 TAB 3: SMALL TRENDS
                  ========================================================= -->
-            <section id="tab-smalltrends" class="tab-content">
-                <div class="dashboard-controls">
+            <section id="tabSmallTrend" class="tab-content">
+                <div class="glass-panel control-dashboard">
                     <div class="input-group" style="flex: 2;">
                         <label>Trending Category</label>
-                        <select id="inpSmallTrendCat">
+                        <select class="glass-input" id="inpSmTrendCat">
                             <option value="20" selected>🎮 Gaming</option>
                             <option value="">🌍 All Categories</option>
-                            <option value="28">💻 Tech</option>
-                            <option value="1">🎬 Animation</option>
+                            <option value="28">💻 Technology</option>
                         </select>
                     </div>
-                    <div class="input-group input-group-small">
-                        <label>Max Sub Limit</label>
-                        <input type="number" id="inpSmallTrendSubs" value="50000" min="0">
+                    <div class="input-group input-group-sm">
+                        <label>Max Subs Limit</label>
+                        <input type="number" class="glass-input" id="inpSmTrendSubs" value="50000">
                     </div>
-                    <button class="btn btn-primary" id="btnRunSmallTrend" onclick="features.runTrending(true)">
-                        Hunt Small Trends
+                    <button class="btn-liquid" id="btnSmTrend" onclick="engine.runTrending(true)">
+                        Hunt Small Channels 🎯
                     </button>
                 </div>
-                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
-                    * This complex query fetches Top 50 trending videos and filters out established creators to find emerging micro-channels.
-                </p>
-                
-                <div id="statSmallTrend" class="system-status"></div>
-                
-                <div id="wrapTableSmallTrend" class="data-table-container"></div>
-                <div id="wrapGridSmallTrend" class="data-grid-container"></div>
+                <div class="skeleton-wrapper" id="skelSmTrend"></div>
+                <div id="gridSmTrend" class="data-grid"></div>
+                <div id="tableSmTrend" class="data-table-wrap"></div>
             </section>
 
             <!-- =========================================================
-                 TAB 4: KEYWORD ALPHABET SOUP
+                 TAB 4: KEYWORDS (ALPHABET SOUP)
                  ========================================================= -->
-            <section id="tab-keywords" class="tab-content">
-                <div class="dashboard-controls">
+            <section id="tabKeyword" class="tab-content">
+                <div class="glass-panel control-dashboard">
                     <div class="input-group" style="flex: 2;">
-                        <label>Seed Keyword (Base Niche)</label>
-                        <input type="text" id="inpKwSeed" placeholder="e.g. faceless channel, minecraft build...">
+                        <label>Seed Keyword</label>
+                        <input type="text" class="glass-input" id="inpKw" placeholder="e.g. offline games android...">
                     </div>
-                    <button class="btn btn-blue" id="btnRunKw" onclick="features.runKeywordSoup()">
-                        Execute Alphabet Soup
+                    <button class="btn-liquid" style="background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));" id="btnKw" onclick="engine.runKeywords()">
+                        Generate Alphabet Soup 🧠
                     </button>
                 </div>
-                
-                <div id="statKw" class="system-status"></div>
-                
-                <div id="wrapKwResults" style="display: none;">
-                    <div class="keyword-result-box">
-                        <div class="kw-section-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                            Direct Autocomplete (High Volume)
-                        </div>
-                        <div id="kwBoxPrimary" class="kw-tag-cloud"></div>
-                        
-                        <div class="kw-section-title" style="margin-top: 40px; color: var(--text-muted);">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                            Long-Tail Discoveries (Hidden Gold)
-                        </div>
-                        <div id="kwBoxLongTail" class="kw-tag-cloud"></div>
-                    </div>
-                </div>
-            </section>
 
-            <!-- =========================================================
-                 TAB 5: HIDDEN NICHES DATABASE
-                 ========================================================= -->
-            <section id="tab-niches" class="tab-content">
-                <div class="dashboard-controls" style="background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2);">
+                <div id="kwWrap" class="kw-container glass-panel" style="padding: 30px;">
                     <div>
-                        <h3 style="color: var(--accent-blue); margin-bottom: 5px; font-size: 18px;">The Secret Database</h3>
-                        <p style="font-size: 13px; color: var(--text-muted);">A curated, hardcoded list of low-competition, high-reward faceless and micro-niches. Click "Auto-Hunt" to instantly scan outliers for that exact niche.</p>
+                        <div class="kw-section-title">🔥 High Volume Autocomplete</div>
+                        <div id="kwPrimary" class="kw-cloud"></div>
                     </div>
-                </div>
-                
-                <div id="nicheGrid" class="niche-grid-layout">
-                    <!-- Javascript will inject massive database here -->
+                    <div style="margin-top: 10px;">
+                        <div class="kw-section-title" style="color: var(--text-secondary);">✨ Long-Tail Discoveries (Hidden Gold)</div>
+                        <div id="kwLongTail" class="kw-cloud"></div>
+                    </div>
                 </div>
             </section>
 
             <!-- =========================================================
-                 TAB 6: COMPETITOR WATCHLIST
+                 TAB 5: HIDDEN NICHES DB
                  ========================================================= -->
-            <section id="tab-competitors" class="tab-content">
-                <div class="dashboard-controls">
+            <section id="tabNiche" class="tab-content">
+                <div class="glass-panel" style="padding: 25px; margin-bottom: 10px; background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2);">
+                    <h3 style="color: var(--accent-cyan); font-size: 20px; margin-bottom: 8px;">The Secret Niche Database</h3>
+                    <p style="color: var(--text-secondary); font-size: 14px;">A hardcoded list of low-competition, high-reward micro-niches. Click "Auto-Hunt" to scan the matrix instantly.</p>
+                </div>
+                
+                <div id="nicheWrap" class="niche-grid">
+                    <!-- DB Injected Here -->
+                </div>
+            </section>
+
+            <!-- =========================================================
+                 TAB 6: COMPETITOR WATCH
+                 ========================================================= -->
+            <section id="tabComp" class="tab-content">
+                <div class="glass-panel control-dashboard">
                     <div class="input-group" style="flex: 2;">
-                        <label>Add Competitor Channel ID</label>
-                        <input type="text" id="inpCompId" placeholder="e.g. UCX6OQ3DkcsbYNE6H8uQQuQA">
+                        <label>Add Target Channel ID</label>
+                        <input type="text" class="glass-input" id="inpComp" placeholder="e.g. UCX6OQ3DkcsbYNE6H8uQQuQA">
                     </div>
-                    <button class="btn btn-outline" onclick="features.addCompetitor()">
-                        + Add Target
-                    </button>
-                    <button class="btn btn-primary" id="btnRunComp" onclick="features.scanCompetitors()">
-                        Initiate Deep Scan
+                    <button class="btn-outline" onclick="engine.addComp()">+ Add Target</button>
+                    <button class="btn-liquid" style="background: linear-gradient(135deg, var(--accent-orange), var(--accent-red));" id="btnComp" onclick="engine.scanComps()">
+                        Initiate Deep Scan 👁️
                     </button>
                 </div>
-                
-                <h4 style="margin: 30px 0 10px; font-size: 14px; text-transform: uppercase; color: var(--text-faint); letter-spacing: 0.1em;">Target Watchlist</h4>
-                <div id="compListWrap" class="comp-tracker-list">
-                    <!-- Tracked channels appear here -->
-                </div>
-                
-                <div id="statComp" class="system-status"></div>
-                
-                <div id="wrapTableComp" class="data-table-container"></div>
-                <div id="wrapGridComp" class="data-grid-container"></div>
+
+                <div id="compListWrap" class="comp-grid"></div>
+
+                <div class="skeleton-wrapper" id="skelComp"></div>
+                <div id="gridComp" class="data-grid"></div>
+                <div id="tableComp" class="data-table-wrap"></div>
             </section>
 
             <!-- =========================================================
-                 TAB 7: SAVED IDEAS (CONTENT CALENDAR)
+                 TAB 7: SAVED IDEAS
                  ========================================================= -->
-            <section id="tab-saved" class="tab-content">
-                <div class="dashboard-controls" style="background: rgba(236, 72, 153, 0.05); border-color: rgba(236, 72, 153, 0.2);">
-                    <div>
-                        <h3 style="color: var(--accent-pink); margin-bottom: 5px; font-size: 18px;">Content Calendar (Saved Targets)</h3>
-                        <p style="font-size: 13px; color: var(--text-muted);">Videos you save during research are securely stored here in your local browser cache.</p>
-                    </div>
+            <section id="tabSaved" class="tab-content">
+                <div class="glass-panel" style="padding: 25px; margin-bottom: 20px; background: rgba(255, 0, 127, 0.05); border-color: rgba(255, 0, 127, 0.2);">
+                    <h3 style="color: var(--accent-pink); font-size: 20px; margin-bottom: 8px;">Content Calendar (Bookmarks)</h3>
+                    <p style="color: var(--text-secondary); font-size: 14px;">Videos saved during your research sessions are securely stored in your browser's local cache.</p>
                 </div>
 
-                <div id="statSaved" class="system-status"></div>
-                
-                <div id="wrapTableSaved" class="data-table-container"></div>
-                <div id="wrapGridSaved" class="data-grid-container"></div>
+                <div id="gridSaved" class="data-grid"></div>
+                <div id="tableSaved" class="data-table-wrap"></div>
             </section>
 
         </main>
@@ -1070,766 +668,583 @@
     -->
     <script>
         /**
-         * System Configuration & Constants
+         * System Config & Massive Niche Database
          */
         const CONFIG = {
-            API_BASE: 'https://www.googleapis.com/youtube/v3',
-            STORE_KEY_API: 'VHP_API_KEY_v7',
-            STORE_KEY_SAVED: 'VHP_SAVED_VIDS_v7',
-            STORE_KEY_COMP: 'VHP_COMP_LIST_v7'
+            API_URL: 'https://www.googleapis.com/youtube/v3',
+            KEY_API: 'VHP_LIQUID_API',
+            KEY_SAVED: 'VHP_LIQUID_SAVED',
+            KEY_COMP: 'VHP_LIQUID_COMP'
         };
 
-        /**
-         * Massive Database of Hidden Niches (Expanding functionality)
-         */
         const NICHE_DB = [
             {
-                icon: "🎮", title: "Micro-Gaming & Emulation", catId: "20",
-                items: [
-                    "offline android games under 100mb",
-                    "ps2 emulation on android setup guide",
-                    "roblox scary horror maps multiplayer",
-                    "co-op mobile games with friends local wifi",
-                    "minecraft bedrock building hacks redstone",
-                    "ppsspp highly compressed games download",
-                    "stardew valley mobile tips and tricks"
-                ]
+                icon: "🎮", title: "Micro-Gaming & Emulation", cat: "20",
+                items: ["offline android games under 100mb", "ps2 emulation on android setup", "roblox scary horror maps multiplayer", "co-op mobile games with friends local wifi", "ppsspp highly compressed games download", "indie horror games itch.io gameplay"]
             },
             {
-                icon: "🎌", title: "Anime & Manga (Faceless)", catId: "1",
-                items: [
-                    "manhwa recaps in hindi full story",
-                    "underrated isekai anime you missed",
-                    "anime iceberg explained lowest tier",
-                    "one piece theories confirmed hindi",
-                    "top 10 overpowered main character anime",
-                    "manga vs anime differences explained",
-                    "solo leveling light novel ending"
-                ]
+                icon: "🎌", title: "Anime & Manga (Faceless)", cat: "1",
+                items: ["manhwa recaps in hindi full story", "underrated isekai anime you missed", "anime iceberg explained lowest tier", "one piece theories confirmed hindi", "top 10 overpowered main character anime", "solo leveling light novel ending explained"]
             },
             {
-                icon: "🤖", title: "AI & Automation Trends", catId: "28",
-                items: [
-                    "ai historical documentaries faceless",
-                    "reddit scary stories tts short form",
-                    "chatgpt advanced prompts for students",
-                    "free ai video generators 2024 no watermark",
-                    "stoicism quotes ai voice generator",
-                    "midjourney v6 alternatives free",
-                    "automate youtube shorts python script"
-                ]
+                icon: "🤖", title: "AI & Automation Trends", cat: "28",
+                items: ["ai historical documentaries faceless", "reddit scary stories tts short form", "chatgpt advanced prompts for students", "free ai video generators 2024 no watermark", "stoicism quotes ai voice generator", "automate youtube shorts python script"]
             },
             {
-                icon: "💻", title: "Tech, Privacy & Software", catId: "28",
-                items: [
-                    "open source software alternatives to adobe",
-                    "vs code extensions for web developers",
-                    "windows 11 debloat script guide",
-                    "linux desktop customization rice",
-                    "free useful websites you didn't know",
-                    "degoogle your life privacy guide",
-                    "best self hosted apps home lab"
-                ]
+                icon: "💻", title: "Tech, Privacy & Software", cat: "28",
+                items: ["open source software alternatives to adobe", "vs code extensions for web developers", "windows 11 debloat script guide", "linux desktop customization rice", "free useful websites you didn't know", "degoogle your life privacy guide"]
             },
             {
-                icon: "💰", title: "High CPM Finance & Wealth", catId: "27",
-                items: [
-                    "dark psychology principles for manipulation",
-                    "side hustles for teens 2024 no money",
-                    "trading psychology in hindi banknifty",
-                    "frugal living tips to save money fast",
-                    "naval ravikant almanack summary",
-                    "dividend investing portfolio for beginners",
-                    "credit card churning travel hacks"
-                ]
+                icon: "💰", title: "High CPM Finance & Wealth", cat: "27",
+                items: ["dark psychology principles for manipulation", "side hustles for teens 2024 no money", "trading psychology in hindi banknifty", "frugal living tips to save money fast", "dividend investing portfolio for beginners", "credit card churning travel hacks"]
             },
             {
-                icon: "🕵️", title: "Mysteries & True Crime", catId: "24",
-                items: [
-                    "unsolved internet mysteries iceberg",
-                    "creepy lost media found footage",
-                    "backrooms lore explained in order",
-                    "scp foundation files reading",
-                    "abandoned places exploration history"
-                ]
+                icon: "🕵️", title: "Mysteries & True Crime", cat: "24",
+                items: ["unsolved internet mysteries iceberg", "creepy lost media found footage", "backrooms lore explained in order", "scp foundation files reading", "abandoned places exploration history", "deep web iceberg explained"]
             }
         ];
 
         /**
-         * Global State Management
+         * Global State
          */
         const state = {
-            activeTab: 'search',
-            activeViewMode: 'table', // 'table' or 'grid'
-            currentDataset: [], // Holds the currently fetched videos array
-            currentDatasetType: '' // 'search', 'trend', 'smalltrend', 'comp', 'saved'
+            activeTab: 'tabSearch',
+            viewMode: 'grid', // default to grid for beautiful thumbnails
+            dataset: [],
+            datasetType: '' // search, trend, smalltrend, comp, saved
         };
 
         /**
-         * Core Utility Functions
+         * Custom Toast Notification System (Replaces alert())
+         */
+        const Toast = {
+            show: (msg, type = 'info') => {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                
+                let icon = 'ℹ️';
+                if(type === 'success') icon = '✅';
+                if(type === 'error') icon = '⚠️';
+
+                toast.innerHTML = `<span>${icon}</span> <div>${msg}</div>`;
+                container.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.style.animation = 'toastFadeOut 0.4s forwards';
+                    setTimeout(() => { if (container.contains(toast)) container.removeChild(toast); }, 400);
+                }, 3500);
+            }
+        };
+
+        /**
+         * Utilities & Math
          */
         const utils = {
-            formatNum: (num) => {
-                if (!num || isNaN(num)) return '0';
-                if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
-                if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
-                if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
-                return String(num);
+            formatNum: (n) => {
+                if (!n || isNaN(n)) return '0';
+                if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+                if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+                if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+                return String(n);
             },
-            formatRatio: (r) => r >= 10 ? Math.round(r) + 'x' : (Math.round(r * 10) / 10) + 'x',
-            getRatioTier: (r) => r >= 50 ? 'ratio-god' : (r >= 10 ? 'ratio-high' : 'ratio-med'),
-            parseSubs: (raw) => {
-                const n = Number(String(raw).trim());
-                return (Number.isNaN(n) || n < 0) ? 5000 : Math.floor(n);
+            calcVPH: (views, pubStr) => {
+                if(!pubStr || !views) return 0;
+                const hrs = Math.max((Date.now() - new Date(pubStr).getTime()) / 3600000, 1);
+                return Math.round(views / hrs);
             },
-            calcVPH: (views, pubDateStr) => {
-                if(!pubDateStr || !views) return 0;
-                const pubDate = new Date(pubDateStr);
-                const hours = Math.max((Date.now() - pubDate.getTime()) / (1000 * 60 * 60), 1);
-                return Math.round(views / hours);
-            },
-            escapeHTML: (str) => {
-                const div = document.createElement('div');
-                div.textContent = str || '';
-                return div.innerHTML;
-            },
-            formatDuration: (isoStr) => {
-                if(!isoStr) return 'Unknown';
-                return isoStr.replace('PT','').replace('H','h ').replace('M','m ').replace('S','s').trim();
-            },
-            chunkArray: (arr, size) => {
-                const out = [];
-                for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
-                return out;
-            }
+            getRatio: (views, subs) => (views && subs) ? views / Math.max(subs, 1) : 0,
+            formatRatio: (r) => r >= 10 ? Math.round(r) + 'x' : (Math.round(r * 10)/10) + 'x',
+            getTier: (r) => r >= 50 ? 'ratio-insane' : (r >= 10 ? 'ratio-high' : 'ratio-normal'),
+            escape: (s) => { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; },
+            parseSubs: (v) => { const n = Number(String(v).trim()); return (isNaN(n) || n < 0) ? 5000 : Math.floor(n); },
+            chunk: (arr, size) => Array.from({length: Math.ceil(arr.length / size)}, (v, i) => arr.slice(i * size, i * size + size)),
+            formatDur: (s) => s ? s.replace('PT','').replace('H','h ').replace('M','m ').replace('S','s') : 'Unknown'
         };
 
         /**
-         * UI & DOM Management
+         * UI Manager
          */
         const ui = {
-            showMsg: (elId, msg, type) => {
-                const el = document.getElementById(elId);
-                el.innerHTML = msg;
-                el.className = msg ? `system-status active status-${type}` : 'system-status';
+            updateApiStatus: (hasKey) => {
+                const el = document.getElementById('apiStatusContainer');
+                if (hasKey) {
+                    el.innerHTML = `<span class="status-dot green"></span><span class="status-text verified">Verified & Active</span>`;
+                } else {
+                    el.innerHTML = `<span class="status-dot red"></span><span class="status-text unverified">Unverified</span>`;
+                }
             },
-            setLoad: (btnId, isLoad, normalText) => {
+            setLoading: (btnId, isLoading, text, skelId) => {
                 const btn = document.getElementById(btnId);
-                if(!btn) return;
-                btn.disabled = isLoad;
-                btn.innerHTML = isLoad ? '<span class="spinner"></span> Processing...' : normalText;
+                if(btn) {
+                    btn.disabled = isLoading;
+                    btn.innerHTML = isLoading ? `<span class="spinner" style="margin-right:8px;"></span> Scanning...` : text;
+                }
+                
+                if(skelId) {
+                    const skelWrap = document.getElementById(skelId);
+                    if(isLoading) {
+                        skelWrap.innerHTML = Array(6).fill(0).map(() => `
+                            <div class="glass-panel skeleton-card">
+                                <div class="skeleton-thumb"></div>
+                                <div class="skeleton-line" style="width: 90%;"></div>
+                                <div class="skeleton-line" style="width: 60%;"></div>
+                                <div class="skeleton-line" style="width: 100%; margin-top: 15px;"></div>
+                            </div>
+                        `).join('');
+                        skelWrap.classList.add('active');
+                        ui.hideDataWraps(skelId.replace('skel','')); // hide table/grid
+                    } else {
+                        skelWrap.classList.remove('active');
+                        skelWrap.innerHTML = '';
+                    }
+                }
             },
-            clearWrap: (tableId, gridId) => {
-                document.getElementById(tableId).innerHTML = '';
-                document.getElementById(gridId).innerHTML = '';
+            hideDataWraps: (suffix) => {
+                document.getElementById('grid' + suffix).classList.remove('active');
+                document.getElementById('table' + suffix).classList.remove('active');
             },
-            emptyHTML: (msg) => `<div class="empty-placeholder">
+            switchView: (mode) => {
+                state.viewMode = mode;
+                document.getElementById('viewTblBtn').className = mode === 'table' ? 'view-btn active' : 'view-btn';
+                document.getElementById('viewGrdBtn').className = mode === 'grid' ? 'view-btn active' : 'view-btn';
+                core.renderActiveTab();
+            },
+            toggleActions: (show) => {
+                document.getElementById('actionBar').style.display = show ? 'flex' : 'none';
+            },
+            emptyHTML: (msg) => `<div class="empty-state">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                <h3>System Alert</h3><p>${msg}</p></div>`,
+                <h3>Scan Completed</h3><p>${msg}</p></div>`,
             
-            toggleGlobalActions: (show) => {
-                document.getElementById('globalActionBar').style.display = show ? 'flex' : 'none';
-            }
+            closeModal: () => document.getElementById('spyModal').classList.remove('active')
         };
 
         /**
-         * API Logic & Data Fetching
+         * API Controllers
          */
         const api = {
             getKey: () => {
-                const key = document.getElementById('sysApiKey').value.trim();
-                if (!key) { alert("SECURITY HALT: Please enter your YouTube API Key in the top right corner."); return null; }
-                return key;
+                const k = document.getElementById('apiInput').value.trim();
+                if(!k) { Toast.show('Please enter your YouTube API Key in the top right.', 'error'); return null; }
+                return k;
             },
-            fetchData: async (url) => {
+            get: async (url) => {
                 const res = await fetch(url);
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.error?.message || `HTTP Error ${res.status}`);
+                if(!res.ok) throw new Error(data.error?.message || `HTTP ${res.status}`);
                 return data;
             },
-            // Parallel Fetching for massive data
-            getDetailedVideoStats: async (ids, key) => {
-                if (!ids.length) return {}; 
-                const map = {};
-                for (const chunk of utils.chunkArray(ids, 50)) {
-                    const url = `${CONFIG.API_BASE}/videos?part=statistics,snippet,contentDetails&id=${chunk.join(',')}&key=${key}`;
-                    const data = await api.fetchData(url);
-                    (data.items || []).forEach(v => {
-                        map[v.id] = { 
-                            views: parseInt(v.statistics?.viewCount || '0'),
-                            pubAt: v.snippet.publishedAt,
-                            tags: v.snippet.tags || [],
-                            desc: v.snippet.description || '',
-                            duration: v.contentDetails?.duration || ''
-                        };
+            getVidStats: async (ids, key) => {
+                if(!ids.length) return {}; const map = {};
+                for(let c of utils.chunk(ids, 50)) {
+                    const data = await api.get(`${CONFIG.API_URL}/videos?part=statistics,snippet,contentDetails&id=${c.join(',')}&key=${key}`);
+                    (data.items||[]).forEach(v => {
+                        map[v.id] = { views: parseInt(v.statistics?.viewCount||'0'), pubAt: v.snippet.publishedAt, tags: v.snippet.tags||[], desc: v.snippet.description||'', dur: v.contentDetails?.duration||'' };
                     });
-                } 
-                return map;
-            },
-            getChannelStats: async (ids, key) => {
-                if (!ids.length) return {}; 
-                const map = {};
-                for (const chunk of utils.chunkArray(ids, 50)) {
-                    const url = `${CONFIG.API_BASE}/channels?part=statistics&id=${chunk.join(',')}&key=${key}`;
-                    const data = await api.fetchData(url);
-                    (data.items || []).forEach(c => {
-                        map[c.id] = { 
-                            subs: c.statistics?.hiddenSubscriberCount ? null : parseInt(c.statistics?.subscriberCount || '0'), 
-                            hidden: !!c.statistics?.hiddenSubscriberCount 
-                        };
-                    });
-                } 
-                return map;
-            }
-        };
-
-        /**
-         * Core Engine Features & Algorithms
-         */
-        const features = {
-            
-            // 1. OUTLIER SEARCH
-            runOutlierSearch: async () => {
-                const key = api.getKey(); if(!key) return;
-                const query = document.getElementById('inpSearchQuery').value.trim();
-                const catId = document.getElementById('inpSearchCat').value;
-                const maxSubs = utils.parseSubs(document.getElementById('inpSearchSubs').value);
-
-                if(!query) { ui.showMsg('statSearch', 'Input Error: Keyword is required.', 'error'); return; }
-
-                ui.setLoad('btnRunSearch', true, 'Scan Outliers');
-                ui.clearWrap('wrapTableSearch', 'wrapGridSearch');
-                ui.toggleGlobalActions(false);
-                ui.showMsg('statSearch', 'Initiating search in YouTube matrix... (Last 24h Filter Active)', 'info');
-
-                try {
-                    // Force 24h & videoDuration=long (Block Shorts)
-                    const pubAfter = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-                    let url = `${CONFIG.API_BASE}/search?part=snippet&type=video&order=viewCount&videoDuration=long&publishedAfter=${encodeURIComponent(pubAfter)}&maxResults=50&q=${encodeURIComponent(query)}&key=${key}`;
-                    if (catId) url += `&videoCategoryId=${catId}`;
-
-                    const data = await api.fetchData(url);
-                    const items = (data.items || []).filter(i => i.id?.videoId);
-                    
-                    if (!items.length) { 
-                        document.getElementById('wrapTableSearch').innerHTML = ui.emptyHTML('No long-form videos found in the last 24 hours for this topic.');
-                        ui.showMsg('statSearch', '', ''); 
-                        return; 
-                    }
-
-                    await engine.processAndRender(items, key, maxSubs, 'statSearch', true, 'search');
-                } catch(e) { ui.showMsg('statSearch', `Execution Failed: ${e.message}`, 'error'); }
-                finally { ui.setLoad('btnRunSearch', false, 'Scan Outliers'); }
-            },
-
-            // 2 & 3. TRENDING ENGINES
-            runTrending: async (isSmall = false) => {
-                const key = api.getKey(); if(!key) return;
-                
-                const btnId = isSmall ? 'btnRunSmallTrend' : 'btnRunTrend';
-                const btnLabel = isSmall ? 'Hunt Small Trends' : 'Fetch Top Trends';
-                const statId = isSmall ? 'statSmallTrend' : 'statTrend';
-                const tableId = isSmall ? 'wrapTableSmallTrend' : 'wrapTableTrend';
-                const gridId = isSmall ? 'wrapGridSmallTrend' : 'wrapGridTrend';
-                const catId = document.getElementById(isSmall ? 'inpSmallTrendCat' : 'inpTrendCat').value;
-                const maxSubs = isSmall ? utils.parseSubs(document.getElementById('inpSmallTrendSubs').value) : null;
-                const dsType = isSmall ? 'smalltrend' : 'trend';
-
-                ui.setLoad(btnId, true, btnLabel);
-                ui.clearWrap(tableId, gridId);
-                ui.toggleGlobalActions(false);
-                ui.showMsg(statId, 'Connecting to YouTube Regional Trends...', 'info');
-
-                try {
-                    let url = `${CONFIG.API_BASE}/videos?part=snippet,statistics&chart=mostPopular&regionCode=IN&maxResults=50&key=${key}`;
-                    if (catId) url += `&videoCategoryId=${catId}`;
-
-                    const data = await api.fetchData(url);
-                    if (!data.items?.length) { 
-                        document.getElementById(tableId).innerHTML = ui.emptyHTML('YouTube trending API returned empty for this category.');
-                        ui.showMsg(statId, '', ''); return; 
-                    }
-
-                    // Format to match search items
-                    let mappedItems = data.items.map(i => ({ id: { videoId: i.id }, snippet: i.snippet }));
-                    await engine.processAndRender(mappedItems, key, maxSubs, statId, isSmall, dsType);
-                    
-                } catch(e) { ui.showMsg(statId, `Execution Failed: ${e.message}`, 'error'); }
-                finally { ui.setLoad(btnId, false, btnLabel); }
-            },
-
-            // 4. ALPHABET SOUP (Keyword Research using JSONP)
-            fetchSuggestJSONP: (query) => {
-                return new Promise((resolve) => {
-                    const cbName = 'ytcb_' + Math.random().toString(36).substr(2, 9);
-                    window[cbName] = function(data) { resolve(data[1] || []); delete window[cbName]; document.body.removeChild(script); };
-                    const script = document.createElement('script');
-                    script.src = `https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=${encodeURIComponent(query)}&jsonp=${cbName}`;
-                    document.body.appendChild(script);
-                });
-            },
-            runKeywordSoup: async () => {
-                const seed = document.getElementById('inpKwSeed').value.trim();
-                if(!seed) { ui.showMsg('statKw', 'Missing Seed Keyword', 'error'); return; }
-
-                ui.setLoad('btnRunKw', true, 'Execute Alphabet Soup');
-                ui.showMsg('statKw', 'Mining Autocomplete algorithms...', 'info');
-                document.getElementById('wrapKwResults').style.display = 'none';
-
-                try {
-                    const primary = await features.fetchSuggestJSONP(seed);
-                    const suffixes = [' a',' b',' c',' d',' e',' f',' g',' in hindi',' 2024', ' vs', ' review'];
-                    let longTails = new Set();
-                    
-                    const promises = suffixes.map(suf => features.fetchSuggestJSONP(seed + suf));
-                    const resultsArray = await Promise.all(promises);
-                    
-                    resultsArray.forEach(arr => {
-                        arr.forEach(kw => {
-                            let word = typeof kw === 'string' ? kw : kw[0];
-                            if(word && !primary.includes(word) && word.length > seed.length) { longTails.add(word); }
-                        });
-                    });
-
-                    if(!primary.length && !longTails.size) { ui.showMsg('statKw', 'Zero related keywords found.', 'error'); return; }
-
-                    let pHTML = primary.map(k => `<div class="kw-tag" onclick="core.autoHuntKeyword('${utils.escapeHTML(k)}')">🔍 ${utils.escapeHTML(k)}</div>`).join('');
-                    document.getElementById('kwBoxPrimary').innerHTML = pHTML || '<span style="color:var(--text-muted)">N/A</span>';
-                    
-                    let aHTML = Array.from(longTails).slice(0, 40).map(k => `<div class="kw-tag secondary" onclick="core.autoHuntKeyword('${utils.escapeHTML(k)}')">✨ ${utils.escapeHTML(k)}</div>`).join('');
-                    document.getElementById('kwBoxLongTail').innerHTML = aHTML;
-
-                    document.getElementById('wrapKwResults').style.display = 'block';
-                    ui.showMsg('statKw', '✅ Extraction Complete! Click any keyword to auto-hunt.', 'success');
-
-                } catch(e) { ui.showMsg('statKw', 'Algorithm block detected.', 'error'); }
-                finally { ui.setLoad('btnRunKw', false, 'Execute Alphabet Soup'); }
-            },
-
-            // 5. HIDDEN NICHES INJECTION
-            renderHiddenNiches: () => {
-                const container = document.getElementById('nicheGrid');
-                let html = '';
-                NICHE_DB.forEach(niche => {
-                    let itemsHtml = niche.items.map(item => `
-                        <li class="niche-db-item">
-                            <span class="niche-db-title">${utils.escapeHTML(item)}</span>
-                            <button class="niche-db-btn" onclick="core.autoHuntKeyword('${utils.escapeHTML(item)}', '${niche.catId}')">Auto-Hunt</button>
-                        </li>
-                    `).join('');
-                    html += `
-                        <div class="niche-db-card">
-                            <div class="niche-db-header">
-                                <span>${niche.icon}</span> ${utils.escapeHTML(niche.title)}
-                            </div>
-                            <ul class="niche-db-list">${itemsHtml}</ul>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            },
-
-            // 6. COMPETITOR WATCHLIST
-            getComps: () => JSON.parse(localStorage.getItem(CONFIG.STORE_KEY_COMP) || '[]'),
-            renderCompList: () => {
-                const comps = features.getComps();
-                const wrap = document.getElementById('compListWrap');
-                if(!comps.length) { wrap.innerHTML = `<div style="color:var(--text-faint);font-size:12px;">No targets tracked.</div>`; return; }
-                wrap.innerHTML = comps.map(c => `
-                    <div class="comp-tracker-item">
-                        <span class="comp-tracker-name">📺 Target ID: ${utils.escapeHTML(c)}</span>
-                        <button class="comp-tracker-del" onclick="features.removeCompetitor('${utils.escapeHTML(c)}')">DELETE</button>
-                    </div>
-                `).join('');
-            },
-            addCompetitor: () => {
-                let id = document.getElementById('inpCompId').value.trim();
-                if(!id || !id.startsWith('UC')) { alert("Invalid Channel ID format. Must start with 'UC'."); return; }
-                let comps = features.getComps();
-                if(!comps.includes(id)) { 
-                    comps.push(id); localStorage.setItem(CONFIG.STORE_KEY_COMP, JSON.stringify(comps)); 
-                    document.getElementById('inpCompId').value = ''; features.renderCompList(); 
                 }
+                return map;
             },
-            removeCompetitor: (id) => {
-                let comps = features.getComps().filter(c => c !== id);
-                localStorage.setItem(CONFIG.STORE_KEY_COMP, JSON.stringify(comps)); features.renderCompList();
-            },
-            scanCompetitors: async () => {
-                const key = api.getKey(); if(!key) return;
-                const comps = features.getComps();
-                if(!comps.length) { ui.showMsg('statComp', 'List is empty.', 'error'); return; }
-
-                ui.setLoad('btnRunComp', true, 'Initiate Deep Scan');
-                ui.clearWrap('wrapTableComp', 'wrapGridComp');
-                ui.toggleGlobalActions(false);
-                ui.showMsg('statComp', 'Pinging target channels for recent uploads...', 'info');
-
-                try {
-                    let allItems = [];
-                    // Parallel fetch latest 3 videos from all competitors
-                    const promises = comps.map(chId => 
-                        api.fetchData(`${CONFIG.API_BASE}/search?part=snippet&type=video&order=date&maxResults=3&channelId=${chId}&key=${key}`).catch(()=>({items:[]}))
-                    );
-                    const results = await Promise.all(promises);
-                    results.forEach(res => { if(res.items) allItems.push(...res.items); });
-
-                    if(!allItems.length) { 
-                        document.getElementById('wrapTableComp').innerHTML = ui.emptyHTML('Targets have no recent videos.');
-                        ui.showMsg('statComp', '', ''); return; 
-                    }
-                    
-                    await engine.processAndRender(allItems, key, 999999999, 'statComp', false, 'comp');
-
-                } catch(e) { ui.showMsg('statComp', `Scan failed: ${e.message}`, 'error'); }
-                finally { ui.setLoad('btnRunComp', false, 'Initiate Deep Scan'); }
+            getChStats: async (ids, key) => {
+                if(!ids.length) return {}; const map = {};
+                for(let c of utils.chunk(ids, 50)) {
+                    const data = await api.get(`${CONFIG.API_URL}/channels?part=statistics&id=${c.join(',')}&key=${key}`);
+                    (data.items||[]).forEach(ch => {
+                        map[ch.id] = { subs: ch.statistics?.hiddenSubscriberCount ? null : parseInt(ch.statistics?.subscriberCount||'0'), hidden: !!ch.statistics?.hiddenSubscriberCount };
+                    });
+                }
+                return map;
             }
         };
 
         /**
-         * Core Engine & Math Processing
+         * Main Data Processing Engine
          */
         const engine = {
-            processAndRender: async (items, key, maxSubs, statId, enforceSubLimit, dsType) => {
+            processAndRender: async (items, key, maxSubs, enforceFilter, dsType, suffix) => {
                 const vIds = items.map(i => i.id.videoId);
                 const cIds = [...new Set(items.map(i => i.snippet.channelId))];
                 
-                // Massive Parallel Data Aggregation
-                const [vStats, cStats] = await Promise.all([
-                    api.getDetailedVideoStats(vIds, key), 
-                    api.getChannelStats(cIds, key)
-                ]);
+                // Parallel Fetch
+                const [vStats, cStats] = await Promise.all([api.getVidStats(vIds, key), api.getChStats(cIds, key)]);
 
-                // Construct rich dataset
-                state.currentDataset = items.map(i => {
+                state.dataset = items.map(i => {
                     const vid = i.id.videoId;
-                    const v = vStats[vid] || {}; const c = cStats[i.snippet.channelId] || {};
+                    const v = vStats[vid] || {}, c = cStats[i.snippet.channelId] || {};
                     const views = v.views || 0, subs = c.subs || 0;
-                    
-                    // Complex Math
                     const vph = utils.calcVPH(views, v.pubAt);
-                    const ratio = (views && subs) ? views / Math.max(subs, 1) : 0;
+                    const ratio = utils.getRatio(views, subs);
                     
                     return {
                         id: vid, title: i.snippet.title, channel: i.snippet.channelTitle,
-                        thumb: i.snippet.thumbnails?.maxres?.url || i.snippet.thumbnails?.medium?.url || i.snippet.thumbnails?.default?.url || '',
-                        views, subs, vph, ratio, pubAt: v.pubAt,
-                        tags: v.tags || [], desc: v.desc || '', duration: v.duration || '',
-                        hiddenSubs: c.hidden || false
+                        thumb: i.snippet.thumbnails?.maxres?.url || i.snippet.thumbnails?.medium?.url || '',
+                        views, subs, vph, ratio, pubAt: v.pubAt, tags: v.tags, desc: v.desc, dur: v.dur, hidden: c.hidden||false
                     };
                 });
 
-                // Apply Strict Filtering if requested
-                if(enforceSubLimit) {
-                    state.currentDataset = state.currentDataset.filter(r => !r.hiddenSubs && r.subs !== null && r.subs <= maxSubs);
-                }
+                if(enforceFilter) state.dataset = state.dataset.filter(r => !r.hidden && r.subs !== null && r.subs <= maxSubs);
+                state.dataset.sort((a,b) => b.ratio - a.ratio || b.vph - a.vph); // Sort by Outlier Ratio
+                state.datasetType = dsType;
+
+                const gId = 'grid' + suffix, tId = 'table' + suffix;
                 
-                // Default Sorting Algorithm: Outlier Ratio first, then Velocity (VPH)
-                state.currentDataset.sort((a, b) => b.ratio - a.ratio || b.vph - a.vph);
-                state.currentDatasetType = dsType;
-
-                // Routing to View
-                let tableWrapId = '', gridWrapId = '';
-                if(dsType === 'search') { tableWrapId = 'wrapTableSearch'; gridWrapId = 'wrapGridSearch'; }
-                if(dsType === 'trend') { tableWrapId = 'wrapTableTrend'; gridWrapId = 'wrapGridTrend'; }
-                if(dsType === 'smalltrend') { tableWrapId = 'wrapTableSmallTrend'; gridWrapId = 'wrapGridSmallTrend'; }
-                if(dsType === 'comp') { tableWrapId = 'wrapTableComp'; gridWrapId = 'wrapGridComp'; }
-
-                if (!state.currentDataset.length) {
-                    document.getElementById(tableWrapId).innerHTML = ui.emptyHTML(`Data retrieved, but 0 channels matched criteria (<${maxSubs} subs).`);
-                    ui.showMsg(statId, '', '');
-                    ui.toggleGlobalActions(false);
+                if(!state.dataset.length) {
+                    document.getElementById(gId).innerHTML = '';
+                    document.getElementById(tId).innerHTML = ui.emptyHTML(`0 videos matched the criteria (<${maxSubs} subs).`);
+                    document.getElementById(tId).classList.add('active');
+                    ui.toggleActions(false);
+                    Toast.show('No outliers found matching your limit.', 'info');
                 } else {
-                    ui.showMsg(statId, `✅ Successfully isolated ${state.currentDataset.length} high-signal data points.`, 'success');
-                    ui.toggleGlobalActions(true);
-                    renderer.buildActiveView(tableWrapId, gridWrapId);
+                    ui.toggleActions(true);
+                    Toast.show(`Successfully isolated ${state.dataset.length} high-signal videos!`, 'success');
+                    core.renderView(gId, tId, state.dataset);
                 }
+            },
+
+            // TAB 1: Search
+            runSearch: async () => {
+                const k = api.getKey(); if(!k) return;
+                const q = document.getElementById('inpQuery').value.trim();
+                const c = document.getElementById('inpCat').value;
+                const ms = utils.parseSubs(document.getElementById('inpSubs').value);
+                
+                if(!q) { Toast.show('Enter a keyword to search.', 'error'); return; }
+                
+                ui.setLoading('btnSearch', true, 'Scan Matrix 🚀', 'skelSearch');
+                ui.toggleActions(false);
+
+                try {
+                    const pubAfter = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+                    let url = `${CONFIG.API_URL}/search?part=snippet&type=video&order=viewCount&videoDuration=long&publishedAfter=${encodeURIComponent(pubAfter)}&maxResults=50&q=${encodeURIComponent(q)}&key=${k}`;
+                    if(c) url += `&videoCategoryId=${c}`;
+
+                    const data = await api.get(url);
+                    const items = (data.items||[]).filter(i => i.id?.videoId);
+                    if(!items.length) { 
+                        document.getElementById('tableSearch').innerHTML = ui.emptyHTML('No long-form videos found in last 24h.');
+                        document.getElementById('tableSearch').classList.add('active');
+                        Toast.show('No results found.', 'info');
+                        return;
+                    }
+                    await engine.processAndRender(items, k, ms, true, 'search', 'Search');
+                } catch(e) { Toast.show(e.message, 'error'); }
+                finally { ui.setLoading('btnSearch', false, 'Scan Matrix 🚀', 'skelSearch'); }
+            },
+
+            // TAB 2 & 3: Trends
+            runTrending: async (isSmall) => {
+                const k = api.getKey(); if(!k) return;
+                const suf = isSmall ? 'SmTrend' : 'Trend';
+                const c = document.getElementById('inp' + suf + 'Cat').value;
+                const ms = isSmall ? utils.parseSubs(document.getElementById('inpSmTrendSubs').value) : null;
+                const btn = isSmall ? 'btnSmTrend' : 'btnTrend';
+                const lbl = isSmall ? 'Hunt Small Channels 🎯' : 'Fetch Top Trends 🔥';
+                
+                ui.setLoading(btn, true, lbl, 'skel' + suf);
+                ui.toggleActions(false);
+
+                try {
+                    let url = `${CONFIG.API_URL}/videos?part=snippet,statistics&chart=mostPopular&regionCode=IN&maxResults=50&key=${k}`;
+                    if(c) url += `&videoCategoryId=${c}`;
+
+                    const data = await api.get(url);
+                    if(!data.items?.length) { 
+                        document.getElementById('table'+suf).innerHTML = ui.emptyHTML('YouTube Trending API is empty.');
+                        document.getElementById('table'+suf).classList.add('active'); return; 
+                    }
+                    let mItems = data.items.map(i => ({ id: { videoId: i.id }, snippet: i.snippet }));
+                    await engine.processAndRender(mItems, k, ms, isSmall, isSmall ? 'smalltrend' : 'trend', suf);
+                } catch(e) { Toast.show(e.message, 'error'); }
+                finally { ui.setLoading(btn, false, lbl, 'skel' + suf); }
+            },
+
+            // TAB 4: Keywords (JSONP)
+            fetchJSONP: (q) => {
+                return new Promise(res => {
+                    const cb = 'yt_' + Math.random().toString(36).substr(2,9);
+                    window[cb] = (d) => { res(d[1]||[]); delete window[cb]; document.body.removeChild(sc); };
+                    const sc = document.createElement('script');
+                    sc.src = `https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=${encodeURIComponent(q)}&jsonp=${cb}`;
+                    document.body.appendChild(sc);
+                });
+            },
+            runKeywords: async () => {
+                const seed = document.getElementById('inpKw').value.trim();
+                if(!seed) { Toast.show('Enter seed keyword.', 'error'); return; }
+                
+                const btn = document.getElementById('btnKw'); btn.innerHTML = '<span class="spinner"></span> Working...'; btn.disabled = true;
+                document.getElementById('kwWrap').style.display = 'none';
+
+                try {
+                    const pri = await engine.fetchJSONP(seed);
+                    const sufs = [' a',' b',' c',' d',' e',' f',' g',' in hindi',' 2024',' vs',' review'];
+                    const lTails = new Set();
+                    const arrs = await Promise.all(sufs.map(s => engine.fetchJSONP(seed + s)));
+                    
+                    arrs.forEach(a => a.forEach(k => {
+                        let w = typeof k === 'string' ? k : k[0];
+                        if(w && !pri.includes(w) && w.length > seed.length) lTails.add(w);
+                    }));
+
+                    if(!pri.length && !lTails.size) { Toast.show('No keywords found.', 'info'); return; }
+
+                    document.getElementById('kwPrimary').innerHTML = pri.map(k => `<div class="kw-pill" onclick="core.autoHunt('${utils.escape(k)}')">🔍 ${utils.escape(k)}</div>`).join('');
+                    document.getElementById('kwLongTail').innerHTML = Array.from(lTails).slice(0,35).map(k => `<div class="kw-pill secondary" onclick="core.autoHunt('${utils.escape(k)}')">✨ ${utils.escape(k)}</div>`).join('');
+                    
+                    document.getElementById('kwWrap').style.display = 'block';
+                    Toast.show('Alphabet Soup Extraction Complete!', 'success');
+                } catch(e) { Toast.show('Failed to fetch keywords.', 'error'); }
+                finally { btn.innerHTML = 'Generate Alphabet Soup 🧠'; btn.disabled = false; }
+            },
+
+            // TAB 6: Competitors
+            addComp: () => {
+                let id = document.getElementById('inpComp').value.trim();
+                if(!id || !id.startsWith('UC')) { Toast.show('Invalid Channel ID (Must start with UC)', 'error'); return; }
+                let c = core.getComps(); if(!c.includes(id)) { c.push(id); localStorage.setItem(CONFIG.KEY_COMP, JSON.stringify(c)); document.getElementById('inpComp').value=''; core.renderComps(); Toast.show('Target Added!', 'success'); }
+            },
+            scanComps: async () => {
+                const k = api.getKey(); if(!k) return;
+                const c = core.getComps(); if(!c.length) { Toast.show('Add a target channel first.', 'error'); return; }
+
+                ui.setLoading('btnComp', true, 'Initiate Deep Scan 👁️', 'skelComp');
+                ui.toggleActions(false);
+
+                try {
+                    let items = [];
+                    const pros = c.map(id => api.get(`${CONFIG.API_URL}/search?part=snippet&type=video&order=date&maxResults=3&channelId=${id}&key=${k}`).catch(()=>({items:[]})));
+                    const res = await Promise.all(pros);
+                    res.forEach(r => { if(r.items) items.push(...r.items); });
+
+                    if(!items.length) { document.getElementById('tableComp').innerHTML = ui.emptyHTML('No recent videos from targets.'); document.getElementById('tableComp').classList.add('active'); return; }
+                    await engine.processAndRender(items, k, 999999, false, 'comp', 'Comp');
+                } catch(e) { Toast.show(e.message, 'error'); }
+                finally { ui.setLoading('btnComp', false, 'Initiate Deep Scan 👁️', 'skelComp'); }
             }
         };
 
         /**
-         * View Renderers (Table & Grid & Modals)
-         */
-        const renderer = {
-            buildActiveView: (tableId, gridId) => {
-                const data = state.currentDataset;
-                const tblWrap = document.getElementById(tableId);
-                const grdWrap = document.getElementById(gridId);
-                
-                if(state.activeViewMode === 'table') {
-                    tblWrap.style.display = 'block'; grdWrap.style.display = 'none';
-                    tblWrap.innerHTML = renderer.generateTableHTML(data);
-                } else {
-                    tblWrap.style.display = 'none'; grdWrap.style.display = 'grid';
-                    grdWrap.innerHTML = renderer.generateGridHTML(data);
-                }
-            },
-
-            generateTableHTML: (arr) => {
-                const rows = arr.map(r => {
-                    const isSaved = core.checkSavedStatus(r.id);
-                    return `
-                    <tr>
-                        <td>
-                            <div class="td-video-info">
-                                <div class="video-thumbnail-wrapper">
-                                    <img src="${utils.escapeHTML(r.thumb)}" loading="lazy">
-                                    <div class="vph-tag">🔥 ${utils.formatNum(r.vph)} VPH</div>
-                                </div>
-                                <div class="video-text-content">
-                                    <a class="video-title-link" href="https://youtube.com/watch?v=${r.id}" target="_blank">${utils.escapeHTML(r.title)}</a>
-                                    <div class="video-channel-name">📺 ${utils.escapeHTML(r.channel)}</div>
-                                    <div class="video-publish-date">Published: ${new Date(r.pubAt).toLocaleDateString()}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="stat-block" style="margin-bottom:8px;">
-                                <div class="stat-value">${utils.formatNum(r.views)}</div>
-                                <div class="stat-label">Total Views</div>
-                            </div>
-                            <div class="stat-block">
-                                <div class="stat-value stat-highlight">${utils.formatNum(r.subs)}</div>
-                                <div class="stat-label">Subscribers</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="ratio-pill ${utils.getRatioTier(r.ratio)}">${utils.formatRatio(r.ratio)}</div>
-                        </td>
-                        <td>
-                            <div class="td-actions">
-                                <button class="action-btn-sm spy" onclick="core.openSpyModal('${r.id}')">🕵️ Metadata Spy</button>
-                                <button class="action-btn-sm save ${isSaved ? 'saved' : ''}" onclick="core.toggleSave('${r.id}')">
-                                    ${isSaved ? '📌 Saved' : '❤️ Save Idea'}
-                                </button>
-                            </div>
-                        </td>
-                    </tr>`;
-                }).join('');
-                return `<table class="data-table"><thead><tr><th>Video Analysis</th><th>Core Metrics</th><th>Outlier Score</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
-            },
-
-            generateGridHTML: (arr) => {
-                return arr.map(r => {
-                    const isSaved = core.checkSavedStatus(r.id);
-                    return `
-                    <div class="grid-card">
-                        <div class="grid-thumb-box">
-                            <img src="${utils.escapeHTML(r.thumb)}" loading="lazy">
-                            <div class="vph-tag" style="font-size:12px; padding:4px 8px;">🔥 ${utils.formatNum(r.vph)} VPH</div>
-                        </div>
-                        <div class="grid-content">
-                            <a class="video-title-link" style="font-size:14px;" href="https://youtube.com/watch?v=${r.id}" target="_blank">${utils.escapeHTML(r.title)}</a>
-                            <div class="video-channel-name" style="margin-top:6px;">📺 ${utils.escapeHTML(r.channel)}</div>
-                            
-                            <div class="grid-stats-row">
-                                <div class="grid-stat-col">
-                                    <div class="grid-stat-val">${utils.formatNum(r.views)}</div>
-                                    <div class="grid-stat-lbl">Views</div>
-                                </div>
-                                <div class="grid-stat-col">
-                                    <div class="grid-stat-val stat-highlight">${utils.formatNum(r.subs)}</div>
-                                    <div class="grid-stat-lbl">Subs</div>
-                                </div>
-                                <div class="grid-stat-col">
-                                    <div class="ratio-pill ${utils.getRatioTier(r.ratio)}" style="font-size:12px; padding:2px 8px;">${utils.formatRatio(r.ratio)}</div>
-                                </div>
-                            </div>
-
-                            <div class="grid-actions-row">
-                                <button class="action-btn-sm spy" style="flex:1;" onclick="core.openSpyModal('${r.id}')">🕵️ Spy</button>
-                                <button class="action-btn-sm save ${isSaved ? 'saved' : ''}" style="flex:1;" onclick="core.toggleSave('${r.id}')">
-                                    ${isSaved ? '📌 Saved' : '❤️ Save'}
-                                </button>
-                            </div>
-                        </div>
-                    </div>`;
-                }).join('');
-            }
-        };
-
-        /**
-         * Application Core Controllers (Global accessible functions)
+         * HTML Builders & Core Controllers
          */
         const core = {
-            
-            // Initialization script
             boot: () => {
-                // Attach API Key Logic
-                const savedKey = localStorage.getItem(CONFIG.STORE_KEY_API);
-                if (savedKey) { document.getElementById('sysApiKey').value = savedKey; setKeyStatus(true); }
-                document.getElementById('sysApiKey').addEventListener('input', (e) => {
-                    const val = e.target.value.trim();
-                    if (val) { localStorage.setItem(CONFIG.STORE_KEY_API, val); setKeyStatus(true); } 
-                    else { localStorage.removeItem(CONFIG.STORE_KEY_API); setKeyStatus(false); }
-                });
+                const k = localStorage.getItem(CONFIG.KEY_API);
+                if(k) { document.getElementById('apiInput').value = k; ui.updateApiStatus(true); }
 
-                // Attach UI logic
-                features.renderHiddenNiches();
-                features.renderCompList();
+                // Build Niches
+                document.getElementById('nicheWrap').innerHTML = NICHE_DB.map(n => `
+                    <div class="glass-panel niche-card">
+                        <div class="niche-header"><span>${n.icon}</span> ${utils.escape(n.title)}</div>
+                        <ul class="niche-list">
+                            ${n.items.map(i => `
+                                <li class="niche-item">
+                                    <span class="niche-text">${utils.escape(i)}</span>
+                                    <button class="btn-hunt" onclick="core.autoHunt('${utils.escape(i)}', '${n.cat}')">Auto-Hunt</button>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `).join('');
 
-                // Tab Switcher internal mechanics
-                document.querySelectorAll('.tab-button').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
-                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                        btn.classList.add('active');
-                        const target = btn.getAttribute('data-target');
-                        document.getElementById(target).classList.add('active');
-                        state.activeTab = target;
+                core.renderComps();
 
-                        // Conditional Global Action Bar
-                        if(target === 'tab-search' && state.currentDatasetType === 'search' && state.currentDataset.length) ui.toggleGlobalActions(true);
-                        else if(target === 'tab-trending' && state.currentDatasetType === 'trend' && state.currentDataset.length) ui.toggleGlobalActions(true);
-                        else if(target === 'tab-smalltrends' && state.currentDatasetType === 'smalltrend' && state.currentDataset.length) ui.toggleGlobalActions(true);
-                        else if(target === 'tab-competitors' && state.currentDatasetType === 'comp' && state.currentDataset.length) ui.toggleGlobalActions(true);
-                        else if(target === 'tab-saved') { core.renderSavedVideos(); ui.toggleGlobalActions(true); }
-                        else ui.toggleGlobalActions(false);
+                // Tab Logic
+                document.querySelectorAll('.nav-btn').forEach(b => {
+                    b.addEventListener('click', () => {
+                        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+                        document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+                        b.classList.add('active');
+                        
+                        const tId = b.getAttribute('data-tab');
+                        document.getElementById(tId).classList.add('active');
+                        state.activeTab = tId;
+
+                        // Manage Action Bar
+                        if(['tabSearch', 'tabTrend', 'tabSmallTrend', 'tabComp'].includes(tId)) {
+                            let typeMap = { 'tabSearch':'search', 'tabTrend':'trend', 'tabSmallTrend':'smalltrend', 'tabComp':'comp' };
+                            ui.toggleActions(state.datasetType === typeMap[tId] && state.dataset.length > 0);
+                        } else if (tId === 'tabSaved') {
+                            core.renderSaved(); ui.toggleActions(true);
+                        } else {
+                            ui.toggleActions(false);
+                        }
                     });
                 });
             },
 
-            // View Toggle Switcher
-            switchLayout: (type) => {
-                state.activeViewMode = type;
-                document.getElementById('toggleViewTable').className = type === 'table' ? 'view-btn active' : 'view-btn';
-                document.getElementById('toggleViewGrid').className = type === 'grid' ? 'view-btn active' : 'view-btn';
+            renderView: (gId, tId, data) => {
+                const gWrap = document.getElementById(gId);
+                const tWrap = document.getElementById(tId);
                 
-                // Re-render active tab
-                let tId = '', gId = '';
-                if(state.activeTab === 'tab-search') { tId = 'wrapTableSearch'; gId = 'wrapGridSearch'; }
-                if(state.activeTab === 'tab-trending') { tId = 'wrapTableTrend'; gId = 'wrapGridTrend'; }
-                if(state.activeTab === 'tab-smalltrends') { tId = 'wrapTableSmallTrend'; gId = 'wrapGridSmallTrend'; }
-                if(state.activeTab === 'tab-competitors') { tId = 'wrapTableComp'; gId = 'wrapGridComp'; }
-                if(state.activeTab === 'tab-saved') { tId = 'wrapTableSaved'; gId = 'wrapGridSaved'; }
-                
-                if(tId && gId) renderer.buildActiveView(tId, gId);
-            },
-
-            // Auto-Hunt (From Keywords & Niches)
-            autoHuntKeyword: (kw, catId = "") => {
-                document.querySelector('[data-target="tab-search"]').click();
-                document.getElementById('inpSearchQuery').value = kw;
-                document.getElementById('inpSearchCat').value = catId;
-                window.scrollTo({top: 0, behavior: 'smooth'});
-                features.runOutlierSearch();
-            },
-
-            // Content Calendar (Saved Logic)
-            getSavedDB: () => JSON.parse(localStorage.getItem(CONFIG.STORE_KEY_SAVED) || '[]'),
-            checkSavedStatus: (id) => core.getSavedDB().some(v => v.id === id),
-            toggleSave: (id) => {
-                let saved = core.getSavedDB();
-                if(core.checkSavedStatus(id)) {
-                    saved = saved.filter(v => v.id !== id);
+                if(state.viewMode === 'grid') {
+                    tWrap.classList.remove('active'); gWrap.classList.add('active');
+                    gWrap.innerHTML = core.buildGrid(data);
                 } else {
-                    const vidObj = state.currentDataset.find(v => v.id === id);
-                    if(vidObj) saved.push(vidObj);
+                    gWrap.classList.remove('active'); tWrap.classList.add('active');
+                    tWrap.innerHTML = core.buildTable(data);
                 }
-                localStorage.setItem(CONFIG.STORE_KEY_SAVED, JSON.stringify(saved));
-                
-                // Trigger re-render to update buttons
-                let tId = '', gId = '';
-                if(state.activeTab === 'tab-search') { tId = 'wrapTableSearch'; gId = 'wrapGridSearch'; }
-                if(state.activeTab === 'tab-trending') { tId = 'wrapTableTrend'; gId = 'wrapGridTrend'; }
-                if(state.activeTab === 'tab-smalltrends') { tId = 'wrapTableSmallTrend'; gId = 'wrapGridSmallTrend'; }
-                if(state.activeTab === 'tab-competitors') { tId = 'wrapTableComp'; gId = 'wrapGridComp'; }
-                
-                if(tId && gId) renderer.buildActiveView(tId, gId);
-
-                // If currently on saved tab, full refresh
-                if(state.activeTab === 'tab-saved') core.renderSavedVideos();
             },
-            renderSavedVideos: () => {
-                const saved = core.getSavedDB();
-                const tableId = 'wrapTableSaved'; const gridId = 'wrapGridSaved';
+
+            renderActiveTab: () => {
+                let suf = '';
+                if(state.activeTab === 'tabSearch') suf = 'Search';
+                if(state.activeTab === 'tabTrend') suf = 'Trend';
+                if(state.activeTab === 'tabSmallTrend') suf = 'SmTrend';
+                if(state.activeTab === 'tabComp') suf = 'Comp';
+                if(state.activeTab === 'tabSaved') { core.renderSaved(); return; }
                 
-                if(!saved.length) {
-                    ui.clearWrap(tableId, gridId);
-                    document.getElementById(tableId).style.display = 'block';
-                    document.getElementById(tableId).innerHTML = ui.emptyHTML('Your calendar is empty. Click the Save button on any video during research.');
-                    ui.toggleGlobalActions(false);
+                if(suf && state.dataset.length) core.renderView('grid'+suf, 'table'+suf, state.dataset);
+            },
+
+            buildGrid: (arr) => arr.map(r => `
+                <div class="video-card">
+                    <div class="thumb-wrapper">
+                        <img src="${utils.escape(r.thumb)}" loading="lazy">
+                        <div class="vph-badge">🔥 ${utils.formatNum(r.vph)} VPH</div>
+                    </div>
+                    <div class="card-content">
+                        <a href="https://youtube.com/watch?v=${r.id}" target="_blank" class="card-title">${utils.escape(r.title)}</a>
+                        <div class="card-channel">📺 ${utils.escape(r.channel)}</div>
+                        <div class="card-stats">
+                            <div class="stat-item">
+                                <div class="stat-val">${utils.formatNum(r.views)}</div>
+                                <div class="stat-lbl">Views</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-val highlight">${utils.formatNum(r.subs)}</div>
+                                <div class="stat-lbl">Subs</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="ratio-pill ${utils.getTier(r.ratio)}">${utils.formatRatio(r.ratio)}</div>
+                                <div class="stat-lbl">Outlier</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="card-btn btn-spy" onclick="core.openSpy('${r.id}')">🕵️ Spy Data</button>
+                            <button class="card-btn btn-save ${core.isSaved(r.id)?'saved':''}" onclick="core.toggleSave('${r.id}')">${core.isSaved(r.id)?'📌 Saved':'❤️ Save'}</button>
+                        </div>
+                    </div>
+                </div>
+            `).join(''),
+
+            buildTable: (arr) => {
+                let rows = arr.map(r => `
+                <tr>
+                    <td><img src="${utils.escape(r.thumb)}" class="tbl-thumb" loading="lazy"></td>
+                    <td>
+                        <a href="https://youtube.com/watch?v=${r.id}" target="_blank" class="card-title" style="font-size:14px; margin-bottom:4px;">${utils.escape(r.title)}</a>
+                        <div class="card-channel" style="margin:0;">📺 ${utils.escape(r.channel)}</div>
+                        <div style="color:var(--accent-cyan); font-size:11px; font-weight:700; margin-top:4px;">🔥 ${utils.formatNum(r.vph)} VPH (Velocity)</div>
+                    </td>
+                    <td>
+                        <div style="font-size:14px; font-weight:700;">${utils.formatNum(r.views)}</div>
+                        <div style="font-size:11px; color:var(--text-tertiary);">Views</div>
+                    </td>
+                    <td>
+                        <div style="font-size:14px; font-weight:700; color:var(--accent-green);">${utils.formatNum(r.subs)}</div>
+                        <div style="font-size:11px; color:var(--text-tertiary);">Subs</div>
+                    </td>
+                    <td><div class="ratio-pill ${utils.getTier(r.ratio)}">${utils.formatRatio(r.ratio)}</div></td>
+                    <td>
+                        <div style="display:flex; flex-direction:column; gap:6px;">
+                            <button class="card-btn btn-spy" style="padding:6px; font-size:11px;" onclick="core.openSpy('${r.id}')">🕵️ Spy</button>
+                            <button class="card-btn btn-save ${core.isSaved(r.id)?'saved':''}" style="padding:6px; font-size:11px;" onclick="core.toggleSave('${r.id}')">${core.isSaved(r.id)?'Saved':'Save'}</button>
+                        </div>
+                    </td>
+                </tr>`).join('');
+                return `<div style="overflow-x:auto;"><table class="glass-table"><thead><tr><th>Thumb</th><th>Video Details</th><th>Views</th><th>Subs</th><th>Outlier</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+            },
+
+            autoHunt: (kw, cat = "") => {
+                document.querySelector('[data-tab="tabSearch"]').click();
+                document.getElementById('inpQuery').value = kw;
+                document.getElementById('inpCat').value = cat;
+                window.scrollTo({top:0, behavior:'smooth'});
+                engine.runSearch();
+            },
+
+            getComps: () => JSON.parse(localStorage.getItem(CONFIG.KEY_COMP)||'[]'),
+            renderComps: () => {
+                const c = core.getComps();
+                document.getElementById('compListWrap').innerHTML = c.length ? c.map(id => `
+                    <div class="glass-panel comp-card">
+                        <span class="comp-id">📺 ${utils.escape(id)}</span>
+                        <button class="btn-del" onclick="engine.removeCompetitor('${utils.escape(id)}')">Remove</button>
+                    </div>
+                `).join('') : `<div style="color:var(--text-tertiary); font-size:13px;">No competitors tracked. Add Channel ID above.</div>`;
+            },
+
+            getSaved: () => JSON.parse(localStorage.getItem(CONFIG.KEY_SAVED)||'[]'),
+            isSaved: (id) => core.getSaved().some(v => v.id === id),
+            toggleSave: (id) => {
+                let saved = core.getSaved();
+                if(core.isSaved(id)) saved = saved.filter(v => v.id !== id);
+                else {
+                    let v = state.dataset.find(x => x.id === id) || saved.find(x => x.id === id);
+                    if(v) saved.push(v);
+                }
+                localStorage.setItem(CONFIG.KEY_SAVED, JSON.stringify(saved));
+                
+                if(state.activeTab === 'tabSaved') core.renderSaved();
+                else core.renderActiveTab();
+                Toast.show('Calendar updated.', 'success');
+            },
+            renderSaved: () => {
+                const s = core.getSaved();
+                const g = 'gridSaved', t = 'tableSaved';
+                if(!s.length) {
+                    ui.clearWrap(t, g);
+                    document.getElementById(t).innerHTML = ui.emptyHTML('No saved ideas yet. Click the ❤️ Save button on videos to bookmark them here.');
+                    document.getElementById(t).classList.add('active');
                     return;
                 }
-                
-                saved.sort((a, b) => b.vph - a.vph); // Sort saved by VPH naturally
-                
-                // Hack: Temporarily set currentDataset to saved array so renderer uses it
-                const backupData = state.currentDataset;
-                state.currentDataset = saved;
-                renderer.buildActiveView(tableId, gridId);
-                state.currentDataset = backupData; // Restore original data
-                ui.toggleGlobalActions(true);
+                s.sort((a,b) => b.vph - a.vph);
+                core.renderView(g, t, s);
             },
 
-            // Metadata Spy System
-            openSpyModal: (id) => {
-                // Find video in active dataset or saved dataset
-                let vid = state.currentDataset.find(v => v.id === id) || core.getSavedDB().find(v => v.id === id);
-                if(!vid) return;
-
-                document.getElementById('spyVidTitle').innerText = vid.title;
-                document.getElementById('spyVidChannel').innerText = '👤 ' + vid.channel;
-                document.getElementById('spyPubDate').innerText = new Date(vid.pubAt).toLocaleString();
-                document.getElementById('spyVPH').innerText = `${utils.formatNum(vid.vph)}`;
-                document.getElementById('spyDuration').innerText = utils.formatDuration(vid.duration);
-
-                // Tags injection
-                const tagsBox = document.getElementById('spyTagsContainer');
-                document.getElementById('spyTagCount').innerText = vid.tags.length;
-                if(vid.tags.length) {
-                    tagsBox.innerHTML = vid.tags.map(t => `<span class="kw-tag">${utils.escapeHTML(t)}</span>`).join('');
-                } else {
-                    tagsBox.innerHTML = `<span style="color:var(--text-faint)">No tags used by creator.</span>`;
-                }
-
-                // Description injection
-                document.getElementById('spyDescContainer').innerText = vid.desc || 'No description provided.';
+            openSpy: (id) => {
+                let v = state.dataset.find(x => x.id === id) || core.getSaved().find(x => x.id === id);
+                if(!v) return;
                 
-                document.getElementById('modalSpy').classList.add('active');
+                document.getElementById('spyTitle').innerText = v.title;
+                document.getElementById('spyChannel').innerText = '📺 ' + v.channel;
+                document.getElementById('spyVPH').innerText = utils.formatNum(v.vph);
+                document.getElementById('spyDate').innerText = new Date(v.pubAt).toLocaleString();
+                document.getElementById('spyDuration').innerText = utils.formatDur(v.dur);
+                
+                document.getElementById('spyTagCount').innerText = v.tags?.length||0;
+                document.getElementById('spyTags').innerHTML = v.tags?.length ? v.tags.map(t => `<span class="kw-pill secondary" style="padding:6px 12px; font-size:12px;">${utils.escape(t)}</span>`).join('') : '<span style="color:var(--text-tertiary)">No tags found.</span>';
+                document.getElementById('spyDesc').innerText = v.desc || 'No description provided.';
+                
+                document.getElementById('spyModal').classList.add('active');
             },
 
-            // Export to CSV
-            exportToCSV: () => {
-                let targetData = state.currentDataset;
-                if(state.activeTab === 'tab-saved') targetData = core.getSavedDB();
-                if(!targetData.length) { alert("Data error: Nothing to export."); return; }
+            exportCSV: () => {
+                let data = state.activeTab === 'tabSaved' ? core.getSaved() : state.dataset;
+                if(!data.length) { Toast.show('No data to export.', 'error'); return; }
 
-                let csvString = "Title,Channel,Total_Views,Subscribers,Outlier_Ratio,VPH_Velocity,Publish_Date,Video_Link\n";
-                targetData.forEach(r => {
-                    let safeTitle = r.title.replace(/"/g, '""'); 
-                    let row = `"${safeTitle}","${r.channel}",${r.views},${r.subs},${r.ratio},${r.vph},"${r.pubAt}","https://youtube.com/watch?v=${r.id}"`;
-                    csvString += row + "\n";
+                let csv = "Title,Channel,Views,Subscribers,Outlier_Ratio,VPH,Published,Link\n";
+                data.forEach(r => {
+                    let title = r.title.replace(/"/g, '""');
+                    csv += `"${title}","${r.channel}",${r.views},${r.subs},${r.ratio},${r.vph},"${r.pubAt}","https://youtube.com/watch?v=${r.id}"\n`;
                 });
 
-                const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement("a");
-                const url = URL.createObjectURL(blob);
-                link.setAttribute("href", url);
-                link.setAttribute("download", `ViralHuntPro_Export_${new Date().getTime()}.csv`);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
+                link.href = URL.createObjectURL(blob);
+                link.download = `VHP_Export_${Date.now()}.csv`;
                 link.click();
-                document.body.removeChild(link);
+                Toast.show('CSV Downloaded!', 'success');
             }
         };
 
-        // Utility: Close Modal
-        window.closeModal = (id) => {
-            document.getElementById(id).classList.remove('active');
-        };
-        // Close modal on click outside
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal-backdrop')) {
-                event.target.classList.remove('active');
-            }
-        }
-        
-        // Enter key bindings
-        document.getElementById('inpSearchQuery').addEventListener('keydown', e => { if (e.key === 'Enter') features.runOutlierSearch(); });
-        document.getElementById('inpKwSeed').addEventListener('keydown', e => { if (e.key === 'Enter') features.runKeywordSoup(); });
+        // Keybindings
+        document.getElementById('inpQuery').addEventListener('keydown', e => { if(e.key==='Enter') engine.runSearch(); });
+        document.getElementById('inpKw').addEventListener('keydown', e => { if(e.key==='Enter') engine.runKeywords(); });
+        document.getElementById('spyModal').addEventListener('click', e => { if(e.target.id === 'spyModal') ui.closeModal(); });
+        engine.removeCompetitor = core.removeCompetitor;
 
-        // Execute Boot Sequence
+        // Boot
         core.boot();
     </script>
 </body>
