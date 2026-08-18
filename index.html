@@ -511,11 +511,92 @@ input, select, textarea{ font-family:inherit; }
 .watch-item .info .n{ font-size:13px; font-weight:600; }
 .watch-item .info .s{ font-size:11px; color:var(--text-tertiary); font-family:var(--font-mono); }
 
+/* ---------- My Channel Performance ---------- */
+.mychannel-header{
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  background: var(--panel); border:1px solid var(--panel-border); border-radius: var(--radius-lg);
+  padding:18px 20px; margin-bottom:16px;
+}
+.mychannel-avatar{ width:56px; height:56px; border-radius:50%; object-fit:cover; background:#222; flex-shrink:0; }
+.mychannel-info{ flex:1; min-width:180px; }
+.mychannel-name{ font-family:var(--font-display); font-weight:700; font-size:16px; }
+.mychannel-sub{ font-size:12px; color:var(--text-tertiary); margin-top:3px; }
+.sparkline-wrap{ min-width:150px; }
+.sparkline-label{ font-size:10.5px; color:var(--text-tertiary); font-family:var(--font-mono); margin-top:4px; text-align:right; white-space:nowrap; }
+.sparkline-note{ font-size:11.5px; color:var(--text-tertiary); max-width:220px; line-height:1.5; }
+
+.mychannel-stats-grid{ display:grid; grid-template-columns: repeat(4,1fr); gap:12px; margin-bottom:20px; }
+.stat-tile{ background: var(--panel); border:1px solid var(--panel-border); border-radius: var(--radius-md); padding:14px 16px; }
+.stat-tile .k{ font-size:10.5px; text-transform:uppercase; color:var(--text-tertiary); font-family:var(--font-mono); letter-spacing:0.5px; margin-bottom:6px; }
+.stat-tile .v{ font-family:var(--font-display); font-weight:700; font-size:19px; }
+
+.perf-badge.perf-high .ring{ background: conic-gradient(from 0deg, var(--success), #6EE7B7, var(--success)); }
+.perf-badge.perf-mid .ring{ background: conic-gradient(from 0deg, var(--signal), var(--signal-bright), var(--signal)); }
+.perf-badge.perf-low .ring{ background: conic-gradient(from 0deg, var(--danger), #FCA5A5, var(--danger)); }
+.perf-tag{ display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-family:var(--font-mono); padding:2px 8px; border-radius:20px; }
+.perf-tag.top{ background: var(--success-soft); color:#8ff0c8; }
+.perf-tag.low{ background: var(--danger-soft); color:#ffb3b3; }
+
+.connect-card{
+  max-width:440px; background: var(--panel); border:1px solid var(--panel-border);
+  border-radius: var(--radius-lg); padding:22px; margin-bottom:18px;
+}
+.connect-card p{ font-size:12.5px; color:var(--text-tertiary); margin:-4px 0 16px; line-height:1.5; }
+
+/* ---------- Mobile drawer nav ---------- */
+.topbar-left{ display:flex; align-items:center; gap:10px; min-width:0; }
+.menu-toggle{ display:none; flex-shrink:0; }
+.sidebar-backdrop{
+  position:fixed; inset:0; background:rgba(4,4,9,0.6); backdrop-filter:blur(2px);
+  z-index:110; display:none;
+}
+.sidebar-backdrop.open{ display:block; }
+
 @media (max-width: 880px){
-  .sidebar{ display:none; }
-  .content{ padding:20px 16px; }
-  .topbar{ padding:16px; }
+  .menu-toggle{ display:inline-flex; }
+  .sidebar{
+    position: fixed; top:0; left:0; height:100vh; z-index:120;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 20px 0 60px -20px rgba(0,0,0,0.6);
+  }
+  .sidebar.open{ transform: translateX(0); }
+
+  .content{ padding:16px 14px 48px; }
+  .topbar{ padding:14px 16px; }
+  .topbar-title h1{ font-size:17px; }
+  .topbar-title p{ display:none; }
+
+  .filter-bar{ flex-direction:column; align-items:stretch; padding:14px; gap:12px; }
+  .filter-bar .field, .filter-bar .field.grow{ min-width:0; width:100%; }
+  .filter-bar > .btn{ width:100%; }
+
+  .results-header{ flex-direction:column; align-items:stretch; }
+  .results-controls{ flex-wrap:wrap; }
+  .results-controls select{ flex:1; min-width:140px; }
+  .segmented{ flex:1; }
+  .segmented button{ flex:1; text-align:center; }
+
+  .card-grid{ grid-template-columns: 1fr; gap:12px; }
+  .niche-grid{ grid-template-columns: 1fr; }
   .spy-grid{ grid-template-columns:1fr; }
+
+  .table-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; margin:0 -2px; }
+  .data-table{ min-width:660px; }
+
+  .mychannel-header{ padding:16px; }
+  .mychannel-stats-grid{ grid-template-columns: repeat(2,1fr); }
+  .connect-card{ max-width:none; padding:18px; }
+
+  .modal{ max-width:100%; margin:0 6px; }
+
+  .btn{ min-height:40px; }
+  .nav-btn{ padding:12px; font-size:14px; }
+}
+
+@media (max-width: 420px){
+  .vcard-stats{ gap:10px; }
+  .mychannel-stats-grid{ gap:10px; }
 }
 </style>
 </head>
@@ -523,7 +604,7 @@ input, select, textarea{ font-family:inherit; }
 <div id="app">
 
   <!-- ============================== SIDEBAR ============================== -->
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="brand">
       <div class="brand-mark">VH</div>
       <div class="brand-text">
@@ -549,6 +630,12 @@ input, select, textarea{ font-family:inherit; }
       <button class="nav-btn" data-tab="niches">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
         Hidden Niches
+      </button>
+      <span class="nav-label">Your Channel</span>
+      <button class="nav-btn" data-tab="mychannel">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="12" width="4" height="8"/><rect x="10" y="7" width="4" height="13"/><rect x="17" y="3" width="4" height="17"/></svg>
+        My Channel Performance
+        <span class="count" id="myChannelStatus" style="display:none;">●</span>
       </button>
       <span class="nav-label">Manage</span>
       <button class="nav-btn" data-tab="watchlist">
@@ -577,13 +664,19 @@ input, select, textarea{ font-family:inherit; }
       </div>
     </div>
   </aside>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
   <!-- ============================== MAIN ============================== -->
   <main class="main">
     <div class="topbar">
-      <div class="topbar-title">
-        <h1 id="topbarTitle">Outlier Search</h1>
-        <p id="topbarSubtitle">Find videos with massive views and a tiny subscriber base.</p>
+      <div class="topbar-left">
+        <button class="btn btn-icon btn-ghost menu-toggle" id="menuToggle" type="button" aria-label="Open menu">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <div class="topbar-title">
+          <h1 id="topbarTitle">Outlier Search</h1>
+          <p id="topbarSubtitle">Find videos with massive views and a tiny subscriber base.</p>
+        </div>
       </div>
       <div class="topbar-actions" id="topbarActions"></div>
     </div>
@@ -741,7 +834,48 @@ input, select, textarea{ font-family:inherit; }
         <div class="niche-grid" id="nicheGrid"></div>
       </section>
 
-      <!-- ============================== TAB 5: COMPETITOR WATCHLIST ============================== -->
+      <!-- ============================== TAB 5: MY CHANNEL PERFORMANCE ============================== -->
+      <section class="tab-panel" id="tab-mychannel">
+        <div id="myChannelConnectWrap">
+          <div class="connect-card">
+            <h3 style="font-family:var(--font-display); font-size:15px; margin-bottom:6px;">Connect your channel</h3>
+            <p>See exactly how each of your videos is performing against your own channel average — vidIQ-style, but private to you. Nothing leaves your browser.</p>
+            <form id="myChannelForm" style="display:flex; flex-direction:column; gap:12px;">
+              <div class="field">
+                <label for="myChannelInput">Your channel ID or @handle</label>
+                <input type="text" id="myChannelInput" placeholder="e.g. @yourhandle or UCxxxxxxxxxxxxxxxxxxxxxx" required>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+                Connect channel
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div id="myChannelDashboard" style="display:none;">
+          <div id="myChannelHeaderCard"></div>
+          <div class="mychannel-stats-grid" id="myChannelStatsGrid"></div>
+
+          <div class="results-header">
+            <div class="results-count" id="myChannelResultsCount"></div>
+            <div class="results-controls">
+              <select id="myChannelSortSelect" class="field" style="min-width:170px; padding:8px 10px; background:var(--bg-inset); border:1px solid var(--panel-border); color:var(--text-primary); border-radius:8px; font-size:12.5px;">
+                <option value="performance">Sort: Performance vs avg</option>
+                <option value="views">Sort: Total views</option>
+                <option value="vph">Sort: Views/hour</option>
+                <option value="engagement">Sort: Engagement rate</option>
+                <option value="newest">Sort: Newest</option>
+              </select>
+              <button class="btn btn-sm" id="refreshMyChannelBtn">Refresh</button>
+              <button class="btn btn-sm btn-danger" id="disconnectMyChannelBtn">Disconnect</button>
+            </div>
+          </div>
+          <div id="myChannelResults"></div>
+        </div>
+      </section>
+
+      <!-- ============================== TAB 6: COMPETITOR WATCHLIST ============================== -->
       <section class="tab-panel" id="tab-watchlist">
         <form class="filter-bar" id="watchlistForm">
           <div class="field grow">
@@ -766,7 +900,7 @@ input, select, textarea{ font-family:inherit; }
         <div id="watchlistResults"></div>
       </section>
 
-      <!-- ============================== TAB 6: CONTENT CALENDAR ============================== -->
+      <!-- ============================== TAB 7: CONTENT CALENDAR ============================== -->
       <section class="tab-panel" id="tab-calendar">
         <div class="results-header">
           <div class="results-count" id="calendarResultsCount"></div>
@@ -871,6 +1005,9 @@ const state = {
   trends: { results: [], view: 'grid', mode: 'general' },
   watchlist: JSON.parse(localStorage.getItem('vhp_watchlist') || '[]'),
   saved: JSON.parse(localStorage.getItem('vhp_saved_videos') || '[]'),
+  myChannel: JSON.parse(localStorage.getItem('vhp_my_channel') || 'null'),
+  myChannelVideos: [],
+  myChannelSort: 'performance',
   videoRegistry: {} // videoId -> full computed video object, populated on every render
 };
 
@@ -1282,12 +1419,14 @@ function videoTableHtml(videos, context){
   }).join('');
 
   return `
+  <div class="table-scroll">
   <table class="data-table">
     <thead><tr>
       <th>Video</th><th>Views</th><th>Subs</th><th>VPH</th><th>Outlier</th><th>Engage</th><th>Published</th><th></th>
     </tr></thead>
     <tbody>${rows}</tbody>
-  </table>`;
+  </table>
+  </div>`;
 }
 
 function renderVideoList(containerEl, videos, view, context){
@@ -1303,6 +1442,7 @@ function renderVideoList(containerEl, videos, view, context){
 function sortVideos(videos, sortKey){
   const arr = [...videos];
   if (sortKey === 'outlier') arr.sort((a,b) => (b.outlierScore ?? -1) - (a.outlierScore ?? -1));
+  else if (sortKey === 'performance') arr.sort((a,b) => (b.performanceScore ?? -1) - (a.performanceScore ?? -1));
   else if (sortKey === 'vph') arr.sort((a,b) => b.vph - a.vph);
   else if (sortKey === 'engagement') arr.sort((a,b) => b.engagementRate - a.engagementRate);
   else if (sortKey === 'views') arr.sort((a,b) => b.viewCount - a.viewCount);
@@ -1766,154 +1906,263 @@ function closeSpyModal(){
 }
 
 /* ---------------------------------------------------------------------- */
+/* MY CHANNEL PERFORMANCE — connect your own channel, see each video's     */
+/* views compared to your own recent-upload average (a vidIQ-style score), */
+/* plus a locally-logged subscriber growth trend built from repeat visits. */
+/* ---------------------------------------------------------------------- */
+
+async function connectMyChannel(rawInput){
+  const btn = document.querySelector('#myChannelForm button[type="submit"]');
+  if (btn) btn.disabled = true;
+  try {
+    const record = await ytResolveChannelInput(rawInput);
+    if (!record){ toast('No channel found for that ID or handle.', 'error'); return; }
+    state.myChannel = {
+      channelId: record.id,
+      title: record.snippet.title,
+      thumbnail: (record.snippet.thumbnails.default || {}).url || '',
+      subscriberCount: parseInt(record.statistics.subscriberCount || 0, 10),
+      hiddenSubscriberCount: !!record.statistics.hiddenSubscriberCount,
+      viewCount: parseInt(record.statistics.viewCount || 0, 10),
+      videoCount: parseInt(record.statistics.videoCount || 0, 10),
+      uploadsPlaylistId: record.contentDetails.relatedPlaylists.uploads
+    };
+    localStorage.setItem('vhp_my_channel', JSON.stringify(state.myChannel));
+    saveChannelSnapshot(state.myChannel);
+    toast(`Connected — ${record.snippet.title}.`, 'success');
+    await loadMyChannelVideos();
+    renderMyChannelDashboard();
+    updateMyChannelBadge();
+  } catch (e){
+    if (e.message !== 'missing_key') toast('Could not connect that channel. Check the ID or handle.', 'error');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+function disconnectMyChannel(){
+  state.myChannel = null;
+  state.myChannelVideos = [];
+  localStorage.removeItem('vhp_my_channel');
+  document.getElementById('myChannelConnectWrap').style.display = 'block';
+  document.getElementById('myChannelDashboard').style.display = 'none';
+  document.getElementById('myChannelInput').value = '';
+  updateMyChannelBadge();
+  toast('Channel disconnected.', 'info');
+}
+
+// Pulls the channel's most recent uploads and scores each one against the
+// average views of that same batch — the core "how is this video doing
+// relative to my own normal" comparison, done locally, no historical API needed.
+async function loadMyChannelVideos(){
+  if (!state.myChannel) return;
+  const resultsEl = document.getElementById('myChannelResults');
+  resultsEl.innerHTML = skeletonGrid(6);
+  try {
+    const items = await ytPlaylistItems(state.myChannel.uploadsPlaylistId, 15);
+    const videoIds = items.map(it => it.contentDetails.videoId);
+    if (!videoIds.length){
+      state.myChannelVideos = [];
+      resultsEl.innerHTML = emptyState('📡', 'No uploads found', "This channel doesn't have any public uploads yet.");
+      return;
+    }
+    const rawVideos = await ytVideosByIds(videoIds);
+    const channelRecord = {
+      snippet: { thumbnails: { default: { url: state.myChannel.thumbnail } } },
+      statistics: { subscriberCount: state.myChannel.subscriberCount, hiddenSubscriberCount: state.myChannel.hiddenSubscriberCount }
+    };
+    const hydrated = rawVideos.map(rv => normalizeVideo(rv, channelRecord));
+    const avgViews = computeChannelAverageViews(hydrated);
+    hydrated.forEach(v => { v.performanceScore = avgViews > 0 ? v.viewCount / avgViews : null; });
+    state.myChannelVideos = hydrated;
+  } catch (e){
+    if (e.message !== 'missing_key') resultsEl.innerHTML = emptyState('⚠️', 'Could not load your videos', 'Something broke fetching your uploads — check the toast above.');
+  }
+}
+
+async function refreshMyChannel(){
+  if (!state.myChannel) return;
+  const btn = document.getElementById('refreshMyChannelBtn');
+  if (btn) btn.disabled = true;
+  try {
+    const record = await ytResolveChannelInput(state.myChannel.channelId);
+    if (record){
+      state.myChannel.subscriberCount = parseInt(record.statistics.subscriberCount || 0, 10);
+      state.myChannel.hiddenSubscriberCount = !!record.statistics.hiddenSubscriberCount;
+      state.myChannel.viewCount = parseInt(record.statistics.viewCount || 0, 10);
+      state.myChannel.videoCount = parseInt(record.statistics.videoCount || 0, 10);
+      localStorage.setItem('vhp_my_channel', JSON.stringify(state.myChannel));
+      saveChannelSnapshot(state.myChannel);
+    }
+    await loadMyChannelVideos();
+    renderMyChannelDashboard();
+    toast('Refreshed.', 'success');
+  } catch (e){
+    if (e.message !== 'missing_key') toast('Could not refresh channel data.', 'error');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+function computeChannelAverageViews(videos){
+  if (!videos.length) return 0;
+  return videos.reduce((sum, v) => sum + v.viewCount, 0) / videos.length;
+}
+
+// Saves one growth data point per calendar day (dedupes same-day revisits)
+// so a real trend line builds up the more the user checks back.
+function saveChannelSnapshot(c){
+  const key = 'vhp_my_channel_snapshots_' + c.channelId;
+  const list = JSON.parse(localStorage.getItem(key) || '[]');
+  const today = new Date().toISOString().slice(0, 10);
+  if (list.length && list[list.length - 1].date === today){
+    list[list.length - 1] = { date: today, subscriberCount: c.subscriberCount, viewCount: c.viewCount };
+  } else {
+    list.push({ date: today, subscriberCount: c.subscriberCount, viewCount: c.viewCount });
+  }
+  localStorage.setItem(key, JSON.stringify(list.slice(-60)));
+}
+
+function sparklineHtml(channelId){
+  const key = 'vhp_my_channel_snapshots_' + channelId;
+  const list = JSON.parse(localStorage.getItem(key) || '[]');
+  if (list.length < 2){
+    return `<div class="sparkline-note">Growth trend builds up automatically each day you check back — come back tomorrow for your first data point.</div>`;
+  }
+  const w = 120, h = 36, pad = 3;
+  const vals = list.map(p => p.subscriberCount);
+  const min = Math.min(...vals), max = Math.max(...vals);
+  const range = (max - min) || 1;
+  const stepX = (w - pad * 2) / (list.length - 1);
+  const points = list.map((p, i) => {
+    const x = pad + i * stepX;
+    const y = h - pad - ((p.subscriberCount - min) / range) * (h - pad * 2);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  const delta = list[list.length - 1].subscriberCount - list[0].subscriberCount;
+  const deltaLabel = (delta === 0 ? 'No change' : (delta > 0 ? '+' : '') + formatCompactNumber(delta) + ' subs') + ` since ${list[0].date}`;
+  return `
+    <div class="sparkline-wrap">
+      <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" width="100%" height="40">
+        <polyline points="${points}" fill="none" stroke="var(--signal-bright)" stroke-width="2" vector-effect="non-scaling-stroke"/>
+      </svg>
+      <div class="sparkline-label">${escapeHtml(deltaLabel)}</div>
+    </div>`;
+}
+
+function performanceLabel(score){
+  if (score === null || score === undefined) return { text: '—', cls: '' };
+  if (score >= 1.5) return { text: formatOutlier(score), cls: 'perf-high' };
+  if (score >= 0.8) return { text: formatOutlier(score), cls: 'perf-mid' };
+  return { text: formatOutlier(score), cls: 'perf-low' };
+}
+
+function myChannelVideoCardHtml(v, isTop, isLow){
+  const perf = performanceLabel(v.performanceScore);
+  const tag = isTop ? '<span class="perf-tag top">🔥 Top performer</span>' : (isLow ? '<span class="perf-tag low">📉 Underperforming</span>' : '');
+  return `
+  <div class="vcard">
+    <div class="vcard-thumb">
+      <img src="${v.thumbnail}" loading="lazy" alt="">
+      <div class="vcard-vph">⚡ ${formatCompactNumber(Math.round(v.vph))}/hr</div>
+      <div class="vcard-duration">${formatDuration(v.durationSeconds)}</div>
+    </div>
+    <div class="vcard-body">
+      <div class="vcard-title" title="${escapeHtml(v.title)}">${escapeHtml(v.title)}</div>
+      ${tag}
+      <div class="vcard-stats">
+        <div class="outlier-badge perf-badge ${perf.cls}" title="Views compared to your recent-upload average">
+          <div class="ring"></div>
+          <div class="core"><span class="x">${perf.text}</span><span class="lbl">vs avg</span></div>
+        </div>
+        <div class="stat"><span class="k">Views</span><span class="v">${formatCompactNumber(v.viewCount)}</span></div>
+        <div class="stat"><span class="k">Likes</span><span class="v">${formatCompactNumber(v.likeCount)}</span></div>
+        <div class="stat"><span class="k">Engage</span><span class="v">${v.engagementRate.toFixed(1)}%</span></div>
+      </div>
+      <div style="font-size:11px;color:var(--text-tertiary);">${timeAgo(v.publishedAt)}</div>
+      <div class="vcard-footer">
+        <button class="btn btn-sm" data-action="spy" data-video-id="${v.videoId}">Spy 🔍</button>
+        <a class="btn btn-sm btn-primary" href="https://www.youtube.com/watch?v=${v.videoId}" target="_blank" rel="noopener" style="text-decoration:none;">Open ↗</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderMyChannelResults(){
+  const sorted = sortVideos(state.myChannelVideos, state.myChannelSort);
+  const el = document.getElementById('myChannelResults');
+  if (!sorted.length){
+    el.innerHTML = emptyState('📊', 'No videos to analyze yet', 'Connect a channel with public uploads to see a performance breakdown.');
+  } else {
+    const byPerf = [...state.myChannelVideos].filter(v => v.performanceScore !== null).sort((a,b) => b.performanceScore - a.performanceScore);
+    const topId = byPerf.length > 1 ? byPerf[0].videoId : null;
+    const lowId = byPerf.length > 1 ? byPerf[byPerf.length - 1].videoId : null;
+    el.innerHTML = `<div class="card-grid">${sorted.map(v => myChannelVideoCardHtml(v, v.videoId === topId, v.videoId === lowId)).join('')}</div>`;
+  }
+  document.getElementById('myChannelResultsCount').innerHTML = sorted.length ? `<b>${sorted.length}</b> recent videos analyzed` : '';
+}
+
+function updateMyChannelBadge(){
+  const el = document.getElementById('myChannelStatus');
+  if (!el) return;
+  el.style.display = state.myChannel ? 'inline-flex' : 'none';
+  if (state.myChannel){ el.style.color = 'var(--success)'; el.style.background = 'var(--success-soft)'; }
+}
+
+function renderMyChannelDashboard(){
+  if (!state.myChannel) return;
+  document.getElementById('myChannelConnectWrap').style.display = 'none';
+  document.getElementById('myChannelDashboard').style.display = 'block';
+
+  const c = state.myChannel;
+  const avgViews = computeChannelAverageViews(state.myChannelVideos);
+  const avgEngagement = state.myChannelVideos.length
+    ? state.myChannelVideos.reduce((s, v) => s + v.engagementRate, 0) / state.myChannelVideos.length
+    : 0;
+  const topScore = state.myChannelVideos.length
+    ? Math.max(...state.myChannelVideos.map(v => v.performanceScore || 0))
+    : null;
+
+  document.getElementById('myChannelHeaderCard').innerHTML = `
+    <div class="mychannel-header">
+      ${c.thumbnail ? `<img class="mychannel-avatar" src="${c.thumbnail}" alt="">` : '<div class="mychannel-avatar"></div>'}
+      <div class="mychannel-info">
+        <div class="mychannel-name">${escapeHtml(c.title)}</div>
+        <div class="mychannel-sub">${c.hiddenSubscriberCount ? 'Subscribers hidden' : formatCompactNumber(c.subscriberCount) + ' subscribers'} · ${formatCompactNumber(c.videoCount)} videos · ${formatCompactNumber(c.viewCount)} total views</div>
+      </div>
+      ${sparklineHtml(c.channelId)}
+      <span class="badge green"><span class="badge-dot"></span>Connected</span>
+    </div>`;
+
+  document.getElementById('myChannelStatsGrid').innerHTML = `
+    <div class="stat-tile"><div class="k">Avg views (recent)</div><div class="v">${formatCompactNumber(Math.round(avgViews))}</div></div>
+    <div class="stat-tile"><div class="k">Videos analyzed</div><div class="v">${state.myChannelVideos.length}</div></div>
+    <div class="stat-tile"><div class="k">Best performer</div><div class="v">${topScore ? formatOutlier(topScore) : '—'}</div></div>
+    <div class="stat-tile"><div class="k">Avg engagement</div><div class="v">${state.myChannelVideos.length ? avgEngagement.toFixed(1) + '%' : '—'}</div></div>
+  `;
+
+  renderMyChannelResults();
+}
+
+async function openMyChannelTab(){
+  if (!state.myChannel){
+    document.getElementById('myChannelConnectWrap').style.display = 'block';
+    document.getElementById('myChannelDashboard').style.display = 'none';
+    return;
+  }
+  document.getElementById('myChannelConnectWrap').style.display = 'none';
+  document.getElementById('myChannelDashboard').style.display = 'block';
+  if (!state.myChannelVideos.length){
+    saveChannelSnapshot(state.myChannel);
+    await loadMyChannelVideos();
+  }
+  renderMyChannelDashboard();
+}
+
+/* ---------------------------------------------------------------------- */
 /* TAB SWITCHING                                                            */
 /* ---------------------------------------------------------------------- */
 
 const TAB_META = {
   search:    ['Outlier Search', 'Find videos with massive views and a tiny subscriber base.'],
-  trends:    ['Top & Small Trends', "What's trending in India right now — and who's breaking out early."],
-  keywords:  ['Keyword Alphabet Soup', 'Turn one seed keyword into a list of long-tail search ideas.'],
-  niches:    ['Hidden Niches', 'Pre-built topic ideas across niches with room to grow.'],
-  watchlist: ['Competitor Watchlist', "Track channels and see who's accelerating."],
-  calendar:  ['Content Calendar', "Videos you've bookmarked for later."]
-};
-
-function switchTab(tabName){
-  state.currentTab = tabName;
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + tabName));
-  const [title, subtitle] = TAB_META[tabName];
-  document.getElementById('topbarTitle').textContent = title;
-  document.getElementById('topbarSubtitle').textContent = subtitle;
-
-  if (tabName === 'watchlist') renderWatchlistItems();
-  if (tabName === 'calendar') renderCalendar();
-}
-
-/* ---------------------------------------------------------------------- */
-/* INIT — EVENT WIRING                                                     */
-/* ---------------------------------------------------------------------- */
-
-document.addEventListener('DOMContentLoaded', () => {
-
-  // ---- API key box ----
-  const apiKeyInput = document.getElementById('apiKeyInput');
-  apiKeyInput.value = state.apiKey;
-  setApiKeyStatus(state.apiKey ? 'ready' : 'unset');
-  apiKeyInput.addEventListener('input', () => {
-    // API KEY UI BUG FIX: the badge updates the instant a key is typed or
-    // pasted (moves off "red" immediately). It only reaches "Verified"
-    // once a real API call actually succeeds — see ytFetch().
-    const val = apiKeyInput.value.trim();
-    state.apiKey = val;
-    localStorage.setItem('vhp_api_key', val);
-    setApiKeyStatus(val ? 'ready' : 'unset');
-  });
-  document.getElementById('apiKeyToggle').addEventListener('click', () => {
-    apiKeyInput.type = apiKeyInput.type === 'password' ? 'text' : 'password';
-  });
-
-  // ---- Sidebar nav ----
-  document.getElementById('navList').addEventListener('click', (e) => {
-    const btn = e.target.closest('.nav-btn');
-    if (btn) switchTab(btn.dataset.tab);
-  });
-
-  // ---- Tab 1: Outlier Search ----
-  document.getElementById('searchForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    runSearch({ reset: true });
-  });
-  document.getElementById('loadMoreBtn').addEventListener('click', () => runSearch({ reset: false }));
-  document.getElementById('searchSortSelect').addEventListener('change', (e) => {
-    state.search.sort = e.target.value;
-    renderSearchResults();
-  });
-  document.getElementById('searchViewToggle').addEventListener('click', (e) => {
-    const btn = e.target.closest('button'); if (!btn) return;
-    document.querySelectorAll('#searchViewToggle button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    state.search.view = btn.dataset.view;
-    renderSearchResults();
-  });
-
-  // ---- Tab 2: Top & Small Trends ----
-  document.getElementById('trendModeToggle').addEventListener('click', (e) => {
-    const btn = e.target.closest('button'); if (!btn) return;
-    document.querySelectorAll('#trendModeToggle button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    state.trends.mode = btn.dataset.mode;
-    document.getElementById('smallSubsField').style.display = state.trends.mode === 'small' ? 'flex' : 'none';
-  });
-  document.getElementById('trendCategorySelect').addEventListener('change', (e) => {
-    // If someone explicitly picks Music or Film & Animation, the "hide"
-    // checkbox would otherwise silently wipe the results — turn it off.
-    if (e.target.value === '10' || e.target.value === '1') document.getElementById('hideMusicMovies').checked = false;
-  });
-  document.getElementById('trendsViewToggle').addEventListener('click', (e) => {
-    const btn = e.target.closest('button'); if (!btn) return;
-    document.querySelectorAll('#trendsViewToggle button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    state.trends.view = btn.dataset.view;
-    renderTrendsResults();
-  });
-  document.getElementById('trendsRefreshBtn').addEventListener('click', runTrends);
-
-  // ---- Tab 3: Keyword Alphabet Soup ----
-  document.getElementById('keywordForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const seed = document.getElementById('seedKeywordInput').value.trim();
-    if (seed) generateKeywordSoup(seed);
-  });
-  document.getElementById('copyAllKeywordsBtn').addEventListener('click', () => {
-    const tags = [...document.querySelectorAll('#keywordTagCloud .keyword-tag')].map(t => t.dataset.keyword);
-    if (!tags.length) return;
-    navigator.clipboard.writeText(tags.join('\n'))
-      .then(() => toast('Copied all keywords.', 'success'))
-      .catch(() => toast('Could not copy automatically — select and copy manually.', 'error'));
-  });
-
-  // ---- Tab 5: Competitor Watchlist ----
-  document.getElementById('watchlistForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const val = document.getElementById('channelIdInput').value.trim();
-    if (val) addToWatchlist(val);
-  });
-  document.getElementById('deepScanBtn').addEventListener('click', deepScanAll);
-
-  // ---- Tab 6: Content Calendar ----
-  document.getElementById('exportCsvBtn').addEventListener('click', exportCalendarCsv);
-
-  // ---- Metadata Spy modal ----
-  document.getElementById('spyModalClose').addEventListener('click', closeSpyModal);
-  document.getElementById('spyModalOverlay').addEventListener('click', (e) => {
-    if (e.target.id === 'spyModalOverlay') closeSpyModal();
-  });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSpyModal(); });
-
-  // ---- Delegated clicks for dynamically-rendered cards/tables/tags ----
-  document.addEventListener('click', (e) => {
-    const el = e.target.closest('[data-action]');
-    if (!el) return;
-    const action = el.dataset.action;
-    if (action === 'spy') openSpyModal(el.dataset.videoId);
-    else if (action === 'save') saveVideo(el.dataset.videoId);
-    else if (action === 'unsave') unsaveVideo(el.dataset.videoId);
-    else if (action === 'autohunt') autoHuntTopic(el.dataset.topic);
-    else if (action === 'use-keyword'){
-      document.getElementById('kwInput').value = el.dataset.keyword;
-      switchTab('search');
-      toast('Sent to Outlier Search — hit "Scan for outliers" when ready.', 'info');
-    }
-    else if (action === 'remove-watch') removeFromWatchlist(el.dataset.channelId);
-  });
-
-  // ---- Initial paint ----
-  renderNiches();
-  updateSidebarCounts();
-});
-</script>
-</body>
-</html>
-
-</html>
+  trends:    
