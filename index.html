@@ -1,780 +1,1837 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Viral Hunt Pro - Ultimate Edition</title>
-<style>
-  /* 🎨 Premium Dark Theme (SaaS Level) */
-  :root {
-    --void: #0a0b0d;
-    --panel: #131519;
-    --panel-2: #0e0f13;
-    --line: rgba(255,255,255,0.08);
-    --signal: #ff4429;
-    --signal-dim: rgba(255,68,41,0.14);
-    --phosphor: #5eefa0;
-    --amber: #ffb454;
-    --blue: #3b82f6;
-    --purple: #a855f7;
-    --ink: #ecebee;
-    --ink-dim: #86838e;
-    --ink-faint: #5b5860;
-  }
-  * { box-sizing: border-box; }
-  html, body {
-    margin: 0; background: var(--void); color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-  body {
-    background-image: radial-gradient(rgba(255,255,255,0.045) 1px, transparent 1px);
-    background-size: 24px 24px;
-  }
-  .app { max-width: 1150px; margin: 0 auto; padding: 32px 20px 80px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viral Hunt Pro | Ultimate Enterprise Edition</title>
+    <!-- 
+      ========================================================================
+      VIRAL HUNT PRO - ENTERPRISE EDITION
+      ========================================================================
+      Developer: PocketLists / ViralHunt Team
+      Description: The ultimate YouTube data aggregation and analysis tool.
+      Features: 
+      - VPH (Velocity) Tracking
+      - Outlier Ratio Math
+      - Competitor Watchlist
+      - Hidden Niches Database
+      - Keyword Alphabet Soup
+      - CSV Export & Grid/Table Views
+      ========================================================================
+    -->
+    <style>
+        /* ======================================================================
+           CSS VARIABLES & DESIGN TOKENS
+           ====================================================================== */
+        :root {
+            --bg-void: #060709;
+            --bg-panel: #111318;
+            --bg-card: #181b21;
+            --border-light: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --text-faint: #6b7280;
+            
+            /* Brand Colors */
+            --brand-primary: #00e676;
+            --brand-primary-dim: rgba(0, 230, 118, 0.15);
+            --brand-primary-hover: #00c853;
+            
+            --accent-blue: #3b82f6;
+            --accent-blue-dim: rgba(59, 130, 246, 0.15);
+            
+            --accent-pink: #ec4899;
+            --accent-pink-dim: rgba(236, 72, 153, 0.15);
+            
+            --accent-amber: #f59e0b;
+            --accent-amber-dim: rgba(245, 158, 11, 0.15);
+            
+            --accent-red: #ef4444;
+            --accent-red-dim: rgba(239, 68, 68, 0.15);
 
-  /* 🏷️ Header */
-  .app-header { margin-bottom: 24px; }
-  .app-header h1 {
-    font-size: 28px; font-weight: 800; margin: 0 0 6px;
-    letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px;
-  }
-  .app-header .tagline { margin: 0; color: var(--ink-dim); font-size: 14.5px; }
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+            --shadow-glow: 0 0 15px rgba(0, 230, 118, 0.3);
+            
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
 
-  /* 🔑 API Key Section */
-  .api-key-section {
-    background: var(--panel); border: 1px solid var(--line);
-    border-radius: 14px; padding: 16px 18px; margin-bottom: 22px;
-  }
-  .api-key-section label {
-    display: block; font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.07em; color: var(--ink-faint); margin-bottom: 8px;
-  }
-  .api-key-row { display: flex; align-items: center; gap: 10px; }
-  .api-key-row input { flex: 1; }
-  .key-status { font-size: 12px; color: var(--ink-faint); white-space: nowrap; font-family: ui-monospace, monospace; }
-  .key-status.saved { color: var(--phosphor); }
+        /* ======================================================================
+           GLOBAL RESET & TYPOGRAPHY
+           ====================================================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-  /* ⌨️ Inputs & Dropdowns */
-  input[type="text"], input[type="number"], input[type="password"], select {
-    background: var(--panel-2); border: 1px solid var(--line); color: var(--ink);
-    border-radius: 10px; padding: 11px 14px; font-size: 14px; outline: none;
-    transition: border-color .15s, box-shadow .15s; width: 100%; font-family: inherit;
-  }
-  input:focus, select:focus { border-color: var(--signal); box-shadow: 0 0 0 3px var(--signal-dim); }
-  select { appearance: none; background-image: url('data:image/svg+xml;utf8,<svg fill="%2386838e" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); background-repeat: no-repeat; background-position-x: 96%; background-position-y: 50%; cursor: pointer; padding-right: 30px; }
-  select option { background: var(--panel); color: var(--ink); }
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 230, 118, 0.03), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.03), transparent 25%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
 
-  /* 📑 Tabs Navigation */
-  .tabs { display: flex; gap: 6px; margin-bottom: 22px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
-  .tabs::-webkit-scrollbar { display: none; }
-  .tab-btn {
-    background: transparent; border: none; color: var(--ink-dim); font-size: 14.5px;
-    font-weight: 700; padding: 11px 18px; cursor: pointer; border-radius: 10px 10px 0 0;
-    position: relative; top: 1px; transition: color .15s; font-family: inherit; white-space: nowrap;
-  }
-  .tab-btn:hover { color: var(--ink); }
-  .tab-btn.active { color: #fff; border-bottom: 2px solid var(--signal); }
+        /* Scrollbar Styling for Premium Feel */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-void); }
+        ::-webkit-scrollbar-thumb { background: #2d3748; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4a5568; }
 
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; animation: fadeIn .25s ease; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .app-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 40px 24px 100px;
+        }
 
-  /* 🎛️ Controls & Filters */
-  .controls { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
-  .field { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 180px; }
-  .field-small { flex: 0 0 130px; min-width: 110px; }
-  .field label {
-    font-size: 11px; font-weight: 700; color: var(--ink-faint);
-    text-transform: uppercase; letter-spacing: 0.06em;
-  }
+        /* ======================================================================
+           HEADER & API KEY SECTION
+           ====================================================================== */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
 
-  /* 🟢 Buttons */
-  .primary-btn {
-    background: var(--signal); border: none; color: #fff; font-weight: 700; font-size: 14px;
-    padding: 12px 22px; border-radius: 10px; cursor: pointer; white-space: nowrap;
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 120px;
-    transition: transform .12s, box-shadow .12s, opacity .12s, background .12s;
-    box-shadow: 0 4px 14px rgba(255,68,41,0.25); font-family: inherit;
-  }
-  .primary-btn:hover:not(:disabled) { background: #ff5b3f; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(255,68,41,0.35); }
-  .primary-btn.blue-btn { background: var(--blue); box-shadow: 0 4px 14px rgba(59,130,246,0.25); }
-  .primary-btn.blue-btn:hover:not(:disabled) { background: #2563eb; box-shadow: 0 6px 18px rgba(59,130,246,0.35); }
-  .primary-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+        .brand-area h1 {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .brand-area h1 .version-badge {
+            background: var(--brand-primary-dim);
+            color: var(--brand-primary);
+            font-size: 14px;
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            letter-spacing: normal;
+        }
 
-  /* 📢 Status Messages */
-  .status-msg { font-size: 13.5px; margin: 10px 0 14px; min-height: 18px; font-weight: 500; }
-  .status-msg.info { color: var(--ink-dim); }
-  .status-msg.success { color: var(--phosphor); }
-  .status-msg.error { color: #ff6b6b; }
+        .brand-area .tagline {
+            color: var(--text-muted);
+            font-size: 15px;
+            font-weight: 500;
+        }
 
-  /* 📊 Table Layouts */
-  .results-wrap { overflow-x: auto; border-radius: 14px; margin-bottom: 20px; }
-  .results-table {
-    width: 100%; border-collapse: collapse; background: var(--panel-2);
-    border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
-  }
-  .results-table thead th {
-    text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: .07em;
-    color: var(--ink-faint); padding: 12px 16px; border-bottom: 1px solid var(--line); font-weight: 700;
-  }
-  .results-table tbody tr { border-bottom: 1px solid rgba(255,255,255,.05); transition: background .15s; }
-  .results-table tbody tr:last-child { border-bottom: none; }
-  .results-table tbody tr:hover { background: rgba(255,255,255,.025); }
-  .results-table td { padding: 12px 16px; vertical-align: middle; }
+        .api-config-box {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 300px;
+            box-shadow: var(--shadow-md);
+        }
 
-  /* 🎬 Video Elements */
-  .video-cell { display: flex; align-items: center; gap: 12px; min-width: 260px; }
-  .thumb { width: 100px; height: 56px; object-fit: cover; border-radius: 8px; background: #1a1c21; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1); }
-  .video-meta { min-width: 0; }
-  .video-title {
-    font-size: 14px; font-weight: 600; color: var(--ink); overflow: hidden; text-overflow: ellipsis;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.35;
-  }
-  .video-channel { font-size: 12.5px; color: var(--ink-dim); margin-top: 3px; }
-  .video-views {
-    font-size: 11.5px; color: var(--ink-faint); margin-top: 2px;
-    font-family: ui-monospace, monospace;
-  }
+        .api-config-box label {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: var(--text-faint);
+        }
 
-  /* 🏆 Badges */
-  .badge {
-    display: inline-block; padding: 5px 11px; border-radius: 999px; font-size: 12px;
-    font-weight: 700; white-space: nowrap; font-family: ui-monospace, monospace;
-  }
-  .badge-phosphor { color: var(--phosphor); background: rgba(94,239,160,0.12); border: 1px solid rgba(94,239,160,0.2); }
-  .badge-amber { color: var(--amber); background: rgba(255,180,84,0.12); border: 1px solid rgba(255,180,84,0.2); }
+        .api-input-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-  .ratio-badge { font-weight: 800; font-size: 13px; }
-  .ratio-badge.ratio-hot { color: #fff; background: var(--signal); box-shadow: 0 2px 10px rgba(255,68,41,0.4); }
-  .ratio-badge.ratio-warm { color: var(--amber); background: rgba(255,180,84,0.14); }
-  .ratio-badge.ratio-mild { color: var(--ink-dim); background: rgba(255,255,255,0.06); }
+        .api-status-indicator {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent-red);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .api-status-indicator.active { color: var(--brand-primary); }
 
-  .watch-link {
-    color: #fff; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
-    padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; text-decoration: none;
-    white-space: nowrap; transition: background .15s, border-color .15s; display: inline-block;
-  }
-  .watch-link:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.3); }
+        /* ======================================================================
+           INPUTS, BUTTONS & FORMS
+           ====================================================================== */
+        input[type="text"], 
+        input[type="number"], 
+        input[type="password"], 
+        select {
+            background: var(--bg-void);
+            border: 1px solid var(--border-light);
+            color: var(--text-main);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-family: var(--font-sans);
+            outline: none;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
 
-  /* 🎲 Keyword Tags Grid (Tab 4) */
-  .keyword-grid {
-    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px;
-    padding: 20px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 14px;
-  }
-  .kw-tag {
-    background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3);
-    color: #93c5fd; padding: 8px 14px; border-radius: 8px; font-size: 13.5px;
-    cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
-  }
-  .kw-tag:hover { background: rgba(59,130,246,0.2); border-color: rgba(59,130,246,0.5); color: #fff; transform: translateY(-2px); }
+        input:focus, select:focus {
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 3px var(--brand-primary-dim);
+        }
 
-  /* 🕵️ HIDDEN NICHES GRID (Tab 5 - THE NEW BEAST) */
-  .niches-container {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 10px;
-  }
-  .niche-card {
-    background: var(--panel-2); border: 1px solid var(--line); border-radius: 14px; padding: 0;
-    overflow: hidden; transition: border-color 0.2s;
-  }
-  .niche-card:hover { border-color: rgba(255,255,255,0.2); }
-  .niche-header {
-    background: var(--panel); padding: 14px 20px; font-weight: 800; font-size: 15px;
-    color: #fff; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 8px;
-  }
-  .niche-list { list-style: none; padding: 0; margin: 0; }
-  .niche-item {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.2s;
-  }
-  .niche-item:last-child { border-bottom: none; }
-  .niche-item:hover { background: rgba(255,255,255,0.03); }
-  .niche-title { font-size: 13.5px; color: var(--ink); font-weight: 500; }
-  .niche-hunt-btn {
-    background: rgba(94,239,160,0.1); color: var(--phosphor); border: 1px solid rgba(94,239,160,0.3);
-    padding: 5px 10px; border-radius: 6px; font-size: 11.5px; font-weight: 700; cursor: pointer;
-    transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em;
-  }
-  .niche-hunt-btn:hover { background: var(--phosphor); color: #000; }
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
 
-  /* 🌀 Utilities */
-  .empty-state {
-    text-align: center; padding: 48px 20px; background: var(--panel-2);
-    border: 1px dashed var(--line); border-radius: 14px; color: var(--ink-dim);
-  }
-  .empty-icon { font-size: 32px; margin-bottom: 10px; opacity: 0.8; }
-  .spinner {
-    width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff;
-    border-radius: 50%; display: inline-block; animation: spin .7s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  
-  @media (max-width: 768px) {
-    .video-cell { min-width: 200px; flex-direction: column; align-items: flex-start; gap: 8px; }
-    .thumb { width: 120px; height: 68px; }
-    .controls { flex-direction: column; align-items: stretch; }
-  }
-</style>
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-family: var(--font-sans);
+            white-space: nowrap;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-primary {
+            background: var(--brand-primary);
+            color: #000;
+            box-shadow: 0 4px 14px rgba(0, 230, 118, 0.25);
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: var(--brand-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4);
+        }
+
+        .btn-blue {
+            background: var(--accent-blue);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.25);
+        }
+        .btn-blue:hover:not(:disabled) {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-main);
+        }
+        .btn-outline:hover:not(:disabled) {
+            background: var(--border-light);
+            border-color: var(--border-hover);
+        }
+
+        /* ======================================================================
+           NAVIGATION TABS
+           ====================================================================== */
+        .tabs-container {
+            display: flex;
+            gap: 4px;
+            border-bottom: 2px solid var(--border-light);
+            margin-bottom: 24px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tab-button {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 14px 20px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            margin-bottom: -2px; /* Overlap border */
+        }
+
+        .tab-button:hover { color: var(--text-main); }
+        
+        .tab-button.active {
+            color: var(--brand-primary);
+            border-bottom-color: var(--brand-primary);
+            background: linear-gradient(to top, var(--brand-primary-dim) 0%, transparent 100%);
+        }
+
+        .tab-content { display: none; animation: slideUp 0.3s ease; }
+        .tab-content.active { display: block; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ======================================================================
+           DASHBOARD CONTROLS & STATUS
+           ====================================================================== */
+        .dashboard-controls {
+            display: flex;
+            gap: 16px;
+            align-items: flex-end;
+            background: var(--bg-panel);
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-light);
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .input-group-small {
+            flex: 0 0 150px;
+        }
+
+        .input-group label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-faint);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-light);
+            margin-bottom: 20px;
+        }
+
+        .view-switcher {
+            display: flex;
+            background: var(--bg-void);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            padding: 4px;
+        }
+
+        .view-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .view-btn.active { background: var(--border-light); color: var(--text-main); }
+
+        .system-status {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 16px 0;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            display: none; /* Hidden by default */
+        }
+        .system-status.active { display: block; }
+        .status-info { background: rgba(59, 130, 246, 0.1); color: var(--accent-blue); border-left: 4px solid var(--accent-blue); }
+        .status-success { background: rgba(0, 230, 118, 0.1); color: var(--brand-primary); border-left: 4px solid var(--brand-primary); }
+        .status-error { background: rgba(239, 68, 68, 0.1); color: var(--accent-red); border-left: 4px solid var(--accent-red); }
+
+        /* ======================================================================
+           DATA PRESENTATION: TABLE VIEW
+           ====================================================================== */
+        .data-table-container {
+            width: 100%;
+            overflow-x: auto;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            min-width: 900px;
+        }
+
+        .data-table th {
+            padding: 16px 20px;
+            background: var(--bg-card);
+            color: var(--text-faint);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .data-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: middle;
+        }
+
+        .data-table tr:hover { background: rgba(255, 255, 255, 0.02); }
+        .data-table tr:last-child td { border-bottom: none; }
+
+        /* Complex Table Cells */
+        .td-video-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .video-thumbnail-wrapper {
+            position: relative;
+            width: 140px;
+            flex-shrink: 0;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+
+        .video-thumbnail-wrapper img {
+            width: 100%;
+            height: 78px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .vph-tag {
+            position: absolute;
+            top: 4px; left: 4px;
+            background: rgba(239, 68, 68, 0.9);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            backdrop-filter: blur(4px);
+        }
+
+        .video-text-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .video-title-link {
+            color: var(--text-main);
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .video-title-link:hover { color: var(--brand-primary); }
+
+        .video-channel-name { color: var(--text-muted); font-size: 13px; display: flex; align-items: center; gap: 4px; }
+        .video-publish-date { color: var(--text-faint); font-size: 11px; }
+
+        /* Stats Blocks */
+        .stat-block { display: flex; flex-direction: column; gap: 4px; }
+        .stat-value { font-size: 15px; font-weight: 700; font-family: var(--font-mono); }
+        .stat-label { font-size: 11px; color: var(--text-faint); text-transform: uppercase; }
+        
+        .stat-highlight { color: var(--brand-primary); }
+        .stat-warning { color: var(--accent-amber); }
+
+        /* Outlier Ratio Badges */
+        .ratio-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 14px;
+            font-family: var(--font-mono);
+        }
+        .ratio-god { background: var(--accent-red); color: #fff; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+        .ratio-high { background: var(--accent-amber); color: #000; }
+        .ratio-med { background: var(--border-light); color: var(--text-main); }
+
+        /* Action Buttons */
+        .td-actions { display: flex; flex-direction: column; gap: 8px; }
+        .action-btn-sm {
+            background: var(--bg-void);
+            border: 1px solid var(--border-light);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+        }
+        .action-btn-sm:hover { background: var(--border-hover); }
+        .action-btn-sm.spy { color: var(--accent-amber); border-color: var(--accent-amber-dim); }
+        .action-btn-sm.spy:hover { background: var(--accent-amber-dim); }
+        .action-btn-sm.save { color: var(--accent-pink); border-color: var(--accent-pink-dim); }
+        .action-btn-sm.save:hover { background: var(--accent-pink-dim); }
+        .action-btn-sm.saved { background: var(--accent-pink); color: #fff; border-color: var(--accent-pink); }
+
+        /* ======================================================================
+           DATA PRESENTATION: GRID VIEW
+           ====================================================================== */
+        .data-grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            display: none; /* Hidden by default */
+        }
+        .data-grid-container.active { display: grid; }
+        .data-table-container.hidden { display: none; }
+
+        .grid-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        .grid-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .grid-thumb-box {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background: #000;
+        }
+        .grid-thumb-box img {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
+        }
+        
+        .grid-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+        .grid-title { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .grid-stats-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px 0;
+            border-top: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .grid-stat-col { text-align: center; }
+        .grid-stat-val { font-size: 14px; font-weight: 800; font-family: var(--font-mono); }
+        .grid-stat-lbl { font-size: 10px; color: var(--text-faint); text-transform: uppercase; margin-top: 2px; }
+
+        .grid-actions-row { display: flex; gap: 8px; margin-top: auto; }
+
+        /* ======================================================================
+           SPECIFIC TAB STYLES (KEYWORDS & NICHES & COMPETITORS)
+           ====================================================================== */
+        
+        /* Keyword Tool */
+        .keyword-result-box {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-top: 20px;
+        }
+        .kw-section-title {
+            font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 16px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .kw-tag-cloud { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+        .kw-tag {
+            background: var(--accent-blue-dim); border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #93c5fd; padding: 8px 16px; border-radius: var(--radius-sm);
+            font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.2s;
+        }
+        .kw-tag:hover { background: var(--accent-blue); color: #fff; transform: translateY(-2px); }
+        .kw-tag.secondary { background: rgba(255,255,255,0.05); border-color: var(--border-light); color: var(--text-muted); }
+        .kw-tag.secondary:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+        /* Hidden Niches Grid */
+        .niche-grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+        .niche-db-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        .niche-db-header {
+            background: var(--bg-card);
+            padding: 16px 20px;
+            font-size: 16px;
+            font-weight: 800;
+            color: #fff;
+            border-bottom: 1px solid var(--border-light);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .niche-db-list { list-style: none; }
+        .niche-db-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .niche-db-item:hover { background: rgba(255,255,255,0.02); }
+        .niche-db-title { font-size: 14px; color: var(--text-main); font-weight: 500; }
+        .niche-db-btn {
+            background: var(--brand-primary-dim); color: var(--brand-primary);
+            border: 1px solid rgba(0, 230, 118, 0.3);
+            padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700;
+            cursor: pointer; transition: 0.2s; text-transform: uppercase;
+        }
+        .niche-db-btn:hover { background: var(--brand-primary); color: #000; }
+
+        /* Competitor List */
+        .comp-tracker-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .comp-tracker-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .comp-tracker-name { font-weight: 600; font-size: 14px; color: var(--text-main); font-family: var(--font-mono); }
+        .comp-tracker-del {
+            background: var(--accent-red-dim); color: var(--accent-red); border: none;
+            padding: 4px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px;
+        }
+        .comp-tracker-del:hover { background: var(--accent-red); color: #fff; }
+
+        /* ======================================================================
+           MODALS & OVERLAYS
+           ====================================================================== */
+        .modal-backdrop {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+        .modal-backdrop.active { display: flex; animation: fadeIn 0.2s ease; }
+        
+        .modal-window {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .modal-header h2 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 4px; padding-right: 40px;}
+        .modal-close-btn {
+            position: absolute; top: 24px; right: 24px; background: rgba(255,255,255,0.1);
+            border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .modal-close-btn:hover { background: var(--accent-red); transform: rotate(90deg); }
+
+        .modal-body { padding: 24px; }
+        
+        .spy-stats-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;
+        }
+        .spy-stat-card {
+            background: var(--bg-card); border: 1px solid var(--border-light);
+            padding: 16px; border-radius: var(--radius-md); text-align: center;
+        }
+        
+        .spy-section-title { font-size: 13px; font-weight: 800; text-transform: uppercase; color: var(--text-faint); margin-bottom: 12px; border-bottom: 1px solid var(--border-light); padding-bottom: 8px;}
+        
+        .spy-description-box {
+            background: #000; border: 1px solid var(--border-light); padding: 16px;
+            border-radius: var(--radius-md); font-size: 13px; color: var(--text-muted);
+            white-space: pre-wrap; max-height: 250px; overflow-y: auto; font-family: var(--font-mono);
+        }
+
+        /* Utilities */
+        .spinner {
+            width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff; border-radius: 50%; display: inline-block;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .empty-placeholder { text-align: center; padding: 60px 20px; color: var(--text-faint); }
+        .empty-placeholder svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.5; }
+        .empty-placeholder h3 { font-size: 18px; color: var(--text-muted); margin-bottom: 8px; }
+
+        @media (max-width: 768px) {
+            .dashboard-controls { flex-direction: column; align-items: stretch; }
+            .action-bar { flex-direction: column; gap: 16px; align-items: stretch; }
+            .spy-stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-  <div class="app">
-    <header class="app-header">
-      <h1>🎯 Viral Hunt Pro <span>v5</span></h1>
-      <p class="tagline">Data-driven Outlier Hunting, Keyword Discovery & Hidden Niches Engine.</p>
-    </header>
 
-    <!-- API Key Section (Hidden but always working) -->
-    <section class="api-key-section">
-      <label for="apiKeyInput">YouTube Data API v3 Key</label>
-      <div class="api-key-row">
-        <input type="password" id="apiKeyInput" placeholder="Paste your API key yahan..." autocomplete="off">
-        <span id="apiKeyStatus" class="key-status"></span>
-      </div>
-    </section>
+    <!-- ======================================================================
+         MODALS (HIDDEN BY DEFAULT)
+         ====================================================================== -->
+    <!-- X-Ray Metadata Spy Modal -->
+    <div id="modalSpy" class="modal-backdrop">
+        <div class="modal-window">
+            <button class="modal-close-btn" onclick="closeModal('modalSpy')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <div class="modal-header">
+                <div>
+                    <h2 id="spyVidTitle">Analyzing Video Data...</h2>
+                    <div style="color: var(--brand-primary); font-family: var(--font-mono); font-size: 13px;" id="spyVidChannel">Channel Name</div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="spy-stats-grid">
+                    <div class="spy-stat-card">
+                        <div class="stat-label">Published Date</div>
+                        <div class="stat-value" id="spyPubDate" style="color: #fff; margin-top: 8px; font-size: 14px;">-</div>
+                    </div>
+                    <div class="spy-stat-card" style="border-color: var(--brand-primary-dim); background: rgba(0,230,118,0.05);">
+                        <div class="stat-label">Velocity (VPH)</div>
+                        <div class="stat-value" id="spyVPH" style="color: var(--brand-primary); margin-top: 8px; font-size: 18px;">-</div>
+                    </div>
+                    <div class="spy-stat-card">
+                        <div class="stat-label">Duration</div>
+                        <div class="stat-value" id="spyDuration" style="color: #fff; margin-top: 8px; font-size: 14px;">-</div>
+                    </div>
+                </div>
 
-    <!-- Main Navigation Tabs -->
-    <nav class="tabs">
-      <button class="tab-btn active" data-tab="search" type="button">🔍 Search Outliers</button>
-      <button class="tab-btn" data-tab="trending" type="button">🔥 Top Trending</button>
-      <button class="tab-btn" data-tab="smallTrends" type="button">🌱 Small Trends</button>
-      <button class="tab-btn" data-tab="keywords" type="button">📈 Keyword Research</button>
-      <button class="tab-btn" data-tab="niches" type="button" style="color: var(--phosphor);">🕵️ Hidden Niches</button>
-    </nav>
+                <div class="spy-section-title">🏷️ Hidden SEO Tags (<span id="spyTagCount">0</span>)</div>
+                <div id="spyTagsContainer" class="kw-tag-cloud" style="margin-bottom: 24px;">
+                    <!-- Tags injected here -->
+                </div>
 
-    <main>
-      <!-- TAB 1: SEARCH TOPIC -->
-      <section id="searchTab" class="tab-panel active">
-        <div class="controls">
-          <div class="field" style="flex: 2;">
-            <label>Keyword / Topic</label>
-            <input type="text" id="queryInput" placeholder="e.g. anime recap, free fire gameplay">
-          </div>
-          <div class="field">
-            <label>Category Filter</label>
-            <select id="searchCategory">
-              <option value="">All Categories (Mixed)</option>
-              <option value="20">🎮 Gaming</option>
-              <option value="1">🎬 Film & Animation (Anime)</option>
-              <option value="24">🍿 Entertainment</option>
-              <option value="28">💻 Science & Tech</option>
-              <option value="27">📚 Education</option>
-              <option value="22">👥 People & Blogs</option>
-              <option value="23">😂 Comedy</option>
-              <option value="26">👗 Howto & Style</option>
-            </select>
-          </div>
-          <div class="field field-small">
-            <label>Max Subs</label>
-            <input type="number" id="maxSubsInput" value="5000" min="0">
-          </div>
-          <button id="searchBtn" class="primary-btn" type="button">Find Outliers</button>
+                <div class="spy-section-title">📝 Original Description</div>
+                <div id="spyDescContainer" class="spy-description-box">
+                    <!-- Description injected here -->
+                </div>
+            </div>
         </div>
-        <div id="searchStatus" class="status-msg"></div>
-        <div id="searchResultsWrap" class="results-wrap"></div>
-      </section>
+    </div>
 
-      <!-- TAB 2: GENERAL TRENDING -->
-      <section id="trendingTab" class="tab-panel">
-        <div class="controls">
-          <div class="field">
-            <label>Filter By Category (Block Movies/Songs)</label>
-            <select id="trendCategory">
-              <option value="">All (Default YouTube Trends)</option>
-              <option value="20" selected>🎮 Gaming (Recommended)</option>
-              <option value="1">🎬 Film & Animation</option>
-              <option value="24">🍿 Entertainment</option>
-              <option value="28">💻 Science & Tech</option>
-              <option value="27">📚 Education</option>
-              <option value="22">👥 People & Blogs</option>
-            </select>
-          </div>
-          <button id="trendingBtn" class="primary-btn" type="button">Fetch Trends</button>
-        </div>
-        <div id="trendingStatus" class="status-msg"></div>
-        <div id="trendingResultsWrap" class="results-wrap"></div>
-      </section>
-
-      <!-- TAB 3: SMALL TRENDS -->
-      <section id="smallTrendsTab" class="tab-panel">
-        <div class="controls">
-          <div class="field">
-            <label>Category Filter</label>
-            <select id="smallTrendCategory">
-              <option value="20" selected>🎮 Gaming</option>
-              <option value="">All Categories</option>
-              <option value="1">🎬 Film & Animation</option>
-              <option value="24">🍿 Entertainment</option>
-              <option value="28">💻 Tech</option>
-              <option value="27">📚 Education</option>
-            </select>
-          </div>
-          <div class="field field-small">
-            <label>Max Subs Limit</label>
-            <input type="number" id="smallTrendsMaxSubs" value="50000" min="0">
-          </div>
-          <button id="smallTrendsBtn" class="primary-btn" type="button">Hunt Small Channels</button>
-        </div>
-        <p style="font-size: 12.5px; color: var(--ink-dim); margin-top: 5px;">* Scans Top 50 Trending videos of the selected category and isolates small creators.</p>
-        <div id="smallTrendsStatus" class="status-msg"></div>
-        <div id="smallTrendsResultsWrap" class="results-wrap"></div>
-      </section>
-
-      <!-- TAB 4: KEYWORD RESEARCH (ALPHABET SOUP) -->
-      <section id="keywordsTab" class="tab-panel">
-        <div class="controls">
-          <div class="field" style="flex: 2;">
-            <label>Seed Keyword (Base Topic)</label>
-            <input type="text" id="kwInput" placeholder="e.g. offline games, anime recap">
-          </div>
-          <button id="kwBtn" class="primary-btn blue-btn" type="button">Generate Keywords 🚀</button>
-        </div>
-        <p style="font-size: 12.5px; color: var(--ink-dim); margin-top: 5px;">* Pulls live "Autocomplete" data directly from YouTube's search bar algorithm.</p>
+    <!-- ======================================================================
+         MAIN APPLICATION UI
+         ====================================================================== -->
+    <div class="app-container">
         
-        <div id="kwStatus" class="status-msg"></div>
-        
-        <div id="kwResultsArea" style="display: none;">
-            <h3 style="color: #93c5fd; font-size: 16px; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-top:0;">🔥 Highly Searched Terms Right Now</h3>
-            <div id="kwGridPrimary" class="keyword-grid"></div>
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="brand-area">
+                <h1>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--brand-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                    Viral Hunt Pro 
+                    <span class="version-badge">GOD MODE v7.0</span>
+                </h1>
+                <p class="tagline">Enterprise-grade YouTube Outlier Discovery & Metadata Extraction Engine.</p>
+            </div>
             
-            <h3 style="color: var(--ink-dim); font-size: 14px; margin-top: 25px; border-bottom: 1px solid var(--line); padding-bottom: 10px;">🔠 Long-Tail Discoveries (Alphabet Soup Method)</h3>
-            <div id="kwGridAlphabet" class="keyword-grid"></div>
+            <div class="api-config-box">
+                <label>System Core: YouTube Data API v3</label>
+                <div class="api-input-row">
+                    <input type="password" id="sysApiKey" placeholder="Paste API Key to authenticate..." autocomplete="off">
+                    <div id="sysApiStatus" class="api-status-indicator">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        Unverified
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- NAVIGATION TABS -->
+        <nav class="tabs-container" id="mainTabs">
+            <button class="tab-button active" data-target="tab-search">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                Search Outliers
+            </button>
+            <button class="tab-button" data-target="tab-trending">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+                Top Trending
+            </button>
+            <button class="tab-button" data-target="tab-smalltrends">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22l5-5"></path><path d="M12 17l5-5"></path><path d="M22 12l-5-5"></path></svg>
+                Small Trends
+            </button>
+            <button class="tab-button" data-target="tab-keywords">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                Keyword Alphabet
+            </button>
+            <button class="tab-button" data-target="tab-niches" style="color: var(--accent-blue);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2-9 4 18 2-9h6"></path></svg>
+                Hidden Niches
+            </button>
+            <button class="tab-button" data-target="tab-competitors" style="color: var(--accent-amber);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                Competitor Watch
+            </button>
+            <button class="tab-button" data-target="tab-saved" style="color: var(--accent-pink);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                Saved Ideas
+            </button>
+        </nav>
+
+        <!-- GLOBAL ACTION BAR (Export & Views) -->
+        <div class="action-bar" id="globalActionBar" style="display: none;">
+            <button class="btn btn-outline" onclick="core.exportToCSV()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export CSV Data
+            </button>
+            <div class="view-switcher">
+                <button class="view-btn active" id="toggleViewTable" onclick="core.switchLayout('table')">Table Layout</button>
+                <button class="view-btn" id="toggleViewGrid" onclick="core.switchLayout('grid')">Visual Grid</button>
+            </div>
         </div>
-      </section>
 
-      <!-- TAB 5: HIDDEN NICHES (THE MASTERPIECE) -->
-      <section id="nichesTab" class="tab-panel">
-        <p style="font-size: 14px; color: var(--ink-dim); margin-top: 0;">Secret database of low-competition, high-reward faceless and micro-niches. Click "Hunt" to instantly scan outliers for that niche.</p>
-        
-        <div class="niches-container" id="nichesContainer">
-            <!-- Yeh JS se dynamically bhara jayega -->
-        </div>
-      </section>
+        <main>
+            <!-- =========================================================
+                 TAB 1: SEARCH OUTLIERS
+                 ========================================================= -->
+            <section id="tab-search" class="tab-content active">
+                <div class="dashboard-controls">
+                    <div class="input-group" style="flex: 2;">
+                        <label>Target Keyword / Topic</label>
+                        <input type="text" id="inpSearchQuery" placeholder="e.g., ai automation, silent vlog, anime recap...">
+                    </div>
+                    <div class="input-group">
+                        <label>Category Strict Filter</label>
+                        <select id="inpSearchCat">
+                            <option value="">Global Search (Mixed)</option>
+                            <option value="20">🎮 Gaming & Walkthroughs</option>
+                            <option value="28">💻 Science, Tech & AI</option>
+                            <option value="27">📚 Education & Tutorials</option>
+                            <option value="1">🎬 Film, Animation & Anime</option>
+                            <option value="24">🍿 Entertainment & Gossip</option>
+                            <option value="22">👥 People, Vlogs & Blogs</option>
+                            <option value="26">👗 Howto, Style & Craft</option>
+                        </select>
+                    </div>
+                    <div class="input-group input-group-small">
+                        <label>Max Sub Limit</label>
+                        <input type="number" id="inpSearchSubs" value="5000" min="0">
+                    </div>
+                    <button class="btn btn-primary" id="btnRunSearch" onclick="features.runOutlierSearch()">
+                        Scan Outliers
+                    </button>
+                </div>
+                
+                <div id="statSearch" class="system-status"></div>
+                
+                <!-- Results Wrappers -->
+                <div id="wrapTableSearch" class="data-table-container"></div>
+                <div id="wrapGridSearch" class="data-grid-container"></div>
+            </section>
 
-    </main>
-  </div>
+            <!-- =========================================================
+                 TAB 2: GENERAL TRENDING
+                 ========================================================= -->
+            <section id="tab-trending" class="tab-content">
+                <div class="dashboard-controls">
+                    <div class="input-group" style="flex: 2;">
+                        <label>Trending Category (To block music/movies)</label>
+                        <select id="inpTrendCat">
+                            <option value="20" selected>🎮 Gaming (Recommended to find gameplay trends)</option>
+                            <option value="">🌍 All Categories (Default YT India Trends)</option>
+                            <option value="28">💻 Technology & Automobiles</option>
+                            <option value="24">🍿 General Entertainment</option>
+                            <option value="27">📚 Educational Content</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="btnRunTrend" onclick="features.runTrending(false)">
+                        Fetch Top Trends
+                    </button>
+                </div>
+                
+                <div id="statTrend" class="system-status"></div>
+                
+                <div id="wrapTableTrend" class="data-table-container"></div>
+                <div id="wrapGridTrend" class="data-grid-container"></div>
+            </section>
 
-<script>
-'use strict';
+            <!-- =========================================================
+                 TAB 3: SMALL TRENDS (Trending + Sub Filter)
+                 ========================================================= -->
+            <section id="tab-smalltrends" class="tab-content">
+                <div class="dashboard-controls">
+                    <div class="input-group" style="flex: 2;">
+                        <label>Trending Category</label>
+                        <select id="inpSmallTrendCat">
+                            <option value="20" selected>🎮 Gaming</option>
+                            <option value="">🌍 All Categories</option>
+                            <option value="28">💻 Tech</option>
+                            <option value="1">🎬 Animation</option>
+                        </select>
+                    </div>
+                    <div class="input-group input-group-small">
+                        <label>Max Sub Limit</label>
+                        <input type="number" id="inpSmallTrendSubs" value="50000" min="0">
+                    </div>
+                    <button class="btn btn-primary" id="btnRunSmallTrend" onclick="features.runTrending(true)">
+                        Hunt Small Trends
+                    </button>
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+                    * This complex query fetches Top 50 trending videos and filters out established creators to find emerging micro-channels.
+                </p>
+                
+                <div id="statSmallTrend" class="system-status"></div>
+                
+                <div id="wrapTableSmallTrend" class="data-table-container"></div>
+                <div id="wrapGridSmallTrend" class="data-grid-container"></div>
+            </section>
 
-// 🚀 Core Variables
-const YT_API_BASE = 'https://www.googleapis.com/youtube/v3';
-const API_KEY_STORAGE = 'viralHuntPro_apiKey';
+            <!-- =========================================================
+                 TAB 4: KEYWORD ALPHABET SOUP
+                 ========================================================= -->
+            <section id="tab-keywords" class="tab-content">
+                <div class="dashboard-controls">
+                    <div class="input-group" style="flex: 2;">
+                        <label>Seed Keyword (Base Niche)</label>
+                        <input type="text" id="inpKwSeed" placeholder="e.g. faceless channel, minecraft build...">
+                    </div>
+                    <button class="btn btn-blue" id="btnRunKw" onclick="features.runKeywordSoup()">
+                        Execute Alphabet Soup
+                    </button>
+                </div>
+                
+                <div id="statKw" class="system-status"></div>
+                
+                <div id="wrapKwResults" style="display: none;">
+                    <div class="keyword-result-box">
+                        <div class="kw-section-title">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            Direct Autocomplete (High Volume)
+                        </div>
+                        <div id="kwBoxPrimary" class="kw-tag-cloud"></div>
+                        
+                        <div class="kw-section-title" style="margin-top: 40px; color: var(--text-muted);">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            Long-Tail Discoveries (Hidden Gold)
+                        </div>
+                        <div id="kwBoxLongTail" class="kw-tag-cloud"></div>
+                    </div>
+                </div>
+            </section>
 
-// ==========================================
-// 1. SYSTEM UTILITIES & API KEY LOGIC
-// ==========================================
-function loadApiKey() {
-  const saved = localStorage.getItem(API_KEY_STORAGE);
-  if (saved) {
-    document.getElementById('apiKeyInput').value = saved;
-    setKeyStatus(true);
-  }
-}
+            <!-- =========================================================
+                 TAB 5: HIDDEN NICHES DATABASE
+                 ========================================================= -->
+            <section id="tab-niches" class="tab-content">
+                <div class="dashboard-controls" style="background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2);">
+                    <div>
+                        <h3 style="color: var(--accent-blue); margin-bottom: 5px; font-size: 18px;">The Secret Database</h3>
+                        <p style="font-size: 13px; color: var(--text-muted);">A curated, hardcoded list of low-competition, high-reward faceless and micro-niches. Click "Auto-Hunt" to instantly scan outliers for that exact niche.</p>
+                    </div>
+                </div>
+                
+                <div id="nicheGrid" class="niche-grid-layout">
+                    <!-- Javascript will inject massive database here -->
+                </div>
+            </section>
 
-function setKeyStatus(hasKey) {
-  const el = document.getElementById('apiKeyStatus');
-  el.textContent = hasKey ? '● API Key Saved' : '';
-  el.className = hasKey ? 'key-status saved' : 'key-status';
-}
+            <!-- =========================================================
+                 TAB 6: COMPETITOR WATCHLIST
+                 ========================================================= -->
+            <section id="tab-competitors" class="tab-content">
+                <div class="dashboard-controls">
+                    <div class="input-group" style="flex: 2;">
+                        <label>Add Competitor Channel ID</label>
+                        <input type="text" id="inpCompId" placeholder="e.g. UCX6OQ3DkcsbYNE6H8uQQuQA">
+                    </div>
+                    <button class="btn btn-outline" onclick="features.addCompetitor()">
+                        + Add Target
+                    </button>
+                    <button class="btn btn-primary" id="btnRunComp" onclick="features.scanCompetitors()">
+                        Initiate Deep Scan
+                    </button>
+                </div>
+                
+                <h4 style="margin: 30px 0 10px; font-size: 14px; text-transform: uppercase; color: var(--text-faint); letter-spacing: 0.1em;">Target Watchlist</h4>
+                <div id="compListWrap" class="comp-tracker-list">
+                    <!-- Tracked channels appear here -->
+                </div>
+                
+                <div id="statComp" class="system-status"></div>
+                
+                <div id="wrapTableComp" class="data-table-container"></div>
+                <div id="wrapGridComp" class="data-grid-container"></div>
+            </section>
 
-document.getElementById('apiKeyInput').addEventListener('input', (e) => {
-  const val = e.target.value.trim();
-  if (val) { localStorage.setItem(API_KEY_STORAGE, val); setKeyStatus(true); } 
-  else { localStorage.removeItem(API_KEY_STORAGE); setKeyStatus(false); }
-});
+            <!-- =========================================================
+                 TAB 7: SAVED IDEAS (CONTENT CALENDAR)
+                 ========================================================= -->
+            <section id="tab-saved" class="tab-content">
+                <div class="dashboard-controls" style="background: rgba(236, 72, 153, 0.05); border-color: rgba(236, 72, 153, 0.2);">
+                    <div>
+                        <h3 style="color: var(--accent-pink); margin-bottom: 5px; font-size: 18px;">Content Calendar (Saved Targets)</h3>
+                        <p style="font-size: 13px; color: var(--text-muted);">Videos you save during research are securely stored here in your local browser cache.</p>
+                    </div>
+                </div>
 
-function getApiKey() { return document.getElementById('apiKeyInput').value.trim(); }
-function requireApiKey(statusElId) {
-  const key = getApiKey();
-  if (!key) {
-    showStatus(statusElId, '⚠️ Please paste your YouTube API key first.', 'error');
-    document.getElementById('apiKeyInput').focus();
-    return null;
-  }
-  return key;
-}
+                <div id="statSaved" class="system-status"></div>
+                
+                <div id="wrapTableSaved" class="data-table-container"></div>
+                <div id="wrapGridSaved" class="data-grid-container"></div>
+            </section>
 
-// Tab Switching Logic
-document.querySelectorAll('.tab-btn').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById(btn.dataset.tab + 'Tab').classList.add('active');
-  });
-});
+        </main>
+    </div>
 
-// Switch to a specific tab via code
-function forceSwitchTab(tabName) {
-    document.querySelector(`[data-tab="${tabName}"]`).click();
-    window.scrollTo({top: 0, behavior: 'smooth'});
-}
-
-// UI Helpers
-function showStatus(elId, message, type) {
-  const el = document.getElementById(elId);
-  el.textContent = message || '';
-  el.className = message ? `status-msg ${type}` : 'status-msg';
-}
-function setLoading(btnId, isLoading, label) {
-  const btn = document.getElementById(btnId);
-  btn.disabled = isLoading;
-  btn.innerHTML = isLoading ? '<span class="spinner"></span> Working...' : label;
-}
-function clearWrap(id) { document.getElementById(id).innerHTML = ''; }
-function renderEmpty(wrapId, msg) { document.getElementById(wrapId).innerHTML = `<div class="empty-state"><div class="empty-icon">🏜️</div><p>${msg}</p></div>`; }
-function escape(str) { const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
-
-// Math Formats
-function formatNum(num) {
-  if (!num || isNaN(num)) return '0';
-  if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
-  if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
-  if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
-  return String(num);
-}
-function formatRatio(r) { return r >= 10 ? Math.round(r) + 'x' : (Math.round(r * 10) / 10) + 'x'; }
-function getRatioTier(r) { return r >= 50 ? 'ratio-hot' : r >= 10 ? 'ratio-warm' : 'ratio-mild'; }
-function parseSubs(raw) {
-  const t = String(raw).trim();
-  if(t === '') return 5000;
-  const n = Number(t);
-  return (Number.isNaN(n) || n < 0) ? 5000 : Math.floor(n);
-}
-
-// API Fetch Helper
-async function apiCall(url) {
-  const res = await fetch(url);
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error?.message || `API Error: ${res.status}`);
-  return data;
-}
-
-// Stats Fetchers (Fast Promise.all chunking)
-function chunkArr(arr, size) {
-  const out = []; for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size)); return out;
-}
-async function getVidStats(ids, key) {
-  if (!ids.length) return {}; const map = {};
-  for (const chunk of chunkArr(ids, 50)) {
-    const data = await apiCall(`${YT_API_BASE}/videos?part=statistics&id=${chunk.join(',')}&key=${key}`);
-    (data.items || []).forEach(v => map[v.id] = { views: parseInt(v.statistics?.viewCount || '0') });
-  } return map;
-}
-async function getChStats(ids, key) {
-  if (!ids.length) return {}; const map = {};
-  for (const chunk of chunkArr(ids, 50)) {
-    const data = await apiCall(`${YT_API_BASE}/channels?part=statistics&id=${chunk.join(',')}&key=${key}`);
-    (data.items || []).forEach(c => map[c.id] = { 
-      subs: c.statistics?.hiddenSubscriberCount ? null : parseInt(c.statistics?.subscriberCount || '0'), 
-      hidden: !!c.statistics?.hiddenSubscriberCount 
-    });
-  } return map;
-}
-
-
-// ==========================================
-// 2. TAB 1: OUTLIER SEARCH (WITH CATEGORY)
-// ==========================================
-async function runSearch() {
-  const key = requireApiKey('searchStatus'); if(!key) return;
-  const query = document.getElementById('queryInput').value.trim();
-  const cat = document.getElementById('searchCategory').value;
-  const maxSubs = parseSubs(document.getElementById('maxSubsInput').value);
-
-  if(!query) { showStatus('searchStatus', '⚠️ Enter a topic to search.', 'error'); return; }
-
-  setLoading('searchBtn', true, 'Find Outliers'); clearWrap('searchResultsWrap');
-  showStatus('searchStatus', '📡 Scanning YouTube matrix...', 'info');
-
-  try {
-    const pubAfter = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    let url = `${YT_API_BASE}/search?part=snippet&type=video&order=viewCount&videoDuration=long&publishedAfter=${encodeURIComponent(pubAfter)}&maxResults=50&q=${encodeURIComponent(query)}&key=${key}`;
-    if (cat) url += `&videoCategoryId=${cat}`;
-
-    const data = await apiCall(url);
-    const items = (data.items || []).filter(i => i.id?.videoId);
-    if (!items.length) { renderEmpty('searchResultsWrap', '0 results found. Try a different topic or category.'); showStatus('searchStatus', ''); return; }
-
-    const vIds = items.map(i => i.id.videoId);
-    const cIds = [...new Set(items.map(i => i.snippet.channelId))];
-    const [vStats, cStats] = await Promise.all([getVidStats(vIds, key), getChStats(cIds, key)]);
-
-    let results = items.map(i => {
-      const v = vStats[i.id.videoId], c = cStats[i.snippet.channelId];
-      const views = v ? v.views : 0, subs = c ? c.subs : 0;
-      return {
-        id: i.id.videoId, title: i.snippet.title, channel: i.snippet.channelTitle,
-        thumb: i.snippet.thumbnails?.medium?.url || '', views, subs, hidden: c?.hidden || false,
-        ratio: (views && subs) ? views / Math.max(subs, 1) : 0
-      };
-    }).filter(r => !r.hidden && r.subs !== null && r.subs <= maxSubs).sort((a, b) => b.ratio - a.ratio);
-
-    if (!results.length) renderEmpty('searchResultsWrap', `All videos belonged to channels with >${maxSubs} subs. Increase limit.`);
-    else { showStatus('searchStatus', `✅ Found ${results.length} Outliers!`, 'success'); document.getElementById('searchResultsWrap').innerHTML = buildSearchUI(results); }
-  } catch (e) { showStatus('searchStatus', e.message, 'error'); }
-  finally { setLoading('searchBtn', false, 'Find Outliers'); }
-}
-
-
-// ==========================================
-// 3. TAB 2 & 3: TRENDING ENGINES
-// ==========================================
-async function runTrending(isSmall = false) {
-  const statusId = isSmall ? 'smallTrendsStatus' : 'trendingStatus';
-  const wrapId = isSmall ? 'smallTrendsResultsWrap' : 'trendingResultsWrap';
-  const btnId = isSmall ? 'smallTrendsBtn' : 'trendingBtn';
-  const btnLabel = isSmall ? 'Hunt Small Channels' : 'Fetch Trends';
-  
-  const key = requireApiKey(statusId); if(!key) return;
-  const cat = document.getElementById(isSmall ? 'smallTrendCategory' : 'trendCategory').value;
-  const maxSubs = isSmall ? parseSubs(document.getElementById('smallTrendsMaxSubs').value) : null;
-
-  setLoading(btnId, true, btnLabel); clearWrap(wrapId);
-  showStatus(statusId, '🔥 Fetching YouTube India Trends...', 'info');
-
-  try {
-    let url = `${YT_API_BASE}/videos?part=snippet,statistics&chart=mostPopular&regionCode=IN&maxResults=50&key=${key}`;
-    if (cat) url += `&videoCategoryId=${cat}`;
-
-    const data = await apiCall(url);
-    if (!data.items?.length) { renderEmpty(wrapId, 'No trending data right now.'); showStatus(statusId, ''); return; }
-
-    if (!isSmall) {
-      let results = data.items.map(i => ({
-        id: i.id, title: i.snippet.title, channel: i.snippet.channelTitle,
-        thumb: i.snippet.thumbnails?.medium?.url || '', views: parseInt(i.statistics?.viewCount || '0')
-      }));
-      showStatus(statusId, `✅ Showing Top ${results.length} Trending Videos.`, 'success');
-      document.getElementById(wrapId).innerHTML = buildTrendUI(results);
-    } else {
-      const cIds = [...new Set(data.items.map(i => i.snippet.channelId))];
-      const cStats = await getChStats(cIds, key);
-      
-      let results = data.items.map(i => {
-        const c = cStats[i.snippet.channelId], views = parseInt(i.statistics?.viewCount || '0'), subs = c ? c.subs : 0;
-        return {
-          id: i.id, title: i.snippet.title, channel: i.snippet.channelTitle, thumb: i.snippet.thumbnails?.medium?.url || '',
-          views, subs, hidden: c?.hidden || false, ratio: (views && subs) ? views / Math.max(subs, 1) : 0
+    <!-- 
+      ========================================================================
+      MASTER JAVASCRIPT ENGINE
+      ========================================================================
+    -->
+    <script>
+        /**
+         * System Configuration & Constants
+         */
+        const CONFIG = {
+            API_BASE: 'https://www.googleapis.com/youtube/v3',
+            STORE_KEY_API: 'VHP_API_KEY_v7',
+            STORE_KEY_SAVED: 'VHP_SAVED_VIDS_v7',
+            STORE_KEY_COMP: 'VHP_COMP_LIST_v7'
         };
-      }).filter(r => !r.hidden && r.subs !== null && r.subs <= maxSubs).sort((a, b) => b.ratio - a.ratio);
 
-      if(!results.length) renderEmpty(wrapId, `No small channels (<${maxSubs} subs) found in Top 50 Trends.`);
-      else { showStatus(statusId, `✅ Found ${results.length} Small Trending Channels!`, 'success'); document.getElementById(wrapId).innerHTML = buildSearchUI(results); }
-    }
-  } catch(e) { showStatus(statusId, e.message, 'error'); }
-  finally { setLoading(btnId, false, btnLabel); }
-}
+        /**
+         * Massive Database of Hidden Niches (Expanding functionality)
+         */
+        const NICHE_DB = [
+            {
+                icon: "🎮", title: "Micro-Gaming & Emulation", catId: "20",
+                items: [
+                    "offline android games under 100mb",
+                    "ps2 emulation on android setup guide",
+                    "roblox scary horror maps multiplayer",
+                    "co-op mobile games with friends local wifi",
+                    "minecraft bedrock building hacks redstone",
+                    "ppsspp highly compressed games download",
+                    "stardew valley mobile tips and tricks"
+                ]
+            },
+            {
+                icon: "🎌", title: "Anime & Manga (Faceless)", catId: "1",
+                items: [
+                    "manhwa recaps in hindi full story",
+                    "underrated isekai anime you missed",
+                    "anime iceberg explained lowest tier",
+                    "one piece theories confirmed hindi",
+                    "top 10 overpowered main character anime",
+                    "manga vs anime differences explained",
+                    "solo leveling light novel ending"
+                ]
+            },
+            {
+                icon: "🤖", title: "AI & Automation Trends", catId: "28",
+                items: [
+                    "ai historical documentaries faceless",
+                    "reddit scary stories tts short form",
+                    "chatgpt advanced prompts for students",
+                    "free ai video generators 2024 no watermark",
+                    "stoicism quotes ai voice generator",
+                    "midjourney v6 alternatives free",
+                    "automate youtube shorts python script"
+                ]
+            },
+            {
+                icon: "💻", title: "Tech, Privacy & Software", catId: "28",
+                items: [
+                    "open source software alternatives to adobe",
+                    "vs code extensions for web developers",
+                    "windows 11 debloat script guide",
+                    "linux desktop customization rice",
+                    "free useful websites you didn't know",
+                    "degoogle your life privacy guide",
+                    "best self hosted apps home lab"
+                ]
+            },
+            {
+                icon: "💰", title: "High CPM Finance & Wealth", catId: "27",
+                items: [
+                    "dark psychology principles for manipulation",
+                    "side hustles for teens 2024 no money",
+                    "trading psychology in hindi banknifty",
+                    "frugal living tips to save money fast",
+                    "naval ravikant almanack summary",
+                    "dividend investing portfolio for beginners",
+                    "credit card churning travel hacks"
+                ]
+            },
+            {
+                icon: "🕵️", title: "Mysteries & True Crime", catId: "24",
+                items: [
+                    "unsolved internet mysteries iceberg",
+                    "creepy lost media found footage",
+                    "backrooms lore explained in order",
+                    "scp foundation files reading",
+                    "abandoned places exploration history"
+                ]
+            }
+        ];
 
+        /**
+         * Global State Management
+         */
+        const state = {
+            activeTab: 'search',
+            activeViewMode: 'table', // 'table' or 'grid'
+            currentDataset: [], // Holds the currently fetched videos array
+            currentDatasetType: '' // 'search', 'trend', 'smalltrend', 'comp', 'saved'
+        };
 
-// ==========================================
-// 4. TAB 4: KEYWORD RESEARCH (JSONP)
-// ==========================================
-function fetchSuggest(query) {
-  return new Promise((resolve) => {
-    const cbName = 'ytcb_' + Math.random().toString(36).substr(2, 9);
-    window[cbName] = function(data) { resolve(data[1] || []); delete window[cbName]; document.body.removeChild(script); };
-    const script = document.createElement('script');
-    script.src = `https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=${encodeURIComponent(query)}&jsonp=${cbName}`;
-    document.body.appendChild(script);
-  });
-}
+        /**
+         * Core Utility Functions
+         */
+        const utils = {
+            formatNum: (num) => {
+                if (!num || isNaN(num)) return '0';
+                if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+                if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+                if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+                return String(num);
+            },
+            formatRatio: (r) => r >= 10 ? Math.round(r) + 'x' : (Math.round(r * 10) / 10) + 'x',
+            getRatioTier: (r) => r >= 50 ? 'ratio-god' : (r >= 10 ? 'ratio-high' : 'ratio-med'),
+            parseSubs: (raw) => {
+                const n = Number(String(raw).trim());
+                return (Number.isNaN(n) || n < 0) ? 5000 : Math.floor(n);
+            },
+            calcVPH: (views, pubDateStr) => {
+                if(!pubDateStr || !views) return 0;
+                const pubDate = new Date(pubDateStr);
+                const hours = Math.max((Date.now() - pubDate.getTime()) / (1000 * 60 * 60), 1);
+                return Math.round(views / hours);
+            },
+            escapeHTML: (str) => {
+                const div = document.createElement('div');
+                div.textContent = str || '';
+                return div.innerHTML;
+            },
+            formatDuration: (isoStr) => {
+                if(!isoStr) return 'Unknown';
+                return isoStr.replace('PT','').replace('H','h ').replace('M','m ').replace('S','s').trim();
+            },
+            chunkArray: (arr, size) => {
+                const out = [];
+                for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+                return out;
+            }
+        };
 
-async function runKeywordResearch() {
-  const seed = document.getElementById('kwInput').value.trim();
-  if(!seed) { showStatus('kwStatus', '⚠️ Enter a seed keyword first.', 'error'); return; }
+        /**
+         * UI & DOM Management
+         */
+        const ui = {
+            showMsg: (elId, msg, type) => {
+                const el = document.getElementById(elId);
+                el.innerHTML = msg;
+                el.className = msg ? `system-status active status-${type}` : 'system-status';
+            },
+            setLoad: (btnId, isLoad, normalText) => {
+                const btn = document.getElementById(btnId);
+                if(!btn) return;
+                btn.disabled = isLoad;
+                btn.innerHTML = isLoad ? '<span class="spinner"></span> Processing...' : normalText;
+            },
+            clearWrap: (tableId, gridId) => {
+                document.getElementById(tableId).innerHTML = '';
+                document.getElementById(gridId).innerHTML = '';
+            },
+            emptyHTML: (msg) => `<div class="empty-placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <h3>System Alert</h3><p>${msg}</p></div>`,
+            
+            toggleGlobalActions: (show) => {
+                document.getElementById('globalActionBar').style.display = show ? 'flex' : 'none';
+            }
+        };
 
-  setLoading('kwBtn', true, 'Generate Keywords 🚀');
-  showStatus('kwStatus', '🧠 Analyzing YouTube Search Algorithm...', 'info');
-  document.getElementById('kwResultsArea').style.display = 'none';
-  clearWrap('kwGridPrimary'); clearWrap('kwGridAlphabet');
+        /**
+         * API Logic & Data Fetching
+         */
+        const api = {
+            getKey: () => {
+                const key = document.getElementById('sysApiKey').value.trim();
+                if (!key) { alert("SECURITY HALT: Please enter your YouTube API Key in the top right corner."); return null; }
+                return key;
+            },
+            fetchData: async (url) => {
+                const res = await fetch(url);
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error?.message || `HTTP Error ${res.status}`);
+                return data;
+            },
+            // Parallel Fetching for massive data
+            getDetailedVideoStats: async (ids, key) => {
+                if (!ids.length) return {}; 
+                const map = {};
+                for (const chunk of utils.chunkArray(ids, 50)) {
+                    const url = `${CONFIG.API_BASE}/videos?part=statistics,snippet,contentDetails&id=${chunk.join(',')}&key=${key}`;
+                    const data = await api.fetchData(url);
+                    (data.items || []).forEach(v => {
+                        map[v.id] = { 
+                            views: parseInt(v.statistics?.viewCount || '0'),
+                            pubAt: v.snippet.publishedAt,
+                            tags: v.snippet.tags || [],
+                            desc: v.snippet.description || '',
+                            duration: v.contentDetails?.duration || ''
+                        };
+                    });
+                } 
+                return map;
+            },
+            getChannelStats: async (ids, key) => {
+                if (!ids.length) return {}; 
+                const map = {};
+                for (const chunk of utils.chunkArray(ids, 50)) {
+                    const url = `${CONFIG.API_BASE}/channels?part=statistics&id=${chunk.join(',')}&key=${key}`;
+                    const data = await api.fetchData(url);
+                    (data.items || []).forEach(c => {
+                        map[c.id] = { 
+                            subs: c.statistics?.hiddenSubscriberCount ? null : parseInt(c.statistics?.subscriberCount || '0'), 
+                            hidden: !!c.statistics?.hiddenSubscriberCount 
+                        };
+                    });
+                } 
+                return map;
+            }
+        };
 
-  try {
-    const primaryStrs = await fetchSuggest(seed);
-    const suffixes = [' a', ' b', ' c', ' d', ' e', ' f', ' g', ' in hindi', ' 2024'];
-    let longTails = new Set();
-    
-    const alphaResults = await Promise.all(suffixes.map(suf => fetchSuggest(seed + suf)));
-    
-    alphaResults.forEach(resArr => {
-        resArr.forEach(kw => {
-            let word = typeof kw === 'string' ? kw : kw[0];
-            if(word && !primaryStrs.includes(word) && word.length > seed.length) { longTails.add(word); }
-        });
-    });
+        /**
+         * Core Engine Features & Algorithms
+         */
+        const features = {
+            
+            // 1. OUTLIER SEARCH
+            runOutlierSearch: async () => {
+                const key = api.getKey(); if(!key) return;
+                const query = document.getElementById('inpSearchQuery').value.trim();
+                const catId = document.getElementById('inpSearchCat').value;
+                const maxSubs = utils.parseSubs(document.getElementById('inpSearchSubs').value);
 
-    if(!primaryStrs.length && !longTails.size) { showStatus('kwStatus', 'No keywords found.', 'error'); return; }
+                if(!query) { ui.showMsg('statSearch', 'Input Error: Keyword is required.', 'error'); return; }
 
-    let pHTML = primaryStrs.map(kw => `<div class="kw-tag" onclick="useKeyword('${escape(kw)}')">🔍 ${escape(kw)}</div>`).join('');
-    document.getElementById('kwGridPrimary').innerHTML = pHTML || '<span style="color:var(--ink-dim)">No primary suggestions.</span>';
-    
-    let aHTML = Array.from(longTails).slice(0, 30).map(kw => `<div class="kw-tag" style="background: rgba(255,255,255,0.05); color: #ccc; border-color: rgba(255,255,255,0.1);" onclick="useKeyword('${escape(kw)}')">✨ ${escape(kw)}</div>`).join('');
-    document.getElementById('kwGridAlphabet').innerHTML = aHTML;
+                ui.setLoad('btnRunSearch', true, 'Scan Outliers');
+                ui.clearWrap('wrapTableSearch', 'wrapGridSearch');
+                ui.toggleGlobalActions(false);
+                ui.showMsg('statSearch', 'Initiating search in YouTube matrix... (Last 24h Filter Active)', 'info');
 
-    document.getElementById('kwResultsArea').style.display = 'block';
-    showStatus('kwStatus', '✅ Keyword Research Complete!', 'success');
+                try {
+                    // Force 24h & videoDuration=long (Block Shorts)
+                    const pubAfter = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+                    let url = `${CONFIG.API_BASE}/search?part=snippet&type=video&order=viewCount&videoDuration=long&publishedAfter=${encodeURIComponent(pubAfter)}&maxResults=50&q=${encodeURIComponent(query)}&key=${key}`;
+                    if (catId) url += `&videoCategoryId=${catId}`;
 
-  } catch(e) { showStatus('kwStatus', 'Error fetching keywords.', 'error'); } 
-  finally { setLoading('kwBtn', false, 'Generate Keywords 🚀'); }
-}
+                    const data = await api.fetchData(url);
+                    const items = (data.items || []).filter(i => i.id?.videoId);
+                    
+                    if (!items.length) { 
+                        document.getElementById('wrapTableSearch').innerHTML = ui.emptyHTML('No long-form videos found in the last 24 hours for this topic.');
+                        ui.showMsg('statSearch', '', ''); 
+                        return; 
+                    }
 
-window.useKeyword = function(kw) {
-    document.getElementById('queryInput').value = kw;
-    forceSwitchTab('search');
-}
+                    await engine.processAndRender(items, key, maxSubs, 'statSearch', true, 'search');
+                } catch(e) { ui.showMsg('statSearch', `Execution Failed: ${e.message}`, 'error'); }
+                finally { ui.setLoad('btnRunSearch', false, 'Scan Outliers'); }
+            },
 
+            // 2 & 3. TRENDING ENGINES
+            runTrending: async (isSmall = false) => {
+                const key = api.getKey(); if(!key) return;
+                
+                const btnId = isSmall ? 'btnRunSmallTrend' : 'btnRunTrend';
+                const btnLabel = isSmall ? 'Hunt Small Trends' : 'Fetch Top Trends';
+                const statId = isSmall ? 'statSmallTrend' : 'statTrend';
+                const tableId = isSmall ? 'wrapTableSmallTrend' : 'wrapTableTrend';
+                const gridId = isSmall ? 'wrapGridSmallTrend' : 'wrapGridTrend';
+                const catId = document.getElementById(isSmall ? 'inpSmallTrendCat' : 'inpTrendCat').value;
+                const maxSubs = isSmall ? utils.parseSubs(document.getElementById('inpSmallTrendSubs').value) : null;
+                const dsType = isSmall ? 'smalltrend' : 'trend';
 
-// ==========================================
-// 5. TAB 5: HIDDEN NICHES (DATABASE & LOGIC)
-// ==========================================
+                ui.setLoad(btnId, true, btnLabel);
+                ui.clearWrap(tableId, gridId);
+                ui.toggleGlobalActions(false);
+                ui.showMsg(statId, 'Connecting to YouTube Regional Trends...', 'info');
 
-// 📂 The Premium Faceless/Hidden Niche Database
-const HIDDEN_NICHES = [
-  {
-    icon: "🎮", title: "Micro-Gaming & Emulation", categoryId: "20",
-    items: [
-      "Offline android games under 100mb",
-      "PS2 emulation on android setup",
-      "Roblox horror maps multiplayer",
-      "Co-op mobile games with friends",
-      "Minecraft building hacks bedrock"
-    ]
-  },
-  {
-    icon: "🎌", title: "Anime & Manga (Faceless)", categoryId: "1",
-    items: [
-      "Manhwa recaps in hindi",
-      "Underrated isekai anime list",
-      "Anime iceberg explained",
-      "One piece theories hindi",
-      "Top 10 OP main character anime"
-    ]
-  },
-  {
-    icon: "🤖", title: "AI & Automation (Trending)", categoryId: "28",
-    items: [
-      "AI historical documentaries",
-      "Reddit scary stories TTS",
-      "ChatGPT prompts for students",
-      "Free AI video generators 2024",
-      "Stoicism quotes AI voice"
-    ]
-  },
-  {
-    icon: "💻", title: "Tech & Software Hacks", categoryId: "28",
-    items: [
-      "Open source software alternatives",
-      "VS Code extensions for productivity",
-      "Windows 11 debloat guide",
-      "Linux rice customization",
-      "Free useful websites you didn't know"
-    ]
-  },
-  {
-    icon: "💰", title: "Wealth & Finance (High CPM)", categoryId: "27",
-    items: [
-      "Dark psychology principles",
-      "Side hustles for teens 2024",
-      "Trading psychology in hindi",
-      "Frugal living tips",
-      "Naval Ravikant summaries"
-    ]
-  }
-];
+                try {
+                    let url = `${CONFIG.API_BASE}/videos?part=snippet,statistics&chart=mostPopular&regionCode=IN&maxResults=50&key=${key}`;
+                    if (catId) url += `&videoCategoryId=${catId}`;
 
-// 1-Click Hunt Trigger function
-window.huntNiche = function(keyword, catId) {
-    // 1. Switch to search tab
-    forceSwitchTab('search');
-    // 2. Set the values
-    document.getElementById('queryInput').value = keyword;
-    document.getElementById('searchCategory').value = catId;
-    // 3. Trigger the search automatically
-    runSearch();
-}
+                    const data = await api.fetchData(url);
+                    if (!data.items?.length) { 
+                        document.getElementById(tableId).innerHTML = ui.emptyHTML('YouTube trending API returned empty for this category.');
+                        ui.showMsg(statId, '', ''); return; 
+                    }
 
-// Render the Niches on Page Load
-function renderHiddenNiches() {
-  const container = document.getElementById('nichesContainer');
-  let html = '';
-  
-  HIDDEN_NICHES.forEach(nicheObj => {
-    let itemsHtml = nicheObj.items.map(item => `
-      <li class="niche-item">
-        <span class="niche-title">${escape(item)}</span>
-        <button class="niche-hunt-btn" onclick="huntNiche('${escape(item)}', '${nicheObj.categoryId}')">Hunt ↗</button>
-      </li>
-    `).join('');
+                    // Format to match search items
+                    let mappedItems = data.items.map(i => ({ id: { videoId: i.id }, snippet: i.snippet }));
+                    await engine.processAndRender(mappedItems, key, maxSubs, statId, isSmall, dsType);
+                    
+                } catch(e) { ui.showMsg(statId, `Execution Failed: ${e.message}`, 'error'); }
+                finally { ui.setLoad(btnId, false, btnLabel); }
+            },
 
-    html += `
-      <div class="niche-card">
-        <div class="niche-header">
-          <span>${nicheObj.icon}</span> ${escape(nicheObj.title)}
-        </div>
-        <ul class="niche-list">
-          ${itemsHtml}
-        </ul>
-      </div>
-    `;
-  });
-  
-  container.innerHTML = html;
-}
+            // 4. ALPHABET SOUP (Keyword Research using JSONP)
+            fetchSuggestJSONP: (query) => {
+                return new Promise((resolve) => {
+                    const cbName = 'ytcb_' + Math.random().toString(36).substr(2, 9);
+                    window[cbName] = function(data) { resolve(data[1] || []); delete window[cbName]; document.body.removeChild(script); };
+                    const script = document.createElement('script');
+                    script.src = `https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=${encodeURIComponent(query)}&jsonp=${cbName}`;
+                    document.body.appendChild(script);
+                });
+            },
+            runKeywordSoup: async () => {
+                const seed = document.getElementById('inpKwSeed').value.trim();
+                if(!seed) { ui.showMsg('statKw', 'Missing Seed Keyword', 'error'); return; }
 
+                ui.setLoad('btnRunKw', true, 'Execute Alphabet Soup');
+                ui.showMsg('statKw', 'Mining Autocomplete algorithms...', 'info');
+                document.getElementById('wrapKwResults').style.display = 'none';
 
-// ==========================================
-// 6. HTML GENERATORS FOR TABLES
-// ==========================================
-function buildSearchUI(arr) {
-  const rows = arr.map(r => `
-    <tr>
-      <td class="video-cell">
-        <img class="thumb" src="${escape(r.thumb)}" loading="lazy">
-        <div class="video-meta">
-          <div class="video-title">${escape(r.title)}</div>
-          <div class="video-channel">${escape(r.channel)}</div>
-          <div class="video-views">${formatNum(r.views)} views</div>
-        </div>
-      </td>
-      <td><span class="badge badge-phosphor">${r.subs.toLocaleString()} subs</span></td>
-      <td><span class="badge ratio-badge ${getRatioTier(r.ratio)}">${formatRatio(r.ratio)}</span></td>
-      <td><a class="watch-link" href="https://youtube.com/watch?v=${r.id}" target="_blank">Watch ↗</a></td>
-    </tr>`).join('');
-  return `<table class="results-table"><thead><tr><th>Video</th><th>Subscribers</th><th>Outlier</th><th>Link</th></tr></thead><tbody>${rows}</tbody></table>`;
-}
+                try {
+                    const primary = await features.fetchSuggestJSONP(seed);
+                    const suffixes = [' a',' b',' c',' d',' e',' f',' g',' in hindi',' 2024', ' vs', ' review'];
+                    let longTails = new Set();
+                    
+                    const promises = suffixes.map(suf => features.fetchSuggestJSONP(seed + suf));
+                    const resultsArray = await Promise.all(promises);
+                    
+                    resultsArray.forEach(arr => {
+                        arr.forEach(kw => {
+                            let word = typeof kw === 'string' ? kw : kw[0];
+                            if(word && !primary.includes(word) && word.length > seed.length) { longTails.add(word); }
+                        });
+                    });
 
-function buildTrendUI(arr) {
-  const rows = arr.map(r => `
-    <tr>
-      <td class="video-cell">
-        <img class="thumb" src="${escape(r.thumb)}" loading="lazy">
-        <div class="video-meta">
-          <div class="video-title">${escape(r.title)}</div>
-          <div class="video-channel">${escape(r.channel)}</div>
-        </div>
-      </td>
-      <td><span class="badge badge-amber">${formatNum(r.views)} views</span></td>
-      <td><a class="watch-link" href="https://youtube.com/watch?v=${r.id}" target="_blank">Watch ↗</a></td>
-    </tr>`).join('');
-  return `<table class="results-table"><thead><tr><th>Video</th><th>Views</th><th>Link</th></tr></thead><tbody>${rows}</tbody></table>`;
-}
+                    if(!primary.length && !longTails.size) { ui.showMsg('statKw', 'Zero related keywords found.', 'error'); return; }
 
-// ==========================================
-// 7. EVENT LISTENERS & INITIALIZATION
-// ==========================================
-document.getElementById('searchBtn').addEventListener('click', runSearch);
-document.getElementById('queryInput').addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
+                    let pHTML = primary.map(k => `<div class="kw-tag" onclick="core.autoHuntKeyword('${utils.escapeHTML(k)}')">🔍 ${utils.escapeHTML(k)}</div>`).join('');
+                    document.getElementById('kwBoxPrimary').innerHTML = pHTML || '<span style="color:var(--text-muted)">N/A</span>';
+                    
+                    let aHTML = Array.from(longTails).slice(0, 40).map(k => `<div class="kw-tag secondary" onclick="core.autoHuntKeyword('${utils.escapeHTML(k)}')">✨ ${utils.escapeHTML(k)}</div>`).join('');
+                    document.getElementById('kwBoxLongTail').innerHTML = aHTML;
 
-document.getElementById('trendingBtn').addEventListener('click', () => runTrending(false));
-document.getElementById('smallTrendsBtn').addEventListener('click', () => runTrending(true));
+                    document.getElementById('wrapKwResults').style.display = 'block';
+                    ui.showMsg('statKw', '✅ Extraction Complete! Click any keyword to auto-hunt.', 'success');
 
-document.getElementById('kwBtn').addEventListener('click', runKeywordResearch);
-document.getElementById('kwInput').addEventListener('keydown', e => { if(e.key === 'Enter') runKeywordResearch(); });
+                } catch(e) { ui.showMsg('statKw', 'Algorithm block detected.', 'error'); }
+                finally { ui.setLoad('btnRunKw', false, 'Execute Alphabet Soup'); }
+            },
 
-// Init App
-loadApiKey();
-renderHiddenNiches();
-</script>
+            // 5. HIDDEN NICHES INJECTION
+            renderHiddenNiches: () => {
+                const container = document.getElementById('nicheGrid');
+                let html = '';
+                NICHE_DB.forEach(niche => {
+                    let itemsHtml = niche.items.map(item => `
+                        <li class="niche-db-item">
+                            <span class="niche-db-title">${utils.escapeHTML(item)}</span>
+                            <button class="niche-db-btn" onclick="core.autoHuntKeyword('${utils.escapeHTML(item)}', '${niche.catId}')">Auto-Hunt</button>
+                        </li>
+                    `).join('');
+                    html += `
+                        <div class="niche-db-card">
+                            <div class="niche-db-header">
+                                <span>${niche.icon}</span> ${utils.escapeHTML(niche.title)}
+                            </div>
+                            <ul class="niche-db-list">${itemsHtml}</ul>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            },
+
+            // 6. COMPETITOR WATCHLIST
+            getComps: () => JSON.parse(localStorage.getItem(CONFIG.STORE_KEY_COMP) || '[]'),
+            renderCompList: () => {
+                const comps = features.getComps();
+                const wrap = document.getElementById('compListWrap');
+                if(!comps.length) { wrap.innerHTML = `<div style="color:var(--text-faint);font-size:12px;">No targets tracked.</div>`; return; }
+                wrap.innerHTML = comps.map(c => `
+                    <div class="comp-tracker-item">
+                        <span class="comp-tracker-name">📺 Target ID: ${utils.escapeHTML(c)}</span>
+                        <button class="comp-tracker-del" onclick="features.removeCompetitor('${utils.escapeHTML(c)}')">DELETE</button>
+                    </div>
+                `).join('');
+            },
+            addCompetitor: () => {
+                let id = document.getElementById('inpCompId').value.trim();
+                if(!id || !id.startsWith('UC')) { alert("Invalid Channel ID format. Must start with 'UC'."); return; }
+                let comps = features.getComps();
+                if(!comps.includes(id)) { 
+                    comps.push(id); localStorage.setItem(CONFIG.STORE_KEY_COMP, JSON.stringify(comps)); 
+                    document.getElementById('inpCompId').value = ''; features.renderCompList(); 
+                }
+            },
+            removeCompetitor: (id) => {
+                let comps = features.getComps().filter(c => c !== id);
+                localStorage.setItem(CONFIG.STORE_KEY_COMP, JSON.stringify(comps)); features.renderCompList();
+            },
+            scanCompetitors: async () => {
+                const key = api.getKey(); if(!key) return;
+                const comps = features.getComps();
+                if(!comps.length) { ui.showMsg('statComp', 'List is empty.', 'error'); return; }
+
+                ui.setLoad('btnRunComp', true, 'Initiate Deep Scan');
+                ui.clearWrap('wrapTableComp', 'wrapGridComp');
+                ui.toggleGlobalActions(false);
+                ui.showMsg('statComp', 'Pinging target channels for recent uploads...', 'info');
+
+                try {
+                    let allItems = [];
+                    // Parallel fetch latest 3 videos from all competitors
+                    const promises = comps.map(chId => 
+                        api.fetchData(`${CONFIG.API_BASE}/search?part=snippet&type=video&order=date&maxResults=3&channelId=${chId}&key=${key}`).catch(()=>({items:[]}))
+                    );
+                    const results = await Promise.all(promises);
+                    results.forEach(res => { if(res.items) allItems.push(...res.items); });
+
+                    if(!allItems.length) { 
+                        document.getElementById('wrapTableComp').innerHTML = ui.emptyHTML('Targets have no recent videos.');
+                        ui.showMsg('statComp', '', ''); return; 
+                    }
+                    
+                    await engine.processAndRender(allItems, key, 999999999, 'statComp', false, 'comp');
+
+                } catch(e) { ui.showMsg('statComp', `Scan failed: ${e.message}`, 'error'); }
+                finally { ui.setLoad('btnRunComp', false, 'Initiate Deep Scan'); }
+            }
+        };
+
+        /**
+         * Core Engine & Math Processing
+         */
+        const engine = {
+            processAndRender: async (items, key, maxSubs, statId, enforceSubLimit, dsType) => {
+                const vIds = items.map(i => i.id.videoId);
+                const cIds = [...new Set(items.map(i => i.snippet.channelId))];
+                
+                // Massive Parallel Data Aggregation
+                const [vStats, cStats] = await Promise.all([
+                    api.getDetailedVideoStats(vIds, key), 
+                    api.getChannelStats(cIds, key)
+                ]);
+
+                // Construct rich dataset
+                state.currentDataset = items.map(i => {
+                    const vid = i.id.videoId;
+                    const v = vStats[vid] || {}; const c = cStats[i.snippet.channelId] || {};
+                    const views = v.views || 0, subs = c.subs || 0;
+                    
+                    // Complex Math
+                    const vph = utils.calcVPH(views, v.pubAt);
+                    const ratio = (views && subs) ? views / Math.max(subs, 1) : 0;
+                    
+                    return {
+                        id: vid, title: i.snippet.title, channel: i.snippet.channelTitle,
+                        thumb: i.snippet.thumbnails?.maxres?.url || i.snippet.thumbnails?.medium?.url || i.snippet.thumbnails?.default?.url || '',
+                        views, subs, vph, ratio, pubAt: v.pubAt,
+                        tags: v.tags || [], desc: v.desc || '', duration: v.duration || '',
+                        hiddenSubs: c.hidden || false
+                    };
+                });
+
+                // Apply Strict Filtering if requested
+                if(enforceSubLimit) {
+                    state.currentDataset = state.currentDataset.filter(r => !r.hiddenSubs && r.subs !== null && r.subs <= maxSubs);
+                }
+                
+                // Default Sorting Algorithm: Outlier Ratio first, then Velocity (VPH)
+                state.currentDataset.sort((a, b) => b.ratio - a.ratio || b.vph - a.vph);
+                state.currentDatasetType = dsType;
+
+                // Routing to View
+                let tableWrapId = '', gridWrapId = '';
+                if(dsType === 'search') { tableWrapId = 'wrapTableSearch'; gridWrapId = 'wrapGridSearch'; }
+                if(dsType === 'trend') { tableWrapId = 'wrapTableTrend'; gridWrapId = 'wrapGridTrend'; }
+                if(dsType === 'smalltrend') { tableWrapId = 'wrapTableSmallTrend'; gridWrapId = 'wrapGridSmallTrend'; }
+                if(dsType === 'comp') { tableWrapId = 'wrapTableComp'; gridWrapId = 'wrapGridComp'; }
+
+                if (!state.currentDataset.length) {
+                    document.getElementById(tableWrapId).innerHTML = ui.emptyHTML(`Data retrieved, but 0 channels matched criteria (<${maxSubs} subs).`);
+                    ui.showMsg(statId, '', '');
+                    ui.toggleGlobalActions(false);
+                } else {
+                    ui.showMsg(statId, `✅ Successfully isolated ${state.currentDataset.length} high-signal data points.`, 'success');
+                    ui.toggleGlobalActions(true);
+                    renderer.buildActiveView(tableWrapId, gridWrapId);
+                }
+            }
+        };
+
+        /**
+         * View Renderers (Table & Grid & Modals)
+         */
+        const renderer = {
+            buildActiveView: (tableId, gridId) => {
+                const data = state.currentDataset;
+                const tblWrap = document.getElementById(tableId);
+                const grdWrap = document.getElementById(gridId);
+                
+                if(state.activeViewMode === 'table') {
+                    tblWrap.style.display = 'block'; grdWrap.style.display = 'none';
+                    tblWrap.innerHTML = renderer.generateTableHTML(data);
+                } else {
+                    tblWrap.style.display = 'none'; grdWrap.style.display = 'grid';
+                    grdWrap.innerHTML = renderer.generateGridHTML(data);
+                }
+            },
+
+            generateTableHTML: (arr) => {
+                const rows = arr.map(r => {
+                    const isSaved = core.checkSavedStatus(r.id);
+                    return `
+                    <tr>
+                        <td>
+                            <div class="td-video-info">
+                                <div class="video-thumbnail-wrapper">
+                                    <img src="${utils.escapeHTML(r.thumb)}" loading="lazy">
+                                    <div class="vph-tag">🔥 ${utils.formatNum(r.vph)} VPH</div>
+                                </div>
+                                <div class="video-text-content">
+                                    <a class="video-title-link" href="https://youtube.com/watch?v=${r.id}" target="_blank">${utils.escapeHTML(r.title)}</a>
+                                    <div class="video-channel-name">📺 ${utils.escapeHTML(r.channel)}</div>
+                                    <div class="video-publish-date">Published: ${new Date(r.pubAt).toLocaleDateString()}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="stat-block" style="margin-bottom:8px;">
+                                <div class="stat-value">${utils.formatNum(r.views)}</div>
+                                <div class="stat-label">Total Views</div>
+                            </div>
+                            <div class="stat-block">
+                                <div class="stat-value stat-highlight">${utils.formatNum(r.subs)}</div>
+                                <div class="stat-label">Subscribers</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="ratio-pill ${utils.getRatioTier(r.ratio)}">${utils.formatRatio(r.ratio)}</div>
+                        </td>
+                        <td>
+                            <div class="td-actions">
+                                <button class="action-btn-sm spy" onclick="core.openSpyModal('${r.id}')">🕵️ Metadata Spy</button>
+                                <button class="action-btn-sm save ${isSaved ? 'saved' : ''}" onclick="core.toggleSave('${r.id}')">
+                                    ${isSaved ? '📌 Saved' : '❤️ Save Idea'}
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`;
+                }).join('');
+                return `<table class="data-table"><thead><tr><th>Video Analysis</th><th>Core Metrics</th><th>Outlier Score</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+            },
+
+            generateGridHTML: (arr) => {
+                return arr.map(r => {
+                    const isSaved = core.checkSavedStatus(r.id);
+                    return `
+                    <div class="grid-card">
+                        <div class="grid-thumb-box">
+                            <img src="${utils.escapeHTML(r.thumb)}" loading="lazy">
+                            <div class="vph-tag" style="font-size:12px; padding:4px 8px;">🔥 ${utils.formatNum(r.vph)} VPH</div>
+                        </div>
+                        <div class="grid-content">
+                            <a class="video-title-link" style="font-size:14px;" href="https://youtube.com/watch?v=${r.id}" target="_blank">${utils.escapeHTML(r.title)}</a>
+                            <div class="video-channel-name" style="margin-top:6px;">📺 ${utils.escapeHTML(r.channel)}</div>
+                            
+                            <div class="grid-stats-row">
+                                <div class="grid-stat-col">
+                                    <div class="grid-stat-val">${utils.formatNum(r.views)}</div>
+                                    <div class="grid-stat-lbl">Views</div>
+                                </div>
+                                <div class="grid-stat-col">
+                                    <div class="grid-stat-val stat-highlight">${utils.formatNum(r.subs)}</div>
+                                    <div class="grid-stat-lbl">Subs</div>
+                                </div>
+                                <div class="grid-stat-col">
+                                    <div class="ratio-pill ${utils.getRatioTier(r.ratio)}" style="font-size:12px; padding:2px 8px;">${utils.formatRatio(r.ratio)}</div>
+                                </div>
+                            </div>
+
+                            <div class="grid-actions-row">
+                                <button class="action-btn-sm spy" style="flex:1;" onclick="core.openSpyModal('${r.id}')">🕵️ Spy</button>
+                                <button class="action-btn-sm save ${isSaved ? 'saved' : ''}" style="flex:1;" onclick="core.toggleSave('${r.id}')">
+                                    ${isSaved ? '📌 Saved' : '❤️ Save'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+        };
+
+        /**
+         * Application Core Controllers (Global accessible functions)
+         */
+        const core = {
+            
+            // Initialization script
+            boot: () => {
+                // Attach API Key Logic
+                const savedKey = localStorage.getItem(CONFIG.STORE_KEY_API);
+                if (savedKey) { document.getElementById('sysApiKey').value = savedKey; setKeyStatus(true); }
+                document.getElementById('sysApiKey').addEventListener('input', (e) => {
+                    const val = e.target.value.trim();
+                    if (val) { localStorage.setItem(CONFIG.STORE_KEY_API, val); setKeyStatus(true); } 
+                    else { localStorage.removeItem(CONFIG.STORE_KEY_API); setKeyStatus(false); }
+                });
+
+                // Attach UI logic
+                features.renderHiddenNiches();
+                features.renderCompList();
+
+                // Tab Switcher internal mechanics
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                        btn.classList.add('active');
+                        const target = btn.getAttribute('data-target');
+                        document.getElementById(target).classList.add('active');
+                        state.activeTab = target;
+
+                        // Conditional Global Action Bar
+                        if(target === 'tab-search' && state.currentDatasetType === 'search' && state.currentDataset.length) ui.toggleGlobalActions(true);
+                        else if(target === 'tab-trending' && state.currentDatasetType === 'trend' && state.currentDataset.length) ui.toggleGlobalActions(true);
+                        else if(target === 'tab-smalltrends' && state.currentDatasetType === 'smalltrend' && state.currentDataset.length) ui.toggleGlobalActions(true);
+                        else if(target === 'tab-competitors' && state.currentDatasetType === 'comp' && state.currentDataset.length) ui.toggleGlobalActions(true);
+                        else if(target === 'tab-saved') { core.renderSavedVideos(); ui.toggleGlobalActions(true); }
+                        else ui.toggleGlobalActions(false);
+                    });
+                });
+            },
+
+            // View Toggle Switcher
+            switchLayout: (type) => {
+                state.activeViewMode = type;
+                document.getElementById('toggleViewTable').className = type === 'table' ? 'view-btn active' : 'view-btn';
+                document.getElementById('toggleViewGrid').className = type === 'grid' ? 'view-btn active' : 'view-btn';
+                
+                // Re-render active tab
+                let tId = '', gId = '';
+                if(state.activeTab === 'tab-search') { tId = 'wrapTableSearch'; gId = 'wrapGridSearch'; }
+                if(state.activeTab === 'tab-trending') { tId = 'wrapTableTrend'; gId = 'wrapGridTrend'; }
+                if(state.activeTab === 'tab-smalltrends') { tId = 'wrapTableSmallTrend'; gId = 'wrapGridSmallTrend'; }
+                if(state.activeTab === 'tab-competitors') { tId = 'wrapTableComp'; gId = 'wrapGridComp'; }
+                if(state.activeTab === 'tab-saved') { tId = 'wrapTableSaved'; gId = 'wrapGridSaved'; }
+                
+                if(tId && gId) renderer.buildActiveView(tId, gId);
+            },
+
+            // Auto-Hunt (From Keywords & Niches)
+            autoHuntKeyword: (kw, catId = "") => {
+                document.querySelector('[data-target="tab-search"]').click();
+                document.getElementById('inpSearchQuery').value = kw;
+                document.getElementById('inpSearchCat').value = catId;
+                window.scrollTo({top: 0, behavior: 'smooth'});
+                features.runOutlierSearch();
+            },
+
+            // Content Calendar (Saved Logic)
+            getSavedDB: () => JSON.parse(localStorage.getItem(CONFIG.STORE_KEY_SAVED) || '[]'),
+            checkSavedStatus: (id) => core.getSavedDB().some(v => v.id === id),
+            toggleSave: (id) => {
+                let saved = core.getSavedDB();
+                if(core.checkSavedStatus(id)) {
+                    saved = saved.filter(v => v.id !== id);
+                } else {
+                    const vidObj = state.currentDataset.find(v => v.id === id);
+                    if(vidObj) saved.push(vidObj);
+                }
+                localStorage.setItem(CONFIG.STORE_KEY_SAVED, JSON.stringify(saved));
+                
+                // Trigger re-render to update buttons
+                let tId = '', gId = '';
+                if(state.activeTab === 'tab-search') { tId = 'wrapTableSearch'; gId = 'wrapGridSearch'; }
+                if(state.activeTab === 'tab-trending') { tId = 'wrapTableTrend'; gId = 'wrapGridTrend'; }
+                if(state.activeTab === 'tab-smalltrends') { tId = 'wrapTableSmallTrend'; gId = 'wrapGridSmallTrend'; }
+                if(state.activeTab === 'tab-competitors') { tId = 'wrapTableComp'; gId = 'wrapGridComp'; }
+                
+                if(tId && gId) renderer.buildActiveView(tId, gId);
+
+                // If currently on saved tab, full refresh
+                if(state.activeTab === 'tab-saved') core.renderSavedVideos();
+            },
+            renderSavedVideos: () => {
+                const saved = core.getSavedDB();
+                const tableId = 'wrapTableSaved'; const gridId = 'wrapGridSaved';
+                
+                if(!saved.length) {
+                    ui.clearWrap(tableId, gridId);
+                    document.getElementById(tableId).style.display = 'block';
+                    document.getElementById(tableId).innerHTML = ui.emptyHTML('Your calendar is empty. Click the Save button on any video during research.');
+                    ui.toggleGlobalActions(false);
+                    return;
+                }
+                
+                saved.sort((a, b) => b.vph - a.vph); // Sort saved by VPH naturally
+                
+                // Hack: Temporarily set currentDataset to saved array so renderer uses it
+                const backupData = state.currentDataset;
+                state.currentDataset = saved;
+                renderer.buildActiveView(tableId, gridId);
+                state.currentDataset = backupData; // Restore original data
+                ui.toggleGlobalActions(true);
+            },
+
+            // Metadata Spy System
+            openSpyModal: (id) => {
+                // Find video in active dataset or saved dataset
+                let vid = state.currentDataset.find(v => v.id === id) || core.getSavedDB().find(v => v.id === id);
+                if(!vid) return;
+
+                document.getElementById('spyVidTitle').innerText = vid.title;
+                document.getElementById('spyVidChannel').innerText = '👤 ' + vid.channel;
+                document.getElementById('spyPubDate').innerText = new Date(vid.pubAt).toLocaleString();
+                document.getElementById('spyVPH').innerText = `${utils.formatNum(vid.vph)}`;
+                document.getElementById('spyDuration').innerText = utils.formatDuration(vid.duration);
+
+                // Tags injection
+                const tagsBox = document.getElementById('spyTagsContainer');
+                document.getElementById('spyTagCount').innerText = vid.tags.length;
+                if(vid.tags.length) {
+                    tagsBox.innerHTML = vid.tags.map(t => `<span class="kw-tag">${utils.escapeHTML(t)}</span>`).join('');
+                } else {
+                    tagsBox.innerHTML = `<span style="color:var(--text-faint)">No tags used by creator.</span>`;
+                }
+
+                // Description injection
+                document.getElementById('spyDescContainer').innerText = vid.desc || 'No description provided.';
+                
+                document.getElementById('modalSpy').classList.add('active');
+            },
+
+            // Export to CSV
+            exportToCSV: () => {
+                let targetData = state.currentDataset;
+                if(state.activeTab === 'tab-saved') targetData = core.getSavedDB();
+                if(!targetData.length) { alert("Data error: Nothing to export."); return; }
+
+                let csvString = "Title,Channel,Total_Views,Subscribers,Outlier_Ratio,VPH_Velocity,Publish_Date,Video_Link\n";
+                targetData.forEach(r => {
+                    let safeTitle = r.title.replace(/"/g, '""'); 
+                    let row = `"${safeTitle}","${r.channel}",${r.views},${r.subs},${r.ratio},${r.vph},"${r.pubAt}","https://youtube.com/watch?v=${r.id}"`;
+                    csvString += row + "\n";
+                });
+
+                const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement("a");
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", `ViralHuntPro_Export_${new Date().getTime()}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        };
+
+        // Utility: Close Modal
+        window.closeModal = (id) => {
+            document.getElementById(id).classList.remove('active');
+        };
+        // Close modal on click outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-backdrop')) {
+                event.target.classList.remove('active');
+            }
+        }
+        
+        // Enter key bindings
+        document.getElementById('inpSearchQuery').addEventListener('keydown', e => { if (e.key === 'Enter') features.runOutlierSearch(); });
+        document.getElementById('inpKwSeed').addEventListener('keydown', e => { if (e.key === 'Enter') features.runKeywordSoup(); });
+
+        // Execute Boot Sequence
+        core.boot();
+    </script>
 </body>
 </html>
 
