@@ -60,11 +60,12 @@
   }
   input:focus { border-color: var(--signal); box-shadow: 0 0 0 3px var(--signal-dim); }
 
-  .tabs { display: flex; gap: 6px; margin-bottom: 22px; border-bottom: 1px solid var(--line); }
+  .tabs { display: flex; gap: 6px; margin-bottom: 22px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
   .tab-btn {
     background: transparent; border: none; color: var(--ink-dim); font-size: 14.5px;
     font-weight: 700; padding: 11px 16px; cursor: pointer; border-radius: 10px 10px 0 0;
-    position: relative; top: 1px; transition: color .15s; font-family: inherit;
+    position: relative; top: 1px; transition: color .15s; font-family: inherit; white-space: nowrap;
   }
   .tab-btn:hover { color: var(--ink); }
   .tab-btn.active { color: #fff; border-bottom: 2px solid var(--signal); }
@@ -186,15 +187,16 @@
         <input type="password" id="apiKeyInput" placeholder="Paste your API key…" autocomplete="off">
         <span id="apiKeyStatus" class="key-status"></span>
       </div>
-      <p class="key-hint">From Google Cloud Console. Enable YouTube Data API v3 on your project first.</p>
     </section>
 
     <nav class="tabs">
       <button class="tab-btn active" data-tab="search" type="button">🔍 Search Topic</button>
       <button class="tab-btn" data-tab="trending" type="button">🔥 Top Trending</button>
+      <button class="tab-btn" data-tab="smallTrends" type="button">🌱 Small Trends</button>
     </nav>
 
     <main>
+      <!-- Tab 1: Search Topic -->
       <section id="searchTab" class="tab-panel active">
         <div class="controls">
           <div class="field">
@@ -211,6 +213,7 @@
         <div id="searchResultsWrap" class="results-wrap"></div>
       </section>
 
+      <!-- Tab 2: General Trending -->
       <section id="trendingTab" class="tab-panel">
         <div class="controls">
           <div class="region-chip">🇮🇳 Region: India</div>
@@ -218,6 +221,20 @@
         </div>
         <div id="trendingStatus" class="status-msg"></div>
         <div id="trendingResultsWrap" class="results-wrap"></div>
+      </section>
+
+      <!-- Tab 3: Small Trends (New Feature) -->
+      <section id="smallTrendsTab" class="tab-panel">
+        <div class="controls">
+          <div class="field field-small" style="flex: 2;">
+            <label for="smallTrendsMaxSubs">Max Subs Limit for Trends</label>
+            <input type="number" id="smallTrendsMaxSubs" value="50000" min="0" step="1" placeholder="e.g. 50000">
+          </div>
+          <button id="smallTrendsBtn" class="primary-btn" type="button">Find Small Trends</button>
+        </div>
+        <p style="font-size: 12px; color: var(--ink-faint); margin-top: 5px;">Scans Top 50 Trending videos and filters out the big channels.</p>
+        <div id="smallTrendsStatus" class="status-msg"></div>
+        <div id="smallTrendsResultsWrap" class="results-wrap"></div>
       </section>
     </main>
   </div>
@@ -262,7 +279,7 @@ function getApiKey() {
 function requireApiKey(statusElId) {
   const key = getApiKey();
   if (!key) {
-    showStatus(statusElId, 'Add your YouTube Data API v3 key above first.', 'error');
+    showStatus(statusElId, 'Add your YouTube API key above first.', 'error');
     document.getElementById('apiKeyInput').focus();
     return null;
   }
@@ -294,8 +311,12 @@ function showStatus(elId, message, type) {
 }
 
 function setLoading(mode, isLoading) {
-  const btn = document.getElementById(mode === 'search' ? 'searchBtn' : 'trendingBtn');
-  const label = mode === 'search' ? 'Search' : 'Fetch Trending';
+  let btnId, label;
+  if (mode === 'search') { btnId = 'searchBtn'; label = 'Search'; }
+  else if (mode === 'trending') { btnId = 'trendingBtn'; label = 'Fetch Trending'; }
+  else if (mode === 'smallTrends') { btnId = 'smallTrendsBtn'; label = 'Find Small Trends'; }
+
+  const btn = document.getElementById(btnId);
   btn.disabled = isLoading;
   btn.innerHTML = isLoading ? '<span class="spinner"></span> Loading…' : label;
 }
@@ -356,22 +377,12 @@ async function handleApiResponse(res) {
   }
   if (!res.ok) {
     const apiMsg = data && data.error ? data.error.message : null;
-    if (res.status === 403) {
-      throw new Error(
-        apiMsg && apiMsg.toLowerCase().includes('quota')
-          ? 'Daily API quota exceeded. Try again tomorrow or use a different key.'
-          : `Access denied: ${apiMsg || 'check that your key is valid and YouTube Data API v3 is enabled.'}`
-      );
-    }
-    if (res.status === 400) throw new Error(`Bad request: ${apiMsg || 'check your inputs.'}`);
+    if (res.status === 403) throw new Error('API quota exceeded or access denied.');
     throw new Error(apiMsg || `YouTube API error (${res.status}).`);
   }
   return data;
 }
 
-// Zero Sub Bug Fix: an empty/invalid field falls back to 5000, but an explicit
-// "0" must survive as 0. A naive `parseInt(value) || 5000` breaks this because
-// 0 is falsy in JS, so empty/NaN is checked explicitly instead of relying on ||.
 function parseMaxSubs(raw) {
   const trimmed = String(raw).trim();
   if (trimmed === '') return 5000;
@@ -380,7 +391,7 @@ function parseMaxSubs(raw) {
   return Math.floor(num);
 }
 
-/* ---------- Search Topic ---------- */
+/* ---------- Tab 1: Search Topic ---------- */
 
 async function searchTopic() {
   const apiKey = requireApiKey('searchStatus');
@@ -400,9 +411,6 @@ async function searchTopic() {
 
   try {
     const publishedAfter = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    // videoDuration=long is required to fully exclude Shorts (Shorts always fall
-    // under YouTube's "short" bucket). Note it also excludes 4-20 min "medium"
-    // videos, so results are limited to 20+ minute long-form uploads.
     const searchUrl = `${YT_API_BASE}/search?part=snippet&type=video&order=viewCount` +
       `&videoDuration=long&publishedAfter=${encodeURIComponent(publishedAfter)}` +
       `&maxResults=50&q=${encodeURIComponent(query)}&key=${encodeURIComponent(apiKey)}`;
@@ -442,17 +450,14 @@ async function searchTopic() {
       };
     });
 
-    // Channels that hide their subscriber count can't be checked against the
-    // threshold, so they're dropped rather than assumed to pass.
-    results = results.filter((r) => r.subscriberCount !== null && !r.hiddenSubs);
-    results = results.filter((r) => r.subscriberCount <= maxSubs);
+    results = results.filter((r) => r.subscriberCount !== null && !r.hiddenSubs && r.subscriberCount <= maxSubs);
     results.sort((a, b) => b.ratio - a.ratio);
 
     if (results.length === 0) {
       showStatus('searchStatus', '');
       renderEmptyState('searchResultsWrap', `0 videos found under ${maxSubs.toLocaleString()} subs, try increasing the limit.`);
     } else {
-      showStatus('searchStatus', `Found ${results.length} outlier${results.length === 1 ? '' : 's'}.`, 'success');
+      showStatus('searchStatus', `Found ${results.length} outlier(s).`, 'success');
       document.getElementById('searchResultsWrap').innerHTML = buildSearchTableHTML(results);
     }
   } catch (err) {
@@ -461,6 +466,109 @@ async function searchTopic() {
     setLoading('search', false);
   }
 }
+
+/* ---------- Tab 2: Top Trending ---------- */
+
+async function fetchTrending() {
+  const apiKey = requireApiKey('trendingStatus');
+  if (!apiKey) return;
+
+  setLoading('trending', true);
+  clearResults('trendingResultsWrap');
+  showStatus('trendingStatus', 'Reading the trending feed…', 'info');
+
+  try {
+    const url = `${YT_API_BASE}/videos?part=snippet,statistics&chart=mostPopular` +
+      `&regionCode=IN&maxResults=50&key=${encodeURIComponent(apiKey)}`;
+    const data = await handleApiResponse(await fetch(url));
+    const items = data.items || [];
+
+    if (items.length === 0) {
+      showStatus('trendingStatus', '');
+      renderEmptyState('trendingResultsWrap', 'No trending data available right now.');
+      return;
+    }
+
+    const results = items.map((it) => ({
+      videoId: it.id,
+      title: it.snippet.title,
+      channelTitle: it.snippet.channelTitle,
+      thumbnail: getThumbnailUrl(it.snippet),
+      viewCount: parseInt((it.statistics && it.statistics.viewCount) || '0', 10),
+    }));
+
+    showStatus('trendingStatus', `Showing ${results.length} trending videos in India.`, 'success');
+    document.getElementById('trendingResultsWrap').innerHTML = buildTrendingTableHTML(results);
+  } catch (err) {
+    showStatus('trendingStatus', err.message, 'error');
+  } finally {
+    setLoading('trending', false);
+  }
+}
+
+/* ---------- Tab 3: Small Trends (New) ---------- */
+
+async function fetchSmallTrending() {
+  const apiKey = requireApiKey('smallTrendsStatus');
+  if (!apiKey) return;
+
+  const maxSubs = parseMaxSubs(document.getElementById('smallTrendsMaxSubs').value);
+
+  setLoading('smallTrends', true);
+  clearResults('smallTrendsResultsWrap');
+  showStatus('smallTrendsStatus', 'Hunting for hidden gems in Top 50 Trending…', 'info');
+
+  try {
+    const url = `${YT_API_BASE}/videos?part=snippet,statistics&chart=mostPopular` +
+      `&regionCode=IN&maxResults=50&key=${encodeURIComponent(apiKey)}`;
+    const data = await handleApiResponse(await fetch(url));
+    const items = data.items || [];
+
+    if (items.length === 0) {
+      showStatus('smallTrendsStatus', '');
+      renderEmptyState('smallTrendsResultsWrap', 'No trending data available right now.');
+      return;
+    }
+
+    const channelIds = [...new Set(items.map((it) => it.snippet.channelId))];
+    const channelStats = await fetchChannelStats(channelIds, apiKey);
+
+    let results = items.map((it) => {
+      const ch = channelStats[it.snippet.channelId];
+      const viewCount = parseInt((it.statistics && it.statistics.viewCount) || '0', 10);
+      const subscriberCount = ch ? ch.subscriberCount : null;
+
+      return {
+        videoId: it.id,
+        title: it.snippet.title,
+        channelTitle: it.snippet.channelTitle,
+        thumbnail: getThumbnailUrl(it.snippet),
+        viewCount,
+        subscriberCount,
+        hiddenSubs: ch ? ch.hidden : false,
+        ratio: viewCount != null && subscriberCount != null ? viewCount / Math.max(subscriberCount, 1) : 0,
+      };
+    });
+
+    results = results.filter((r) => r.subscriberCount !== null && !r.hiddenSubs && r.subscriberCount <= maxSubs);
+    results.sort((a, b) => b.ratio - a.ratio);
+
+    if (results.length === 0) {
+      showStatus('smallTrendsStatus', '');
+      renderEmptyState('smallTrendsResultsWrap', `Trending list scanned, but 0 videos found under ${maxSubs.toLocaleString()} subs. Try increasing the limit.`);
+    } else {
+      showStatus('smallTrendsStatus', `Found ${results.length} trending videos from small channels!`, 'success');
+      // Using the advanced table layout from the first tab because it perfectly displays subs and Outlier ratios
+      document.getElementById('smallTrendsResultsWrap').innerHTML = buildSearchTableHTML(results);
+    }
+  } catch (err) {
+    showStatus('smallTrendsStatus', err.message, 'error');
+  } finally {
+    setLoading('smallTrends', false);
+  }
+}
+
+/* ---------- Data Fetch Helpers ---------- */
 
 async function fetchVideoStats(videoIds, apiKey) {
   if (videoIds.length === 0) return {};
@@ -490,45 +598,6 @@ async function fetchChannelStats(channelIds, apiKey) {
     });
   }
   return map;
-}
-
-/* ---------- Top Trending ---------- */
-
-async function fetchTrending() {
-  const apiKey = requireApiKey('trendingStatus');
-  if (!apiKey) return;
-
-  setLoading('trending', true);
-  clearResults('trendingResultsWrap');
-  showStatus('trendingStatus', 'Reading the trending feed…', 'info');
-
-  try {
-    const url = `${YT_API_BASE}/videos?part=snippet,statistics&chart=mostPopular` +
-      `&regionCode=IN&maxResults=50&key=${encodeURIComponent(apiKey)}`;
-    const data = await handleApiResponse(await fetch(url));
-    const items = data.items || [];
-
-    if (items.length === 0) {
-      showStatus('trendingStatus', '');
-      renderEmptyState('trendingResultsWrap', 'No trending data available right now. Try again shortly.');
-      return;
-    }
-
-    const results = items.map((it) => ({
-      videoId: it.id,
-      title: it.snippet.title,
-      channelTitle: it.snippet.channelTitle,
-      thumbnail: getThumbnailUrl(it.snippet),
-      viewCount: parseInt((it.statistics && it.statistics.viewCount) || '0', 10),
-    }));
-
-    showStatus('trendingStatus', `Showing ${results.length} trending videos in India.`, 'success');
-    document.getElementById('trendingResultsWrap').innerHTML = buildTrendingTableHTML(results);
-  } catch (err) {
-    showStatus('trendingStatus', err.message || 'Something went wrong.', 'error');
-  } finally {
-    setLoading('trending', false);
-  }
 }
 
 /* ---------- Rendering ---------- */
@@ -578,12 +647,11 @@ function buildTrendingTableHTML(results) {
 
 document.getElementById('searchBtn').addEventListener('click', searchTopic);
 document.getElementById('trendingBtn').addEventListener('click', fetchTrending);
-document.getElementById('queryInput').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') searchTopic();
-});
-document.getElementById('maxSubsInput').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') searchTopic();
-});
+document.getElementById('smallTrendsBtn').addEventListener('click', fetchSmallTrending);
+
+document.getElementById('queryInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') searchTopic(); });
+document.getElementById('maxSubsInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') searchTopic(); });
+document.getElementById('smallTrendsMaxSubs').addEventListener('keydown', (e) => { if (e.key === 'Enter') fetchSmallTrending(); });
 
 loadApiKey();
 </script>
